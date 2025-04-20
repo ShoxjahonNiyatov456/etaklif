@@ -1,0 +1,396 @@
+/* Remove the problematic import at the top */
+/* @import url("https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap"); */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 0 0% 100%;
+  --foreground: 222.2 84% 4.9%;
+}
+
+body {
+  @apply bg-gray-50 text-gray-900;
+}
+
+.invitation-card {
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1),
+    0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.invitation-card:hover {
+  transform: translateY(-5px);
+}
+
+.paper-bg {
+  background-color: #f8f7f2;
+  background-image: url("/paper-texture.jpg");
+  background-size: cover;
+}
+
+.floral-border {
+  position: relative;
+}
+
+.floral-border::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url("/floral-border.png");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+/* Minimal template */
+.minimal-template {
+  position: relative;
+  border: 1px solid #e5e7eb;
+}
+
+.minimal-template::before {
+  content: "";
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  border: 1px solid #d1d5db;
+  pointer-events: none;
+}
+
+/* Gold template */
+.gold-template {
+  position: relative;
+}
+
+.gold-template::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url("/gold-border.png");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+/* Vintage template */
+.vintage-template {
+  position: relative;
+}
+
+.vintage-bg {
+  background-color: #f3e8d7;
+  background-image: url("/vintage-texture.jpg");
+  background-size: cover;
+}
+
+.vintage-template::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url("/vintage-border.png");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* Geometric template */
+.geometric-template {
+  position: relative;
+}
+
+.geometric-template::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url("/geometric-border.png");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+/* Festive template */
+.festive-template {
+  position: relative;
+}
+
+.festive-template::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url("/festive-border.png");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+/* Elegant template */
+.elegant-template {
+  position: relative;
+  background-color: #f9f9f9;
+}
+
+.elegant-template::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url("/elegant-border.png");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+/* Nature template */
+.nature-template {
+  position: relative;
+}
+
+.nature-template::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url("/nature-border.png");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+/* Traditional template */
+.traditional-template {
+  position: relative;
+  background-color: #f5f5f5;
+}
+
+.traditional-template::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url("/traditional-border.png");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+/* Celebration template */
+.celebration-template {
+  position: relative;
+}
+
+.celebration-template::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url("/celebration-border.png");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+/* Romantic template */
+.romantic-template {
+  position: relative;
+}
+
+.romantic-template::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url("/romantic-border.png");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+/* National template */
+.national-template {
+  position: relative;
+}
+
+.national-template::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url("/national-border.png");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+/* Modern template */
+.modern-template {
+  position: relative;
+  background-color: #ffffff;
+}
+
+.modern-template::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url("/modern-border.png");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* Template thumbnails */
+.floral-thumbnail {
+  background-image: url("/floral-thumbnail.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
+.minimal-thumbnail {
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+}
+
+.minimal-thumbnail::before {
+  content: "";
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  right: 4px;
+  bottom: 4px;
+  border: 1px solid #d1d5db;
+}
+
+.gold-thumbnail {
+  background-image: url("/gold-thumbnail.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
+.vintage-thumbnail {
+  background-image: url("/vintage-thumbnail.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
+.geometric-thumbnail {
+  background-image: url("/geometric-thumbnail.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
+.festive-thumbnail {
+  background-image: url("/festive-thumbnail.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
+.elegant-thumbnail {
+  background-image: url("/elegant-thumbnail.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
+.nature-thumbnail {
+  background-image: url("/nature-thumbnail.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
+.traditional-thumbnail {
+  background-image: url("/traditional-thumbnail.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
+.celebration-thumbnail {
+  background-image: url("/celebration-thumbnail.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
+.romantic-thumbnail {
+  background-image: url("/romantic-thumbnail.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
+.national-thumbnail {
+  background-image: url("/national-thumbnail.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
+.modern-thumbnail {
+  background-image: url("/modern-thumbnail.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
+.invitation-preview {
+  transition: all 0.3s ease;
+}
+
+.form-input {
+  @apply w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent;
+}
+
+.form-label {
+  @apply block text-sm font-medium text-gray-700 mb-1;
+}
+
+.btn-primary {
+  @apply px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors;
+}
+
+.btn-outline {
+  @apply px-4 py-2 border border-primary-600 text-primary-600 rounded-md hover:bg-primary-50 transition-colors;
+}
+
+.btn-secondary {
+  @apply px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors;
+}
