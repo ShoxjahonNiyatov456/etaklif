@@ -426,6 +426,47 @@ export default function CreatePage() {
     }
   };
 
+  const [paymentCompleted, setPaymentCompleted] = useState(false);
+  const [shareableLink, setShareableLink] = useState("");
+
+  const handlePayment = () => {
+    setTimeout(() => {
+      setPaymentCompleted(true);
+      const invitationData = {
+        firstName: formData.firstName,
+        secondName: formData.secondName,
+        date: formData.date,
+        time: formData.time,
+        location: formData.location,
+        additionalInfo: formData.additionalInfo,
+        age: formData.age,
+        parents: formData.parents,
+        uploadedImage: uploadedImage
+      };
+      import("@/app/services/share").then(({ generateShareableLink }) => {
+        const link = generateShareableLink(type as string, selectedTemplate, invitationData);
+        setShareableLink(link);
+      });
+    }, 1500);
+  };
+
+  const handleShareInvitation = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `${getInvitationTypeName()} taklifnomasi`,
+          text: `Sizni ${getInvitationTypeName().toLowerCase()}ga taklif qilaman!`,
+          url: window.location.origin + shareableLink,
+        });
+      } catch (error) {
+        console.error("Ulashishda xatolik:", error);
+      }
+    } else {
+      navigator.clipboard.writeText(window.location.origin + shareableLink);
+      alert("Havola nusxalandi!");
+    }
+  };
+
   const countWords = (text: string): number => {
     return text
       .trim()
@@ -444,7 +485,8 @@ export default function CreatePage() {
         >
           <button
             onClick={() => router.back()}
-            className="flex items-center text-gray-600 hover:text-primary-600 mb-2"
+            className="flex items-center text-gray-600 hover:text-primar
+            y-600 mb-2"
           >
             <ArrowLeft className="h-4 w-4 mr-1" />
             Orqaga
@@ -666,8 +708,6 @@ export default function CreatePage() {
                     </div>
                   </>
                 )}
-
-                {/* Common fields for all invitation types */}
                 <div>
                   <label htmlFor="date" className="form-label">
                     Sana
@@ -777,7 +817,7 @@ export default function CreatePage() {
             <div className="bg-white p-5 rounded-lg shadow-sm border border-gray-200">
               <div className={`${uploadedImage ? "flex gap-3" : ""}`}>
                 <div className={`${uploadedImage ? "w-[350px]" : ""}`}>
-                  <div className="grid grid-cols-2 gap-2 mb-3">
+                  <div className="grid grid-cols-1 gap-2 mb-3 sm:grid-cols-2">
                     {templates.map((template) => (
                       <div
                         key={template.id}
@@ -838,7 +878,7 @@ export default function CreatePage() {
                 </div>
                 {uploadedImage && (
                   <div className="flex-1">
-                    <div className="flex justify-start mb-2">
+                    <div className="flex justify-end mb-2">
                       <button
                         type="button"
                         onClick={clearUploadedImage}
@@ -869,23 +909,67 @@ export default function CreatePage() {
           </TabsContent>
           <TabsContent value="preview" className="mt-0">
             <div className="bg-white p-5 rounded-lg shadow-sm border border-gray-200">
-              <div className="relative">
-                <div className="absolute inset-0 bg-white/60 z-10 flex items-center justify-center">
-                  <div className="bg-red-500 text-white px-4 py-2 rounded-md shadow-md">
-                    To'lov qilinmagan
-                  </div>
-                </div>
-                <div className="invitation-preview relative z-0">
-                  {renderTemplatePreview()}
-                </div>
+              <div className="mb-6">
+                <h2 className="text-xl font-semibold mb-4">Taklifnoma ko'rinishi</h2>
+                <div className="max-w-md mx-auto">{renderTemplatePreview()}</div>
               </div>
 
-              <div className="mt-6 text-center">
-                <p className="text-sm text-gray-500 mb-4">
-                  Taklifnomani to'liq ko'rish va yuklab olish uchun to'lovni
-                  amalga oshiring
-                </p>
-                <Button className="w-full">To'lovni amalga oshirish</Button>
+              <div className="mt-8 border-t pt-6">
+                {!paymentCompleted ? (
+                  <div className="space-y-4">
+                    <div className="p-4 bg-amber-50 border border-amber-200 rounded-md">
+                      <h3 className="text-lg font-semibold mb-2 text-amber-800">To'lov qilinmagan</h3>
+                      <p className="text-amber-700 text-sm mb-2">
+                        Taklifnomani to'liq ko'rish va yuklab olish uchun to'lovni
+                        amalga oshiring.
+                      </p>
+                      <Button
+                        className="w-full"
+                        onClick={handlePayment}
+                        disabled={paymentCompleted}
+                      >
+                        {paymentCompleted ? (
+                          <span className="flex items-center">
+                            <Check className="h-4 w-4 mr-2" /> To'lov qilindi
+                          </span>
+                        ) : (
+                          "To'lovni amalga oshirish"
+                        )}
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <div className="p-4 bg-green-50 border border-green-200 rounded-md">
+                      <h3 className="text-lg font-semibold mb-2 text-green-800">To'lov muvaffaqiyatli amalga oshirildi</h3>
+                      <p className="text-green-700 text-sm mb-4">
+                        Endi taklifnomangizni do'stlaringiz va yaqinlaringiz bilan ulashishingiz mumkin.
+                      </p>
+
+                      <div className="mb-4">
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Taklifnoma havolasi</label>
+                        <div className="flex">
+                          <input
+                            type="text"
+                            value={window.location.origin + shareableLink}
+                            readOnly
+                            className="flex-1 px-3 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-1 focus:ring-primary-500 text-sm"
+                          />
+                          <Button
+                            onClick={handleShareInvitation}
+                            className="rounded-l-none"
+                          >
+                            Ulashish
+                          </Button>
+                        </div>
+                      </div>
+
+                      <p className="text-xs text-gray-500">
+                        Ushbu havola orqali taklifnomangizni boshqalar ham ko'rishlari mumkin.
+                      </p>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </TabsContent>
