@@ -20,14 +20,18 @@ export default function JubileeTemplate({
   uploadedImage,
 }: JubileeTemplateProps) {
   const formattedDate = date
-    ? new Date(date)
-      .toLocaleDateString("uz-UZ", {
-        day: "numeric",
-        month: "numeric",
-        year: "numeric",
-      })
-      .replace(/M(\d+)/g, "$1")
-    : "2023-yil 15-iyun";
+    ? (() => {
+      const dateObj = new Date(date);
+      const day = dateObj.getDate();
+      const month = dateObj.getMonth() + 1;
+      // Agar oy raqami bir xonali bo'lsa, oldiga 0 qo'shamiz
+      const formattedMonth = month < 10 ? `0${month}` : month;
+      // Yil 2100 dan katta bo'lmasligi kerak
+      let year = dateObj.getFullYear();
+      if (year > 2100) year = 2100;
+      return `${day}.${formattedMonth}.${year}`;
+    })()
+    : "15.06.2023";
 
   switch (style) {
     case "celebration":
@@ -211,9 +215,9 @@ export default function JubileeTemplate({
           <div className="mb-6 flex justify-center">
             {uploadedImage ? (
               <div className="w-64 h-64 rounded-lg overflow-hidden mb-4 mx-auto border-2 border-amber-200 relative">
-                <img 
-                  src={uploadedImage} 
-                  alt="Yuklangan rasm" 
+                <img
+                  src={uploadedImage}
+                  alt="Yuklangan rasm"
                   className="w-full h-full object-cover"
                 />
               </div>

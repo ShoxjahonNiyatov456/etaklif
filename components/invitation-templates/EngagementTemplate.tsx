@@ -19,16 +19,20 @@ export default function EngagementTemplate({
   additionalInfo,
   uploadedImage,
 }: EngagementTemplateProps) {
-  // Format date if provided
   const formattedDate = date
-    ? new Date(date).toLocaleDateString("uz-UZ", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    })
-    : "2023-yil 15-iyun"
+    ? (() => {
+      const dateObj = new Date(date);
+      const day = dateObj.getDate();
+      const month = dateObj.getMonth() + 1;
+      // Agar oy raqami bir xonali bo'lsa, oldiga 0 qo'shamiz
+      const formattedMonth = month < 10 ? `0${month}` : month;
+      // Yil 2100 dan katta bo'lmasligi kerak
+      let year = dateObj.getFullYear();
+      if (year > 2100) year = 2100;
+      return `${day}.${formattedMonth}.${year}`;
+    })()
+    : "15.06.2023"
 
-  // Get template based on style
   switch (style) {
     case "romantic":
       return (

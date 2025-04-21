@@ -10,7 +10,8 @@ import BirthdayTemplate from "@/components/invitation-templates/BirthdayTemplate
 import FuneralTemplate from "@/components/invitation-templates/FuneralTemplate";
 import JubileeTemplate from "@/components/invitation-templates/JubileeTemplate";
 import EngagementTemplate from "@/components/invitation-templates/EngagementTemplate";
-import { getInvitationDataFromLink } from "@/app/services/share";
+import { getInvitationDataFromLink, getInvitationByUniqueId } from "@/app/services/share";
+import { ShareModal } from "@/components/ui/share-modal";
 
 export default function InvitationPage() {
   const params = useParams();
@@ -19,31 +20,44 @@ export default function InvitationPage() {
   
   const [invitationData, setInvitationData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
   useEffect(() => {
-    // URL parametrlaridan taklifnoma ma'lumotlarini olish
-    const data = getInvitationDataFromLink(searchParams.toString());
-    if (data) {
-      setInvitationData(data);
-    }
-    setLoading(false);
-  }, [searchParams]);
-
-  const handleShare = async () => {
-    if (navigator.share) {
+    const fetchData = () => {
       try {
-        await navigator.share({
-          title: `${getInvitationTypeName()} taklifnomasi`,
-          text: `Sizni ${getInvitationTypeName().toLowerCase()}ga taklif qilaman!`,
-          url: window.location.href,
-        });
+        // URL parametrlaridan ma'lumotlarni olish
+        const dataFromUrl = getInvitationDataFromLink(searchParams.toString());
+        if (dataFromUrl) {
+          setInvitationData(dataFromUrl);
+          setLoading(false);
+          return;
+        }
+        
+        // localStorage-dan ma'lumotlarni olish
+        if (uniqueId) {
+          const dataFromStorage = getInvitationByUniqueId(uniqueId as string);
+          if (dataFromStorage) {
+            setInvitationData(dataFromStorage);
+            setLoading(false);
+            return;
+          }
+        }
+        
+        // Ma'lumotlar topilmadi
+        setLoading(false);
       } catch (error) {
-        console.error("Ulashishda xatolik:", error);
+        console.error('Taklifnoma ma\'lumotlarini olishda xatolik:', error);
+        setLoading(false);
       }
-    } else {
-      // Ulashish API mavjud bo'lmasa, havola nusxalash
-      navigator.clipboard.writeText(window.location.href);
-      alert("Havola nusxalandi!");
+    };
+    
+    fetchData();
+  }, [searchParams, uniqueId]);
+
+  const handleShare = () => {
+    // We need to ensure we're on the client side before accessing window
+    if (typeof window !== 'undefined') {
+      setIsShareModalOpen(true);
     }
   };
 
@@ -190,6 +204,13 @@ export default function InvitationPage() {
           <div className="max-w-md mx-auto">{renderTemplate()}</div>
         </motion.div>
       </div>
+      
+      <ShareModal 
+        isOpen={isShareModalOpen} 
+        onClose={() => setIsShareModalOpen(false)} 
+        url={typeof window !== 'undefined' ? window.location.href : ''}
+        title={`${getInvitationTypeName()} taklifnomasi`}
+      />
     </div>
   );
 }

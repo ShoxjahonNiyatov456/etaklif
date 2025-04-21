@@ -4,7 +4,7 @@ import type React from "react";
 
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { Upload, X, ArrowLeft, Check } from "lucide-react";
+import { Upload, X, ArrowLeft, Check, ArrowRight, Trash, Share2 } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import WeddingTemplate from "@/components/invitation-templates/WeddingTemplate";
 import BirthdayTemplate from "@/components/invitation-templates/BirthdayTemplate";
@@ -13,6 +13,7 @@ import JubileeTemplate from "@/components/invitation-templates/JubileeTemplate";
 import EngagementTemplate from "@/components/invitation-templates/EngagementTemplate";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ShareModal } from "@/components/ui/share-modal";
 
 export default function CreatePage() {
   const params = useParams();
@@ -48,46 +49,34 @@ export default function CreatePage() {
         return;
       }
     } else if (name === "age") {
-      // Limit to 3 digits for age
       if (!/^\d{0,3}$/.test(value)) {
         return;
       }
     } else if (name === "date") {
-      // Check if year is no more than 4 digits
       const yearPart = value.split("-")[0];
       if (yearPart && yearPart.length > 4) {
         return;
       }
     } else if (name === "location" || name === "additionalInfo") {
-      // Count actual words - more strict implementation
-      const words = value
+      const newWords = value
         .trim()
         .split(/\s+/)
         .filter((word) => word.length > 0);
-
-      // If trying to add beyond 30 words, prevent and keep only 30
-      if (words.length > 30) {
-        // Get current words in state
-        const currentWords = formData[name as keyof typeof formData]
-          .trim()
-          .split(/\s+/)
-          .filter((word) => word.length > 0);
-
-        // If we already have 30+ words, don't allow more typing
-        if (currentWords.length >= 30) {
-          return;
-        }
-
-        // Otherwise, limit to exactly 30 words
-        const limitedText = words.slice(0, 30).join(" ");
+      if (newWords.length > 30) {
+        const limitedText = newWords.slice(0, 30).join(" ");
         setFormData((prev) => ({ ...prev, [name]: limitedText }));
+        return;
+      }
+      const currentWords = formData[name as keyof typeof formData]
+        .trim()
+        .split(/\s+/)
+        .filter((word) => word.length > 0);
+      if (currentWords.length >= 30 && value.length > formData[name as keyof typeof formData].length) {
         return;
       }
     }
 
     setFormData((prev) => ({ ...prev, [name]: value }));
-
-    // Check if form is completed
     checkFormCompletion();
   };
 
@@ -428,6 +417,7 @@ export default function CreatePage() {
 
   const [paymentCompleted, setPaymentCompleted] = useState(false);
   const [shareableLink, setShareableLink] = useState("");
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
   const handlePayment = () => {
     setTimeout(() => {
@@ -450,20 +440,9 @@ export default function CreatePage() {
     }, 1500);
   };
 
-  const handleShareInvitation = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: `${getInvitationTypeName()} taklifnomasi`,
-          text: `Sizni ${getInvitationTypeName().toLowerCase()}ga taklif qilaman!`,
-          url: window.location.origin + shareableLink,
-        });
-      } catch (error) {
-        console.error("Ulashishda xatolik:", error);
-      }
-    } else {
-      navigator.clipboard.writeText(window.location.origin + shareableLink);
-      alert("Havola nusxalandi!");
+  const handleShareInvitation = () => {
+    if (typeof window !== 'undefined') {
+      setIsShareModalOpen(true);
     }
   };
 
@@ -948,24 +927,17 @@ export default function CreatePage() {
 
                       <div className="mb-4">
                         <label className="block text-sm font-medium text-gray-700 mb-1">Taklifnoma havolasi</label>
-                        <div className="flex">
-                          <input
-                            type="text"
-                            value={window.location.origin + shareableLink}
-                            readOnly
-                            className="flex-1 px-3 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-1 focus:ring-primary-500 text-sm"
-                          />
-                          <Button
-                            onClick={handleShareInvitation}
-                            className="rounded-l-none"
-                          >
-                            Ulashish
-                          </Button>
-                        </div>
+                        <Button
+                          onClick={handleShareInvitation}
+                          className="w-full"
+                        >
+                          <Share2 className="h-4 w-4 mr-2" />
+                          Ulashish
+                        </Button>
                       </div>
 
                       <p className="text-xs text-gray-500">
-                        Ushbu havola orqali taklifnomangizni boshqalar ham ko'rishlari mumkin.
+                        Ulashish tugmasini bosganingizda havola nusxalanadi va ulashish uchun oyna ochiladi
                       </p>
                     </div>
                   </div>
@@ -975,6 +947,13 @@ export default function CreatePage() {
           </TabsContent>
         </Tabs>
       </div>
+
+      <ShareModal
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
+        url={typeof window !== 'undefined' ? window.location.origin + shareableLink : shareableLink}
+        title={`${getInvitationTypeName()} taklifnomasi`}
+      />
     </div>
   );
 }

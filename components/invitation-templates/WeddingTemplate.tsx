@@ -18,12 +18,18 @@ export default function WeddingTemplate({
   additionalInfo,
 }: WeddingTemplateProps) {
   const formattedDate = date
-    ? new Date(date).toLocaleDateString("uz-UZ", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      })
-    : "2023-yil 15-iyun";
+    ? (() => {
+        const dateObj = new Date(date);
+        const day = dateObj.getDate();
+        const month = dateObj.getMonth() + 1;
+        // Agar oy raqami bir xonali bo'lsa, oldiga 0 qo'shamiz
+        const formattedMonth = month < 10 ? `0${month}` : month;
+        // Yil 2100 dan katta bo'lmasligi kerak
+        let year = dateObj.getFullYear();
+        if (year > 2100) year = 2100;
+        return `${day}.${formattedMonth}.${year}`;
+      })()
+    : "15.06.2023";
 
   switch (style) {
     case "floral-gold":
@@ -190,20 +196,18 @@ export default function WeddingTemplate({
 
             {/* Content */}
             <div className="relative z-10 py-10">
-              <p className="text-sm text-amber-700 mb-1">with joy you are</p>
-              <p className="text-sm text-amber-700 mb-4">
-                invited to the wedding of
-              </p>
+              <p className="text-sm text-amber-700 mb-1">Ikki yosh</p>
 
               <h2 className="text-3xl font-serif tracking-wide uppercase mb-1 text-amber-700">
                 {firstName || "ALEXIS"}
               </h2>
-              <p className="font-cursive text-xl text-amber-700 mb-1">and</p>
+              <p className="font-cursive text-xl text-amber-700 mb-1">va</p>
               <h2 className="text-3xl font-serif tracking-wide uppercase mb-6 text-amber-700">
                 {secondName || "MARCUS"}
               </h2>
-
-              <p className="text-sm text-amber-700 mb-2">saturday</p>
+              <p className="text-sm text-amber-700 mb-4">
+                ning to'yiga taklif qilindingiz
+              </p>
               <p className="text-lg font-medium text-amber-700 mb-4">
                 {formattedDate || "JUNE | 22 | 2PM"}
               </p>
@@ -220,10 +224,6 @@ export default function WeddingTemplate({
                   {additionalInfo}
                 </p>
               )}
-
-              <p className="text-xs text-amber-700 italic mt-2">
-                reception to follow
-              </p>
             </div>
           </div>
         </div>

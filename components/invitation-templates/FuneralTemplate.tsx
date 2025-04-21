@@ -17,16 +17,17 @@ export default function FuneralTemplate({
   additionalInfo,
   uploadedImage,
 }: FuneralTemplateProps) {
-  // Format date if provided
   const formattedDate = date
-    ? new Date(date).toLocaleDateString("uz-UZ", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      })
-    : "2023-yil 15-iyun"
-
-  // Get template based on style
+    ? (() => {
+      const dateObj = new Date(date);
+      const day = dateObj.getDate();
+      const month = dateObj.getMonth() + 1;
+      const formattedMonth = month < 10 ? `0${month}` : month;
+      let year = dateObj.getFullYear();
+      if (year > 2100) year = 2100;
+      return `${day}.${formattedMonth}.${year}`;
+    })()
+    : "15.06.2023"
   switch (style) {
     case "traditional":
       return (
@@ -78,9 +79,9 @@ export default function FuneralTemplate({
             <div className="mb-6 flex justify-center">
               {uploadedImage ? (
                 <div className="w-32 h-32 rounded-full border-4 border-gray-300 overflow-hidden relative">
-                  <img 
-                    src={uploadedImage} 
-                    alt="Marhumning rasmi" 
+                  <img
+                    src={uploadedImage}
+                    alt="Marhumning rasmi"
                     className="w-full h-full object-cover"
                   />
                 </div>
@@ -123,9 +124,9 @@ export default function FuneralTemplate({
             <div className="mb-6 flex justify-center">
               {uploadedImage ? (
                 <div className="w-40 h-40 border-2 border-gray-300 overflow-hidden relative">
-                  <img 
-                    src={uploadedImage} 
-                    alt="Marhumning rasmi" 
+                  <img
+                    src={uploadedImage}
+                    alt="Marhumning rasmi"
                     className="w-full h-full object-cover"
                   />
                 </div>
@@ -164,9 +165,9 @@ export default function FuneralTemplate({
             <div className="mb-6 flex justify-center">
               {uploadedImage ? (
                 <div className="w-36 h-36 rounded-lg border-2 border-green-700 overflow-hidden relative">
-                  <img 
-                    src={uploadedImage} 
-                    alt="Marhumning rasmi" 
+                  <img
+                    src={uploadedImage}
+                    alt="Marhumning rasmi"
                     className="w-full h-full object-cover"
                   />
                 </div>
