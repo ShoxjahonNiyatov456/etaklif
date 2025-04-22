@@ -21,15 +21,29 @@ export default function WeddingTemplate({
     ? (() => {
         const dateObj = new Date(date);
         const day = dateObj.getDate();
-        const month = dateObj.getMonth() + 1;
-        // Agar oy raqami bir xonali bo'lsa, oldiga 0 qo'shamiz
-        const formattedMonth = month < 10 ? `0${month}` : month;
-        // Yil 2100 dan katta bo'lmasligi kerak
-        let year = dateObj.getFullYear();
-        if (year > 2100) year = 2100;
-        return `${day}.${formattedMonth}.${year}`;
+        const months = [
+          "Yanvar", "Fevral", "Mart", "Aprel", "May", "Iyun",
+          "Iyul", "Avgust", "Sentyabr", "Oktyabr", "Noyabr", "Dekabr"
+        ];
+        const month = months[dateObj.getMonth()];
+        // Faqat kun va oy qaytarish, yil yo'q
+        return `${day} ${month}`;
       })()
-    : "15.06.2023";
+    : "15 Iyun";
+
+  // Matnlarni 30 belgigacha cheklash va ularni to'g'ri uzish
+  const truncateText = (
+    text: string | undefined,
+    maxLength: number = 30
+  ): string => {
+    if (!text) return "";
+    return text.length > maxLength
+      ? text.substring(0, maxLength) + "..."
+      : text;
+  };
+
+  const formattedLocation = truncateText(location);
+  const formattedAdditionalInfo = truncateText(additionalInfo);
 
   switch (style) {
     case "floral-gold":
@@ -70,13 +84,13 @@ export default function WeddingTemplate({
                 <p className="text-sm text-gray-700">
                   {formattedDate} • {time || "7 :00 PM"}
                 </p>
-                <p className="text-sm text-gray-700 uppercase">
-                  {location || "Asr To'yxonasi"}
+                <p className="text-sm text-gray-700 uppercase invitation-text">
+                  {formattedLocation || "Asr To'yxonasi"}
                 </p>
               </div>
-              {additionalInfo && (
-                <p className="text-xs text-gray-600 italic mt-4">
-                  {additionalInfo}
+              {formattedAdditionalInfo && (
+                <p className="text-xs text-gray-600 italic mt-4 invitation-text">
+                  {formattedAdditionalInfo}
                 </p>
               )}
               <p className="text-xs text-gray-600 italic mt-4">
@@ -122,10 +136,9 @@ export default function WeddingTemplate({
               </h2>
 
               <p className="text-sm text-gray-700 mb-2">
-                joyfully invite you to their
+                Siz Taklif Qilindingiz!
               </p>
-              <p className="text-xl font-serif mb-6">wedding</p>
-
+              <p className="text-xl font-serif mb-6">To'y</p>
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <div>
                   <p className="text-sm font-medium text-gray-700">
@@ -143,14 +156,14 @@ export default function WeddingTemplate({
                 </div>
               </div>
 
-              {additionalInfo && (
-                <p className="text-xs text-gray-600 italic mt-4">
-                  {additionalInfo}
+              {formattedAdditionalInfo && (
+                <p className="text-xs text-gray-600 italic mt-4 invitation-text">
+                  {formattedAdditionalInfo}
                 </p>
               )}
 
               <p className="text-xs text-gray-600 italic mt-4">
-                reception to follow
+                Albatta Keling!
               </p>
             </div>
           </div>
@@ -219,9 +232,9 @@ export default function WeddingTemplate({
                 {location ? "" : "771 Pierce Drive, Mason"}
               </p>
 
-              {additionalInfo && (
-                <p className="text-xs text-amber-700 italic mt-2">
-                  {additionalInfo}
+              {formattedAdditionalInfo && (
+                <p className="text-xs text-amber-700 italic mt-2 invitation-text">
+                  {formattedAdditionalInfo}
                 </p>
               )}
             </div>
@@ -317,14 +330,14 @@ export default function WeddingTemplate({
                 {location ? "" : "cancun, mexico"}
               </p>
 
-              {additionalInfo && (
-                <p className="text-xs text-gray-600 italic mt-4">
-                  {additionalInfo}
+              {formattedAdditionalInfo && (
+                <p className="text-xs text-gray-600 italic mt-4 invitation-text">
+                  {formattedAdditionalInfo}
                 </p>
               )}
 
               <p className="text-xs text-gray-600 italic mt-4">
-                reception to follow ceremony
+                Albatta Keling!
               </p>
             </div>
           </div>
@@ -427,9 +440,9 @@ export default function WeddingTemplate({
                 {location ? "" : "san diego, ca"}
               </p>
 
-              {additionalInfo && (
-                <p className="text-xs text-olive-600 italic mt-4">
-                  {additionalInfo}
+              {formattedAdditionalInfo && (
+                <p className="text-xs text-olive-600 italic mt-4 invitation-text">
+                  {formattedAdditionalInfo}
                 </p>
               )}
             </div>

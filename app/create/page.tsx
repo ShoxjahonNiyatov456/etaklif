@@ -311,7 +311,7 @@ export default function CreatePage() {
                             name="firstName"
                             value={formData.firstName}
                             onChange={handleInputChange}
-                            placeholder="Kelin to'liq ismini kiriting"
+                            placeholder="Mubina Bonu"
                             className="form-input"
                             maxLength={20}
                           />
@@ -329,7 +329,7 @@ export default function CreatePage() {
                             name="secondName"
                             value={formData.secondName}
                             onChange={handleInputChange}
-                            placeholder="Kuyov to'liq ismini kiriting"
+                            placeholder="Sardorjon"
                             className="form-input"
                             maxLength={20}
                           />
@@ -513,7 +513,7 @@ export default function CreatePage() {
                         name="location"
                         value={formData.location}
                         onChange={handleInputChange}
-                        placeholder="Marosim o'tkaziladigan joy"
+                        placeholder="Asr To'yxonasi"
                         className={`form-input ${
                           countWords(formData.location) >= 30
                             ? "border-red-500"
@@ -548,7 +548,7 @@ export default function CreatePage() {
                         value={formData.additionalInfo}
                         onChange={handleInputChange}
                         rows={3}
-                        placeholder="Qo'shimcha ma'lumotlar"
+                        placeholder="Yoshlarizmi Baxtli Bo'lishsin"
                         className={`form-input ${
                           countWords(formData.additionalInfo) >= 30
                             ? "border-red-500"

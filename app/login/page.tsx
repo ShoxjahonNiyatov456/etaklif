@@ -40,11 +40,10 @@ export default function LoginPage() {
       if (result.success && result.user) {
         router.push('/');
       } else {
-        setError(result.error || "Login yoki parol xato");
+        setError(result.error || "Noto'g'ri ma'lumotlar kiritildi");
       }
     } catch (err) {
-      setError("Login yoki parol xato");
-      console.error(err);
+      setError("Noto'g'ri ma'lumotlar kiritildi");
     } finally {
       setIsLoading(false);
     }
@@ -135,8 +134,8 @@ export default function LoginPage() {
                   </div>
 
                   {error && (
-                    <div className="p-3 bg-red-50 border border-red-200 text-red-600 rounded-md text-sm">
-                      {error}
+                    <div className="p-4 bg-red-50 border border-red-200 rounded-md text-sm flex items-center justify-center">
+                      <span className="text-red-600">{error}</span>
                     </div>
                   )}
 
@@ -178,11 +177,10 @@ export default function LoginPage() {
                           if (result.success && result.user) {
                             router.push('/');
                           } else {
-                            setError(result.error || "Google orqali kirishda xatolik");
+                            setError(result.error || "Kirishda xatolik yuz berdi");
                           }
                         } catch (err) {
-                          setError("Google orqali kirishda xatolik");
-                          console.error(err);
+                          setError("Kirishda xatolik yuz berdi");
                         } finally {
                           setIsLoading(false);
                         }
@@ -220,11 +218,10 @@ export default function LoginPage() {
                           if (result.success && result.user) {
                             router.push('/');
                           } else {
-                            setError(result.error || "Facebook orqali kirishda xatolik");
+                            setError(result.error || "Kirishda xatolik yuz berdi");
                           }
                         } catch (err) {
-                          setError("Facebook orqali kirishda xatolik");
-                          console.error(err);
+                          setError("Kirishda xatolik yuz berdi");
                         } finally {
                           setIsLoading(false);
                         }

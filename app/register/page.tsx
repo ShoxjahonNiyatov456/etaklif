@@ -32,27 +32,24 @@ export default function RegisterPage() {
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
+    e.preventDefault();
+    setIsLoading(true);
     setError("");
 
     try {
       const result = await registerUser(formData.name, formData.email, formData.password);
-      
+
       if (result.success && result.user) {
-        // Ro'yxatdan o'tish muvaffaqiyatli bo'ldi
-        router.push('/login?registered=true');
+        router.push('/');
       } else {
-        // Xatolik yuz berdi
         setError(result.error || "Ro'yxatdan o'tishda xatolik yuz berdi");
       }
     } catch (err) {
       setError("Ro'yxatdan o'tishda xatolik yuz berdi");
-      console.error(err);
     } finally {
       setIsLoading(false);
     }
-  }
+  };
 
   const fadeIn = {
     hidden: { opacity: 0, y: 20 },

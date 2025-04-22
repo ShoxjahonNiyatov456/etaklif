@@ -19,15 +19,24 @@ export default function FuneralTemplate({
 }: FuneralTemplateProps) {
   const formattedDate = date
     ? (() => {
-      const dateObj = new Date(date);
-      const day = dateObj.getDate();
-      const month = dateObj.getMonth() + 1;
-      const formattedMonth = month < 10 ? `0${month}` : month;
-      let year = dateObj.getFullYear();
-      if (year > 2100) year = 2100;
-      return `${day}.${formattedMonth}.${year}`;
-    })()
-    : "15.06.2023"
+        const dateObj = new Date(date);
+        const day = dateObj.getDate();
+        const months = [
+          "Yanvar", "Fevral", "Mart", "Aprel", "May", "Iyun",
+          "Iyul", "Avgust", "Sentyabr", "Oktyabr", "Noyabr", "Dekabr"
+        ];
+        const month = months[dateObj.getMonth()];
+        // Faqat kun va oy qaytarish, yil yo'q
+        return `${day} ${month}`;
+      })()
+    : "15 Iyun";
+
+  // Matnlarni 30 belgigacha cheklash va ularni to'g'ri uzish
+  const truncateText = (text: string | undefined, maxLength: number = 30): string => {
+    if (!text) return "";
+    return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
+  };
+
   switch (style) {
     case "traditional":
       return (
@@ -35,15 +44,15 @@ export default function FuneralTemplate({
           <div className="text-center">
             <h2 className="text-xl font-serif text-gray-800 mb-6">El oshi marosimi</h2>
             <p className="text-2xl font-serif text-gray-900 mb-6">Marhumning xotirasiga</p>
-            <h3 className="text-3xl font-serif text-gray-900 mb-8">{firstName || "Akbar Karimov"}</h3>
+            <h3 className="text-3xl font-serif text-gray-900 mb-8">{truncateText(firstName) || "Akbar Karimov"}</h3>
 
             <div className="border-t border-b border-gray-300 py-4 mb-6">
-              <p className="text-gray-700 mb-1">{formattedDate}</p>
-              <p className="text-gray-700 mb-1">Soat: {time || "12:00"}</p>
-              <p className="text-gray-700">{location || "Toshkent, Yunusobod tumani"}</p>
+              <p className="text-gray-700 mb-1">{truncateText(formattedDate)}</p>
+              <p className="text-gray-700 mb-1">Soat: {truncateText(time) || "12:00"}</p>
+              <p className="text-gray-700">{truncateText(location) || "Toshkent, Yunusobod tumani"}</p>
             </div>
 
-            {additionalInfo && <p className="text-sm text-gray-600 mt-4">{additionalInfo}</p>}
+            {truncateText(additionalInfo) && <p className="text-sm text-gray-600 mt-4">{truncateText(additionalInfo)}</p>}
           </div>
         </div>
       )
@@ -56,15 +65,15 @@ export default function FuneralTemplate({
             <div className="w-16 h-1 bg-blue-200 mx-auto mb-6"></div>
 
             <p className="text-lg text-blue-800 mb-2">Marhumning xotirasiga</p>
-            <h3 className="text-3xl font-serif text-blue-900 mb-6">{firstName || "Akbar Karimov"}</h3>
+            <h3 className="text-3xl font-serif text-blue-900 mb-6">{truncateText(firstName) || "Akbar Karimov"}</h3>
 
             <div className="bg-white bg-opacity-70 p-4 rounded-lg mb-6">
-              <p className="text-gray-700 mb-1">{formattedDate}</p>
-              <p className="text-gray-700 mb-1">Soat: {time || "12:00"}</p>
-              <p className="text-gray-700">{location || "Toshkent, Yunusobod tumani"}</p>
+              <p className="text-gray-700 mb-1">{truncateText(formattedDate)}</p>
+              <p className="text-gray-700 mb-1">Soat: {truncateText(time) || "12:00"}</p>
+              <p className="text-gray-700">{truncateText(location) || "Toshkent, Yunusobod tumani"}</p>
             </div>
 
-            {additionalInfo && <p className="text-sm text-blue-700 mt-4">{additionalInfo}</p>}
+            {truncateText(additionalInfo) && <p className="text-sm text-blue-700 mt-4">{truncateText(additionalInfo)}</p>}
           </div>
         </div>
       )
@@ -92,17 +101,17 @@ export default function FuneralTemplate({
               )}
             </div>
 
-            <h3 className="text-3xl font-serif text-gray-900 mb-4">{firstName || "Akbar Karimov"}</h3>
+            <h3 className="text-3xl font-serif text-gray-900 mb-4">{truncateText(firstName) || "Akbar Karimov"}</h3>
 
             <div className="w-16 h-1 bg-gray-400 mx-auto mb-6"></div>
 
             <div className="bg-white p-4 rounded-lg shadow-sm mb-4">
-              <p className="text-gray-700 mb-1">{formattedDate}</p>
-              <p className="text-gray-700 mb-1">Soat: {time || "12:00"}</p>
-              <p className="text-gray-700">{location || "Toshkent, Yunusobod tumani"}</p>
+              <p className="text-gray-700 mb-1">{truncateText(formattedDate)}</p>
+              <p className="text-gray-700 mb-1">Soat: {truncateText(time) || "12:00"}</p>
+              <p className="text-gray-700">{truncateText(location) || "Toshkent, Yunusobod tumani"}</p>
             </div>
 
-            {additionalInfo && <p className="text-sm text-gray-600 mt-4">{additionalInfo}</p>}
+            {truncateText(additionalInfo) && <p className="text-sm text-gray-600 mt-4">{truncateText(additionalInfo)}</p>}
           </div>
         </div>
       )
@@ -137,15 +146,15 @@ export default function FuneralTemplate({
               )}
             </div>
 
-            <h3 className="text-3xl font-serif text-gray-900 mb-2">{firstName || "Akbar Karimov"}</h3>
+            <h3 className="text-3xl font-serif text-gray-900 mb-2">{truncateText(firstName) || "Akbar Karimov"}</h3>
 
             <div className="border-t border-b border-gray-200 py-4 my-6">
-              <p className="text-gray-700 mb-1">{formattedDate}</p>
-              <p className="text-gray-700 mb-1">Soat: {time || "12:00"}</p>
-              <p className="text-gray-700">{location || "Toshkent, Yunusobod tumani"}</p>
+              <p className="text-gray-700 mb-1">{truncateText(formattedDate)}</p>
+              <p className="text-gray-700 mb-1">Soat: {truncateText(time) || "12:00"}</p>
+              <p className="text-gray-700">{truncateText(location) || "Toshkent, Yunusobod tumani"}</p>
             </div>
 
-            {additionalInfo && <p className="text-sm text-gray-600 mt-4">{additionalInfo}</p>}
+            {truncateText(additionalInfo) && <p className="text-sm text-gray-600 mt-4">{truncateText(additionalInfo)}</p>}
 
             <p className="text-sm text-gray-500 mt-6">Marhumning xotirasiga bag'ishlangan marosim</p>
           </div>
@@ -179,15 +188,15 @@ export default function FuneralTemplate({
             </div>
 
             <h2 className="text-xl font-serif text-green-900 mb-2">El oshi marosimi</h2>
-            <h3 className="text-3xl font-serif text-green-900 mb-4">{firstName || "Akbar Karimov"}</h3>
+            <h3 className="text-3xl font-serif text-green-900 mb-4">{truncateText(firstName) || "Akbar Karimov"}</h3>
 
             <div className="bg-white bg-opacity-70 p-4 rounded-lg mb-4 border border-green-200">
-              <p className="text-gray-700 mb-1">{formattedDate}</p>
-              <p className="text-gray-700 mb-1">Soat: {time || "12:00"}</p>
-              <p className="text-gray-700">{location || "Toshkent, Yunusobod tumani"}</p>
+              <p className="text-gray-700 mb-1">{truncateText(formattedDate)}</p>
+              <p className="text-gray-700 mb-1">Soat: {truncateText(time) || "12:00"}</p>
+              <p className="text-gray-700">{truncateText(location) || "Toshkent, Yunusobod tumani"}</p>
             </div>
 
-            {additionalInfo && <p className="text-sm text-green-800 mt-4">{additionalInfo}</p>}
+            {truncateText(additionalInfo) && <p className="text-sm text-green-800 mt-4">{truncateText(additionalInfo)}</p>}
 
             <div className="text-green-800 mt-6 text-sm">
               <p>إِنَّا لِلَّٰهِ وَإِنَّا إِلَيْهِ رَاجِعُونَ</p>

@@ -9,6 +9,12 @@ interface JubileeTemplateProps {
   uploadedImage?: string;
 }
 
+// Matnlarni 30 belgigacha cheklash va ularni to'g'ri uzish
+const truncateText = (text: string | undefined, maxLength: number = 30): string => {
+  if (!text) return "";
+  return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
+};
+
 export default function JubileeTemplate({
   style,
   firstName,
@@ -21,17 +27,17 @@ export default function JubileeTemplate({
 }: JubileeTemplateProps) {
   const formattedDate = date
     ? (() => {
-      const dateObj = new Date(date);
-      const day = dateObj.getDate();
-      const month = dateObj.getMonth() + 1;
-      // Agar oy raqami bir xonali bo'lsa, oldiga 0 qo'shamiz
-      const formattedMonth = month < 10 ? `0${month}` : month;
-      // Yil 2100 dan katta bo'lmasligi kerak
-      let year = dateObj.getFullYear();
-      if (year > 2100) year = 2100;
-      return `${day}.${formattedMonth}.${year}`;
-    })()
-    : "15.06.2023";
+        const dateObj = new Date(date);
+        const day = dateObj.getDate();
+        const months = [
+          "Yanvar", "Fevral", "Mart", "Aprel", "May", "Iyun",
+          "Iyul", "Avgust", "Sentyabr", "Oktyabr", "Noyabr", "Dekabr"
+        ];
+        const month = months[dateObj.getMonth()];
+        // Faqat kun va oy qaytarish, yil yo'q
+        return `${day} ${month}`;
+      })()
+    : "15 Iyun";
 
   switch (style) {
     case "celebration":

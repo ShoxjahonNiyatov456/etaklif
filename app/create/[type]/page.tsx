@@ -4,7 +4,15 @@ import type React from "react";
 
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { Upload, X, ArrowLeft, Check, ArrowRight, Trash, Share2 } from "lucide-react";
+import {
+  Upload,
+  X,
+  ArrowLeft,
+  Check,
+  ArrowRight,
+  Trash,
+  Share2,
+} from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import WeddingTemplate from "@/components/invitation-templates/WeddingTemplate";
 import BirthdayTemplate from "@/components/invitation-templates/BirthdayTemplate";
@@ -14,6 +22,13 @@ import EngagementTemplate from "@/components/invitation-templates/EngagementTemp
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ShareModal } from "@/components/ui/share-modal";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function CreatePage() {
   const params = useParams();
@@ -34,17 +49,76 @@ export default function CreatePage() {
     age: "",
     parents: "",
   });
+  const [dateError, setDateError] = useState<string | null>(null);
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Kun va oy uchun alohida state'lar
+  const [day, setDay] = useState<string>("");
+  const [month, setMonth] = useState<string>("");
+  const [hours, setHours] = useState<string>("");
+  const [minutes, setMinutes] = useState<string>("");
+
+  // O'zbek tilidagi oylar ro'yxati
+  const months = [
+    { value: "0", label: "Yanvar" },
+    { value: "1", label: "Fevral" },
+    { value: "2", label: "Mart" },
+    { value: "3", label: "Aprel" },
+    { value: "4", label: "May" },
+    { value: "5", label: "Iyun" },
+    { value: "6", label: "Iyul" },
+    { value: "7", label: "Avgust" },
+    { value: "8", label: "Sentyabr" },
+    { value: "9", label: "Oktyabr" },
+    { value: "10", label: "Noyabr" },
+    { value: "11", label: "Dekabr" },
+  ];
+
+  // Kunlarni generatsiya qilish (1-31)
+  const days = Array.from({ length: 31 }, (_, i) => ({
+    value: String(i + 1),
+    label: String(i + 1),
+  }));
+
+  // Soatlarni generatsiya qilish (0-23)
+  const hoursOptions = Array.from({ length: 24 }, (_, i) => ({
+    value: String(i).padStart(2, "0"),
+    label: String(i).padStart(2, "0"),
+  }));
+
+  const minutesOptions = [
+    { value: "00", label: "00" },
+    { value: "15", label: "15" },
+    { value: "30", label: "30" },
+    { value: "45", label: "45" },
+  ];
+
+  const getTomorrowDate = () => {
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    return tomorrow.toISOString().split("T")[0];
+  };
+
+  const validateDate = (dateStr: string): boolean => {
+    if (!dateStr) return false;
+
+    const selectedDate = new Date(dateStr);
+    const tomorrow = new Date(getTomorrowDate());
+
+    tomorrow.setHours(0, 0, 0, 0);
+    selectedDate.setHours(0, 0, 0, 0);
+
+    return selectedDate >= tomorrow;
+  };
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
 
-    // Validation rules for different fields
     if (name === "firstName" || name === "secondName" || name === "parents") {
-      // Limit to 20 characters for names
       if (value.length > 20) {
         return;
       }
@@ -53,25 +127,15 @@ export default function CreatePage() {
         return;
       }
     } else if (name === "date") {
-      const yearPart = value.split("-")[0];
-      if (yearPart && yearPart.length > 4) {
-        return;
+      if (value && !validateDate(value)) {
+        setDateError("Sana ertangi kundan boshlab bo'lishi kerak");
+      } else {
+        setDateError(null);
       }
     } else if (name === "location" || name === "additionalInfo") {
-      const newWords = value
-        .trim()
-        .split(/\s+/)
-        .filter((word) => word.length > 0);
-      if (newWords.length > 30) {
-        const limitedText = newWords.slice(0, 30).join(" ");
+      if (value.length > 30) {
+        const limitedText = value.substring(0, 30);
         setFormData((prev) => ({ ...prev, [name]: limitedText }));
-        return;
-      }
-      const currentWords = formData[name as keyof typeof formData]
-        .trim()
-        .split(/\s+/)
-        .filter((word) => word.length > 0);
-      if (currentWords.length >= 30 && value.length > formData[name as keyof typeof formData].length) {
         return;
       }
     }
@@ -86,9 +150,10 @@ export default function CreatePage() {
     if (type === "birthday" || type === "jubilee") requiredFields.push("age");
     if (type === "engagement") requiredFields.push("parents");
 
-    const isComplete = requiredFields.every(
-      (field) => formData[field as keyof typeof formData]?.trim() !== ""
-    );
+    const isComplete =
+      requiredFields.every(
+        (field) => formData[field as keyof typeof formData]?.trim() !== ""
+      ) && !dateError;
 
     setFormCompleted(isComplete);
   };
@@ -309,6 +374,28 @@ export default function CreatePage() {
     checkFormCompletion();
   }, [formData, type]);
 
+  // Sana va vaqt o'zgarishlarini kuzatish
+  useEffect(() => {
+    if (day && month) {
+      const currentYear = new Date().getFullYear();
+      const dateObj = new Date(currentYear, parseInt(month), parseInt(day));
+      setFormData((prev) => ({
+        ...prev,
+        date: dateObj.toISOString().split("T")[0],
+      }));
+      setDateError(null);
+    }
+  }, [day, month]);
+
+  useEffect(() => {
+    if (hours && minutes) {
+      setFormData((prev) => ({
+        ...prev,
+        time: `${hours}:${minutes}`,
+      }));
+    }
+  }, [hours, minutes]);
+
   const fadeIn = {
     hidden: { opacity: 0, y: 20 },
     visible: {
@@ -342,9 +429,48 @@ export default function CreatePage() {
   const handleProceedToPreview = () => {
     setActiveTab("preview");
   };
+
+  const formatDateForDisplay = (dateString: string) => {
+    const months = [
+      "Yanvar",
+      "Fevral",
+      "Mart",
+      "Aprel",
+      "May",
+      "Iyun",
+      "Iyul",
+      "Avgust",
+      "Sentyabr",
+      "Oktyabr",
+      "Noyabr",
+      "Dekabr",
+    ];
+
+    if (!dateString) return "";
+
+    try {
+      const date = new Date(dateString);
+      const day = date.getDate();
+      const month = months[date.getMonth()];
+      return `${day} ${month}`;
+    } catch (error) {
+      return dateString;
+    }
+  };
+
   const renderTemplatePreview = () => {
     const templateStyle =
       templates.find((t) => t.id === selectedTemplate)?.style || "";
+
+    const wrappedLocationText = formData.location
+      ? formData.location.substring(0, 30)
+      : "";
+
+    const wrappedAdditionalInfo = formData.additionalInfo
+      ? formData.additionalInfo.substring(0, 30)
+      : "";
+
+    const formattedDate = formatDateForDisplay(formData.date);
 
     switch (type) {
       case "wedding":
@@ -353,10 +479,10 @@ export default function CreatePage() {
             style={templateStyle}
             firstName={formData.firstName}
             secondName={formData.secondName}
-            date={formData.date}
+            date={formattedDate}
             time={formData.time}
-            location={formData.location}
-            additionalInfo={formData.additionalInfo}
+            location={wrappedLocationText}
+            additionalInfo={wrappedAdditionalInfo}
           />
         );
       case "birthday":
@@ -365,10 +491,10 @@ export default function CreatePage() {
             style={templateStyle}
             firstName={formData.firstName}
             age={formData.age}
-            date={formData.date}
+            date={formattedDate}
             time={formData.time}
-            location={formData.location}
-            additionalInfo={formData.additionalInfo}
+            location={wrappedLocationText}
+            additionalInfo={wrappedAdditionalInfo}
             uploadedImage={uploadedImage || undefined}
           />
         );
@@ -377,10 +503,10 @@ export default function CreatePage() {
           <FuneralTemplate
             style={templateStyle}
             firstName={formData.firstName}
-            date={formData.date}
+            date={formattedDate}
             time={formData.time}
-            location={formData.location}
-            additionalInfo={formData.additionalInfo}
+            location={wrappedLocationText}
+            additionalInfo={wrappedAdditionalInfo}
             uploadedImage={uploadedImage || undefined}
           />
         );
@@ -390,10 +516,10 @@ export default function CreatePage() {
             style={templateStyle}
             firstName={formData.firstName}
             age={formData.age}
-            date={formData.date}
+            date={formattedDate}
             time={formData.time}
-            location={formData.location}
-            additionalInfo={formData.additionalInfo}
+            location={wrappedLocationText}
+            additionalInfo={wrappedAdditionalInfo}
             uploadedImage={uploadedImage || undefined}
           />
         );
@@ -403,10 +529,10 @@ export default function CreatePage() {
             style={templateStyle}
             firstName={formData.firstName}
             parents={formData.parents}
-            date={formData.date}
+            date={formattedDate}
             time={formData.time}
-            location={formData.location}
-            additionalInfo={formData.additionalInfo}
+            location={wrappedLocationText}
+            additionalInfo={wrappedAdditionalInfo}
             uploadedImage={uploadedImage || undefined}
           />
         );
@@ -418,10 +544,15 @@ export default function CreatePage() {
   const [paymentCompleted, setPaymentCompleted] = useState(false);
   const [shareableLink, setShareableLink] = useState("");
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [paymentProcessing, setPaymentProcessing] = useState(false);
 
-  const handlePayment = () => {
-    setTimeout(() => {
+  const handlePayment = async () => {
+    try {
+      setPaymentProcessing(true);
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+
       setPaymentCompleted(true);
+
       const invitationData = {
         firstName: formData.firstName,
         secondName: formData.secondName,
@@ -431,26 +562,113 @@ export default function CreatePage() {
         additionalInfo: formData.additionalInfo,
         age: formData.age,
         parents: formData.parents,
-        uploadedImage: uploadedImage
+        uploadedImage: uploadedImage,
       };
-      import("@/app/services/share").then(({ generateShareableLink }) => {
-        const link = generateShareableLink(type as string, selectedTemplate, invitationData);
-        setShareableLink(link);
-      });
-    }, 1500);
+
+      const { generateShareableLink } = await import("@/app/services/share");
+      const link = await generateShareableLink(
+        type as string,
+        selectedTemplate,
+        invitationData
+      );
+
+      setShareableLink(link);
+    } catch (error) {
+      console.error("To'lov jarayonida xatolik:", error);
+      alert(
+        "To'lov jarayonida xatolik yuz berdi. Iltimos, qaytadan urinib ko'ring."
+      );
+    } finally {
+      setPaymentProcessing(false);
+    }
   };
 
   const handleShareInvitation = () => {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       setIsShareModalOpen(true);
     }
   };
 
-  const countWords = (text: string): number => {
-    return text
-      .trim()
-      .split(/\s+/)
-      .filter((word) => word.length > 0).length;
+  const countChars = (text: string): number => {
+    return text.length;
+  };
+
+  // Render sana qismi
+  const renderDateSection = () => {
+    return (
+      <div>
+        <label className="form-label">Sana</label>
+        <div className="grid grid-cols-2 gap-2">
+          <Select value={day} onValueChange={(value) => setDay(value)}>
+            <SelectTrigger className="w-full border border-slate-300 ">
+              <SelectValue
+                placeholder="Kun"
+                className="text-slate-300 bg-white"
+              />
+            </SelectTrigger>
+            <SelectContent>
+              {days.map((d) => (
+                <SelectItem key={d.value} value={d.value}>
+                  {d.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <Select value={month} onValueChange={(value) => setMonth(value)}>
+            <SelectTrigger className="w-full border border-slate-300">
+              <SelectValue placeholder="Oy" />
+            </SelectTrigger>
+            <SelectContent>
+              {months.map((m) => (
+                <SelectItem key={m.value} value={m.value}>
+                  {m.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        {dateError && (
+          <div className="text-red-500 text-xs mt-1">{dateError}</div>
+        )}
+      </div>
+    );
+  };
+
+  // Render vaqt qismi
+  const renderTimeSection = () => {
+    return (
+      <div>
+        <label className="form-label">Vaqt</label>
+        <div className="grid grid-cols-2 gap-2">
+          <Select value={hours} onValueChange={(value) => setHours(value)}>
+            <SelectTrigger className="w-full border border-slate-300">
+              <SelectValue placeholder="Soat" />
+            </SelectTrigger>
+            <SelectContent>
+              {hoursOptions.map((h) => (
+                <SelectItem key={h.value} value={h.value}>
+                  {h.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <Select value={minutes} onValueChange={(value) => setMinutes(value)}>
+            <SelectTrigger className="w-full border border-slate-300">
+              <SelectValue placeholder="Daqiqa" />
+            </SelectTrigger>
+            <SelectContent>
+              {minutesOptions.map((m) => (
+                <SelectItem key={m.value} value={m.value}>
+                  {m.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -517,7 +735,7 @@ export default function CreatePage() {
                         name="firstName"
                         value={formData.firstName}
                         onChange={handleInputChange}
-                        placeholder="Kelin to'liq ismini kiriting"
+                        placeholder="Mubina Bonu"
                         className="form-input"
                         maxLength={20}
                       />
@@ -535,7 +753,7 @@ export default function CreatePage() {
                         name="secondName"
                         value={formData.secondName}
                         onChange={handleInputChange}
-                        placeholder="Kuyov to'liq ismini kiriting"
+                        placeholder="Sardorjon"
                         className="form-input"
                         maxLength={20}
                       />
@@ -687,33 +905,12 @@ export default function CreatePage() {
                     </div>
                   </>
                 )}
-                <div>
-                  <label htmlFor="date" className="form-label">
-                    Sana
-                  </label>
-                  <input
-                    type="date"
-                    id="date"
-                    name="date"
-                    value={formData.date}
-                    onChange={handleInputChange}
-                    className="form-input"
-                  />
-                </div>
 
-                <div>
-                  <label htmlFor="time" className="form-label">
-                    Vaqt
-                  </label>
-                  <input
-                    type="time"
-                    id="time"
-                    name="time"
-                    value={formData.time}
-                    onChange={handleInputChange}
-                    className="form-input"
-                  />
-                </div>
+                {/* Sana navbar ko'rinishida */}
+                {renderDateSection()}
+
+                {/* Vaqt navbar ko'rinishida */}
+                {renderTimeSection()}
 
                 <div>
                   <label htmlFor="location" className="form-label">
@@ -725,22 +922,25 @@ export default function CreatePage() {
                     name="location"
                     value={formData.location}
                     onChange={handleInputChange}
-                    placeholder="Marosim o'tkaziladigan joy"
-                    className={`form-input ${countWords(formData.location) >= 30
-                      ? "border-red-500"
-                      : ""
-                      }`}
+                    placeholder="Asr To'yxonasi"
+                    className={`form-input ${
+                      countChars(formData.location) >= 30
+                        ? "border-red-500"
+                        : ""
+                    }`}
+                    maxLength={30}
                   />
                   <div className="text-xs flex justify-between mt-1">
                     <span
-                      className={`${countWords(formData.location) >= 30
-                        ? "text-red-500 font-medium"
-                        : "text-gray-500"
-                        }`}
+                      className={`${
+                        countChars(formData.location) >= 30
+                          ? "text-red-500 font-medium"
+                          : "text-gray-500"
+                      }`}
                     >
-                      {`${countWords(formData.location)}/30 so'z`}
+                      {`${countChars(formData.location)}/30 belgi`}
                     </span>
-                    {countWords(formData.location) >= 30 && (
+                    {countChars(formData.location) >= 30 && (
                       <span className="text-red-500 font-medium">
                         Maksimal limit!
                       </span>
@@ -758,22 +958,25 @@ export default function CreatePage() {
                     value={formData.additionalInfo}
                     onChange={handleInputChange}
                     rows={3}
-                    placeholder="Qo'shimcha ma'lumotlar"
-                    className={`form-input ${countWords(formData.additionalInfo) >= 30
-                      ? "border-red-500"
-                      : ""
-                      }`}
+                    placeholder="Yoshlarizmi Baxtli Bo'lishsin"
+                    className={`form-input ${
+                      countChars(formData.additionalInfo) >= 30
+                        ? "border-red-500"
+                        : ""
+                    }`}
+                    maxLength={30}
                   ></textarea>
                   <div className="text-xs flex justify-between mt-1">
                     <span
-                      className={`${countWords(formData.additionalInfo) >= 30
-                        ? "text-red-500 font-medium"
-                        : "text-gray-500"
-                        }`}
+                      className={`${
+                        countChars(formData.additionalInfo) >= 30
+                          ? "text-red-500 font-medium"
+                          : "text-gray-500"
+                      }`}
                     >
-                      {`${countWords(formData.additionalInfo)}/30 so'z`}
+                      {`${countChars(formData.additionalInfo)}/30 belgi`}
                     </span>
-                    {countWords(formData.additionalInfo) >= 30 && (
+                    {countChars(formData.additionalInfo) >= 30 && (
                       <span className="text-red-500 font-medium">
                         Maksimal limit!
                       </span>
@@ -800,10 +1003,11 @@ export default function CreatePage() {
                     {templates.map((template) => (
                       <div
                         key={template.id}
-                        className={`border rounded-lg p-1 cursor-pointer transition-colors relative ${selectedTemplate === template.id
-                          ? "border-primary-500 shadow-md"
-                          : "border-gray-200 hover:border-primary-300"
-                          }`}
+                        className={`border rounded-lg p-1 cursor-pointer transition-colors relative ${
+                          selectedTemplate === template.id
+                            ? "border-primary-500 shadow-md"
+                            : "border-gray-200 hover:border-primary-300"
+                        }`}
                         onClick={() => handleTemplateSelect(template.id)}
                       >
                         <div className="h-14 w-full flex items-center justify-center">
@@ -889,25 +1093,36 @@ export default function CreatePage() {
           <TabsContent value="preview" className="mt-0">
             <div className="bg-white p-5 rounded-lg shadow-sm border border-gray-200">
               <div className="mb-6">
-                <h2 className="text-xl font-semibold mb-4">Taklifnoma ko'rinishi</h2>
-                <div className="max-w-md mx-auto">{renderTemplatePreview()}</div>
+                <h2 className="text-xl font-semibold mb-4">
+                  Taklifnoma ko'rinishi
+                </h2>
+                <div className="max-w-md mx-auto">
+                  {renderTemplatePreview()}
+                </div>
               </div>
 
               <div className="mt-8 border-t pt-6">
                 {!paymentCompleted ? (
                   <div className="space-y-4">
                     <div className="p-4 bg-amber-50 border border-amber-200 rounded-md">
-                      <h3 className="text-lg font-semibold mb-2 text-amber-800">To'lov qilinmagan</h3>
+                      <h3 className="text-lg font-semibold mb-2 text-amber-800">
+                        To'lov qilinmagan
+                      </h3>
                       <p className="text-amber-700 text-sm mb-2">
-                        Taklifnomani to'liq ko'rish va yuklab olish uchun to'lovni
-                        amalga oshiring.
+                        Taklifnomani to'liq ko'rish va yuklab olish uchun
+                        to'lovni amalga oshiring.
                       </p>
                       <Button
                         className="w-full"
                         onClick={handlePayment}
-                        disabled={paymentCompleted}
+                        disabled={paymentCompleted || paymentProcessing}
                       >
-                        {paymentCompleted ? (
+                        {paymentProcessing ? (
+                          <span className="flex items-center">
+                            <div className="animate-spin h-4 w-4 border-2 border-white rounded-full border-t-transparent mr-2"></div>
+                            To'lov jarayoni...
+                          </span>
+                        ) : paymentCompleted ? (
                           <span className="flex items-center">
                             <Check className="h-4 w-4 mr-2" /> To'lov qilindi
                           </span>
@@ -920,13 +1135,18 @@ export default function CreatePage() {
                 ) : (
                   <div className="space-y-4">
                     <div className="p-4 bg-green-50 border border-green-200 rounded-md">
-                      <h3 className="text-lg font-semibold mb-2 text-green-800">To'lov muvaffaqiyatli amalga oshirildi</h3>
+                      <h3 className="text-lg font-semibold mb-2 text-green-800">
+                        To'lov muvaffaqiyatli amalga oshirildi
+                      </h3>
                       <p className="text-green-700 text-sm mb-4">
-                        Endi taklifnomangizni do'stlaringiz va yaqinlaringiz bilan ulashishingiz mumkin.
+                        Endi taklifnomangizni do'stlaringiz va yaqinlaringiz
+                        bilan ulashishingiz mumkin.
                       </p>
 
                       <div className="mb-4">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Taklifnoma havolasi</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Taklifnoma havolasi
+                        </label>
                         <Button
                           onClick={handleShareInvitation}
                           className="w-full"
@@ -937,7 +1157,8 @@ export default function CreatePage() {
                       </div>
 
                       <p className="text-xs text-gray-500">
-                        Ulashish tugmasini bosganingizda havola nusxalanadi va ulashish uchun oyna ochiladi
+                        Ulashish tugmasini bosganingizda havola nusxalanadi va
+                        ulashish uchun oyna ochiladi
                       </p>
                     </div>
                   </div>
@@ -951,7 +1172,11 @@ export default function CreatePage() {
       <ShareModal
         isOpen={isShareModalOpen}
         onClose={() => setIsShareModalOpen(false)}
-        url={typeof window !== 'undefined' ? window.location.origin + shareableLink : shareableLink}
+        url={
+          typeof window !== "undefined"
+            ? window.location.origin + shareableLink
+            : shareableLink
+        }
         title={`${getInvitationTypeName()} taklifnomasi`}
       />
     </div>

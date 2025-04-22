@@ -1,8 +1,7 @@
 import type React from "react";
 import { Inter, Dancing_Script, Playfair_Display } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/header";
-import Footer from "@/components/footer";
+import ClientWrapper from "@/components/client-wrapper";
 
 // Configure the fonts
 const inter = Inter({
@@ -38,11 +37,7 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${dancingScript.variable} ${playfairDisplay.variable} font-sans`}
       >
-        <div className="flex min-h-screen flex-col">
-          <Header />
-          <main className="flex-1">{children}</main>
-          <Footer />
-        </div>
+        <ClientWrapper>{children}</ClientWrapper>
       </body>
     </html>
   );

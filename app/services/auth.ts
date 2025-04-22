@@ -41,18 +41,9 @@ export const registerUser = async (name: string, email: string, password: string
       user
     };
   } catch (error: any) {
-    console.error('Ro\'yxatdan o\'tishda xatolik:', error);
-    let errorMessage = "Ro'yxatdan o'tishda xatolik yuz berdi";
-    
-    if (error.code === 'auth/email-already-in-use') {
-      errorMessage = "Bu email allaqachon ro'yxatdan o'tgan";
-    } else if (error.code === 'auth/weak-password') {
-      errorMessage = "Parol juda oddiy";
-    }
-    
     return {
       success: false,
-      error: errorMessage
+      error: "Ro'yxatdan o'tishda xatolik yuz berdi"
     };
   }
 };
@@ -72,18 +63,10 @@ export const loginUser = async (email: string, password: string): Promise<{
       user
     };
   } catch (error: any) {
-    console.error('Kirishda xatolik:', error);
-    let errorMessage = "Kirish vaqtida xatolik yuz berdi";
-    
-    if (error.code === 'auth/user-not-found') {
-      errorMessage = "Bu email ro'yxatdan o'tmagan";
-    } else if (error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
-      errorMessage = "Login yoki parol xato";
-    }
-    
+    // Xatolik xabarni qaytarish
     return {
       success: false,
-      error: errorMessage
+      error: "Noto'g'ri ma'lumotlar kiritildi"
     };
   }
 };
@@ -104,10 +87,9 @@ export const loginWithGoogle = async (): Promise<{
       user
     };
   } catch (error: any) {
-    console.error('Google orqali kirishda xatolik:', error);
     return {
       success: false,
-      error: "Google orqali kirishda xatolik yuz berdi"
+      error: "Kirishda xatolik yuz berdi"
     };
   }
 };
@@ -128,10 +110,9 @@ export const loginWithFacebook = async (): Promise<{
       user
     };
   } catch (error: any) {
-    console.error('Facebook orqali kirishda xatolik:', error);
     return {
       success: false,
-      error: "Facebook orqali kirishda xatolik yuz berdi"
+      error: "Kirishda xatolik yuz berdi"
     };
   }
 };
@@ -142,7 +123,6 @@ export const logoutUser = async (): Promise<boolean> => {
     await signOut(auth);
     return true;
   } catch (error) {
-    console.error('Tizimdan chiqishda xatolik:', error);
     return false;
   }
 };

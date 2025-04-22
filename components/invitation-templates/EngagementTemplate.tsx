@@ -21,17 +21,23 @@ export default function EngagementTemplate({
 }: EngagementTemplateProps) {
   const formattedDate = date
     ? (() => {
-      const dateObj = new Date(date);
-      const day = dateObj.getDate();
-      const month = dateObj.getMonth() + 1;
-      // Agar oy raqami bir xonali bo'lsa, oldiga 0 qo'shamiz
-      const formattedMonth = month < 10 ? `0${month}` : month;
-      // Yil 2100 dan katta bo'lmasligi kerak
-      let year = dateObj.getFullYear();
-      if (year > 2100) year = 2100;
-      return `${day}.${formattedMonth}.${year}`;
-    })()
-    : "15.06.2023"
+        const dateObj = new Date(date);
+        const day = dateObj.getDate();
+        const months = [
+          "Yanvar", "Fevral", "Mart", "Aprel", "May", "Iyun",
+          "Iyul", "Avgust", "Sentyabr", "Oktyabr", "Noyabr", "Dekabr"
+        ];
+        const month = months[dateObj.getMonth()];
+        // Faqat kun va oy qaytarish, yil yo'q
+        return `${day} ${month}`;
+      })()
+    : "15 Iyun";
+
+  // Matnlarni 30 belgigacha cheklash va ularni to'g'ri uzish
+  const truncateText = (text: string | undefined, maxLength: number = 30): string => {
+    if (!text) return "";
+    return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
+  };
 
   switch (style) {
     case "romantic":
@@ -43,16 +49,16 @@ export default function EngagementTemplate({
           <div className="text-center">
             <h2 className="text-2xl font-serif text-rose-700 mb-4">Qiz uzatish marosimi</h2>
 
-            <h3 className="text-3xl font-serif text-rose-800 mb-2">{firstName || "Madina Karimova"}</h3>
-            {parents && <p className="text-lg text-rose-600 mb-6">Ota-onasi: {parents}</p>}
+            <h3 className="text-3xl font-serif text-rose-800 mb-2">{truncateText(firstName) || "Madina Karimova"}</h3>
+            {parents && <p className="text-lg text-rose-600 mb-6">Ota-onasi: {truncateText(parents)}</p>}
 
             <div className="bg-white bg-opacity-70 p-4 rounded-lg mb-4">
-              <p className="text-gray-700 mb-1">{formattedDate}</p>
-              <p className="text-gray-700 mb-1">Soat: {time || "17:00"}</p>
-              <p className="text-gray-700">{location || "Toshkent, Yunusobod tumani"}</p>
+              <p className="text-gray-700 mb-1">{truncateText(formattedDate)}</p>
+              <p className="text-gray-700 mb-1">Soat: {truncateText(time) || "17:00"}</p>
+              <p className="text-gray-700">{truncateText(location) || "Toshkent, Yunusobod tumani"}</p>
             </div>
 
-            {additionalInfo && <p className="text-sm text-rose-600 mt-4">{additionalInfo}</p>}
+            {truncateText(additionalInfo) && <p className="text-sm text-rose-600 mt-4">{truncateText(additionalInfo)}</p>}
 
             <div className="mt-4 flex justify-center">
               <span className="inline-block text-2xl">💝</span>
@@ -67,16 +73,16 @@ export default function EngagementTemplate({
           <div className="text-center">
             <h2 className="text-2xl font-serif text-red-800 mb-4">Qiz uzatish marosimi</h2>
 
-            <h3 className="text-3xl font-serif text-red-900 mb-2">{firstName || "Madina Karimova"}</h3>
-            {parents && <p className="text-lg text-red-700 mb-6">Ota-onasi: {parents}</p>}
+            <h3 className="text-3xl font-serif text-red-900 mb-2">{truncateText(firstName) || "Madina Karimova"}</h3>
+            {parents && <p className="text-lg text-red-700 mb-6">Ota-onasi: {truncateText(parents)}</p>}
 
             <div className="border-t border-b border-red-200 py-4 mb-6">
-              <p className="text-gray-700 mb-1">{formattedDate}</p>
-              <p className="text-gray-700 mb-1">Soat: {time || "17:00"}</p>
-              <p className="text-gray-700">{location || "Toshkent, Yunusobod tumani"}</p>
+              <p className="text-gray-700 mb-1">{truncateText(formattedDate)}</p>
+              <p className="text-gray-700 mb-1">Soat: {truncateText(time) || "17:00"}</p>
+              <p className="text-gray-700">{truncateText(location) || "Toshkent, Yunusobod tumani"}</p>
             </div>
 
-            {additionalInfo && <p className="text-sm text-red-700 mt-4">{additionalInfo}</p>}
+            {truncateText(additionalInfo) && <p className="text-sm text-red-700 mt-4">{truncateText(additionalInfo)}</p>}
 
             <p className="text-sm text-red-600 mt-4">Tashrif buyurishingizni so'raymiz</p>
           </div>
@@ -104,18 +110,18 @@ export default function EngagementTemplate({
               )}
             </div>
 
-            <h3 className="text-3xl font-serif text-rose-800 mb-2">{firstName || "Madina Karimova"}</h3>
-            {parents && <p className="text-lg text-rose-600 mb-4">Ota-onasi: {parents}</p>}
+            <h3 className="text-3xl font-serif text-rose-800 mb-2">{truncateText(firstName) || "Madina Karimova"}</h3>
+            {parents && <p className="text-lg text-rose-600 mb-4">Ota-onasi: {truncateText(parents)}</p>}
 
             <div className="w-16 h-1 bg-rose-200 mx-auto mb-6"></div>
 
             <div className="bg-white p-4 rounded-lg shadow-sm mb-4 border border-rose-100">
-              <p className="text-gray-700 mb-1">{formattedDate}</p>
-              <p className="text-gray-700 mb-1">Soat: {time || "17:00"}</p>
-              <p className="text-gray-700">{location || "Toshkent, Yunusobod tumani"}</p>
+              <p className="text-gray-700 mb-1">{truncateText(formattedDate)}</p>
+              <p className="text-gray-700 mb-1">Soat: {truncateText(time) || "17:00"}</p>
+              <p className="text-gray-700">{truncateText(location) || "Toshkent, Yunusobod tumani"}</p>
             </div>
 
-            {additionalInfo && <p className="text-sm text-rose-600 mt-4">{additionalInfo}</p>}
+            {truncateText(additionalInfo) && <p className="text-sm text-rose-600 mt-4">{truncateText(additionalInfo)}</p>}
 
             <p className="text-sm text-rose-500 mt-4">Tashrif buyurishingizni so'raymiz</p>
           </div>
@@ -148,8 +154,8 @@ export default function EngagementTemplate({
               )}
             </div>
 
-            <h3 className="text-3xl font-sans text-purple-800 mb-2">{firstName || "Madina Karimova"}</h3>
-            {parents && <p className="text-lg text-purple-600 mb-4">Ota-onasi: {parents}</p>}
+            <h3 className="text-3xl font-sans text-purple-800 mb-2">{truncateText(firstName) || "Madina Karimova"}</h3>
+            {parents && <p className="text-lg text-purple-600 mb-4">Ota-onasi: {truncateText(parents)}</p>}
 
             <div className="flex justify-center items-center mb-6">
               <div className="w-12 h-px bg-purple-300"></div>
@@ -158,12 +164,12 @@ export default function EngagementTemplate({
             </div>
 
             <div className="bg-white bg-opacity-80 p-4 rounded-lg shadow-sm mb-4">
-              <p className="text-gray-700 mb-1">{formattedDate}</p>
-              <p className="text-gray-700 mb-1">Soat: {time || "17:00"}</p>
-              <p className="text-gray-700">{location || "Toshkent, Yunusobod tumani"}</p>
+              <p className="text-gray-700 mb-1">{truncateText(formattedDate)}</p>
+              <p className="text-gray-700 mb-1">Soat: {truncateText(time) || "17:00"}</p>
+              <p className="text-gray-700">{truncateText(location) || "Toshkent, Yunusobod tumani"}</p>
             </div>
 
-            {additionalInfo && <p className="text-sm text-purple-600 mt-4">{additionalInfo}</p>}
+            {truncateText(additionalInfo) && <p className="text-sm text-purple-600 mt-4">{truncateText(additionalInfo)}</p>}
           </div>
         </div>
       )
@@ -199,16 +205,16 @@ export default function EngagementTemplate({
               )}
             </div>
 
-            <h3 className="text-3xl font-serif text-amber-900 mb-2">{firstName || "Madina Karimova"}</h3>
-            {parents && <p className="text-lg text-amber-700 mb-4">Ota-onasi: {parents}</p>}
+            <h3 className="text-3xl font-serif text-amber-900 mb-2">{truncateText(firstName) || "Madina Karimova"}</h3>
+            {parents && <p className="text-lg text-amber-700 mb-4">Ota-onasi: {truncateText(parents)}</p>}
 
             <div className="border-t border-b border-amber-200 py-4 my-4">
-              <p className="text-amber-800 mb-1">{formattedDate}</p>
-              <p className="text-amber-800 mb-1">Soat: {time || "17:00"}</p>
-              <p className="text-amber-800">{location || "Toshkent, Yunusobod tumani"}</p>
+              <p className="text-amber-800 mb-1">{truncateText(formattedDate)}</p>
+              <p className="text-amber-800 mb-1">Soat: {truncateText(time) || "17:00"}</p>
+              <p className="text-amber-800">{truncateText(location) || "Toshkent, Yunusobod tumani"}</p>
             </div>
 
-            {additionalInfo && <p className="text-sm text-amber-700 mt-4">{additionalInfo}</p>}
+            {truncateText(additionalInfo) && <p className="text-sm text-amber-700 mt-4">{truncateText(additionalInfo)}</p>}
 
             <p className="text-sm text-amber-600 mt-4">Tashrif buyurishingizni so'raymiz</p>
           </div>

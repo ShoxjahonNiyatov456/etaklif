@@ -24,15 +24,24 @@ export default function BirthdayTemplate({
     ? (() => {
         const dateObj = new Date(date);
         const day = dateObj.getDate();
-        const month = dateObj.getMonth() + 1;
-        // Agar oy raqami bir xonali bo'lsa, oldiga 0 qo'shamiz
-        const formattedMonth = month < 10 ? `0${month}` : month;
-        // Yil 2100 dan katta bo'lmasligi kerak
-        let year = dateObj.getFullYear();
-        if (year > 2100) year = 2100;
-        return `${day}.${formattedMonth}.${year}`;
+        const months = [
+          "Yanvar", "Fevral", "Mart", "Aprel", "May", "Iyun",
+          "Iyul", "Avgust", "Sentyabr", "Oktyabr", "Noyabr", "Dekabr"
+        ];
+        const month = months[dateObj.getMonth()];
+        // Faqat kun va oy qaytarish, yil yo'q
+        return `${day} ${month}`;
       })()
-    : "15.06.2023"
+    : "15 Iyun";
+
+  // Matnlarni 30 belgigacha cheklash va ularni to'g'ri uzish
+  const truncateText = (text: string | undefined, maxLength: number = 30): string => {
+    if (!text) return "";
+    return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
+  };
+
+  const formattedLocation = truncateText(location);
+  const formattedAdditionalInfo = truncateText(additionalInfo);
 
   // Get template based on style
   switch (style) {
@@ -51,10 +60,10 @@ export default function BirthdayTemplate({
           <div className="bg-white bg-opacity-70 p-4 rounded-lg mb-4">
             <p className="text-gray-700 mb-1">{formattedDate}</p>
             <p className="text-gray-700 mb-1">Soat: {time || "15:00"}</p>
-            <p className="text-gray-700">{location || "Toshkent, Yunusobod tumani"}</p>
+            <p className="text-gray-700 invitation-text">{formattedLocation || "Toshkent, Yunusobod tumani"}</p>
           </div>
 
-          {additionalInfo && <p className="text-sm text-purple-700 italic mt-4">{additionalInfo}</p>}
+          {formattedAdditionalInfo && <p className="text-sm text-purple-700 italic mt-4 invitation-text">{formattedAdditionalInfo}</p>}
 
           <div className="mt-4 flex justify-center space-x-2">
             {[...Array(5)].map((_, i) => (
@@ -78,10 +87,10 @@ export default function BirthdayTemplate({
             <div className="bg-white p-4 rounded-lg shadow-sm mb-4">
               <p className="text-gray-700 mb-1">{formattedDate}</p>
               <p className="text-gray-700 mb-1">Soat: {time || "15:00"}</p>
-              <p className="text-gray-700">{location || "Toshkent, Yunusobod tumani"}</p>
+              <p className="text-gray-700 invitation-text">{formattedLocation || "Toshkent, Yunusobod tumani"}</p>
             </div>
 
-            {additionalInfo && <p className="text-sm text-blue-600 mt-4">{additionalInfo}</p>}
+            {formattedAdditionalInfo && <p className="text-sm text-blue-600 mt-4 invitation-text">{formattedAdditionalInfo}</p>}
 
             <div className="mt-4 flex justify-center">
               {[...Array(3)].map((_, i) => (
@@ -103,7 +112,7 @@ export default function BirthdayTemplate({
             <p className="text-lg italic text-gray-700">cheers to more years!</p>
 
             <div className="mt-8">
-              {additionalInfo && <p className="text-sm text-gray-600 mt-4">{additionalInfo}</p>}
+              {formattedAdditionalInfo && <p className="text-sm text-gray-600 mt-4 invitation-text">{formattedAdditionalInfo}</p>}
             </div>
           </div>
 
@@ -132,8 +141,8 @@ export default function BirthdayTemplate({
             <div className="mt-8">
               <p className="text-gray-700 mb-1">{formattedDate}</p>
               <p className="text-gray-700 mb-1">Soat: {time || "15:00"}</p>
-              <p className="text-gray-700">{location || "Toshkent, Yunusobod tumani"}</p>
-              {additionalInfo && <p className="text-sm text-gray-600 mt-4">{additionalInfo}</p>}
+              <p className="text-gray-700 invitation-text">{formattedLocation || "Toshkent, Yunusobod tumani"}</p>
+              {formattedAdditionalInfo && <p className="text-sm text-gray-600 mt-4 invitation-text">{formattedAdditionalInfo}</p>}
             </div>
           </div>
 
@@ -189,7 +198,7 @@ export default function BirthdayTemplate({
           <div className="relative z-10 text-center mt-32">
             <h3 className="text-2xl font-cursive text-teal-700">Tug'ulgan Kuning Bilan!</h3>
             <p className="text-sm text-gray-700 mt-2">Kuningiz Quvonchga To'lsin {firstName || "Oliver"}</p>
-            <div className="mt-4">{additionalInfo && <p className="text-xs text-gray-600">{additionalInfo}</p>}</div>
+            <div className="mt-4">{formattedAdditionalInfo && <p className="text-xs text-gray-600 invitation-text">{formattedAdditionalInfo}</p>}</div>
           </div>
         </div>
       )
@@ -219,7 +228,7 @@ export default function BirthdayTemplate({
                 <p className="text-sm">
                   {firstName || "Aziza"}, {age || "7"} yoshga to'ldi!
                 </p>
-                {additionalInfo && <p className="text-xs mt-2">{additionalInfo}</p>}
+                {formattedAdditionalInfo && <p className="text-xs mt-2 invitation-text">{formattedAdditionalInfo}</p>}
               </div>
             </div>
           </div>
