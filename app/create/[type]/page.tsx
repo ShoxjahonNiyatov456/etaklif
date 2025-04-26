@@ -804,7 +804,7 @@ export default function CreatePage() {
                 {type === "funeral" && (
                   <div>
                     <label htmlFor="firstName" className="form-label">
-                      Marhumning ismi
+                      El oshi egasi ismi
                     </label>
                     <input
                       type="text"
@@ -812,7 +812,7 @@ export default function CreatePage() {
                       name="firstName"
                       value={formData.firstName}
                       onChange={handleInputChange}
-                      placeholder="Marhumning to'liq ismini kiriting"
+                      placeholder="El oshi egasining to'liq ismini kiriting"
                       className="form-input"
                       maxLength={20}
                     />

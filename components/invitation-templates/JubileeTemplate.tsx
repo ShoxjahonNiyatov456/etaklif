@@ -27,16 +27,16 @@ export default function JubileeTemplate({
 }: JubileeTemplateProps) {
   const formattedDate = date
     ? (() => {
-        const dateObj = new Date(date);
-        const day = dateObj.getDate();
-        const months = [
-          "Yanvar", "Fevral", "Mart", "Aprel", "May", "Iyun",
-          "Iyul", "Avgust", "Sentyabr", "Oktyabr", "Noyabr", "Dekabr"
-        ];
-        const month = months[dateObj.getMonth()];
-        // Faqat kun va oy qaytarish, yil yo'q
-        return `${day} ${month}`;
-      })()
+      const dateObj = new Date(date);
+      const day = dateObj.getDate();
+      const months = [
+        "Yanvar", "Fevral", "Mart", "Aprel", "May", "Iyun",
+        "Iyul", "Avgust", "Sentyabr", "Oktyabr", "Noyabr", "Dekabr"
+      ];
+      const month = months[dateObj.getMonth()];
+      // Faqat kun va oy qaytarish, yil yo'q
+      return `${day} ${month}`;
+    })()
     : "15 Iyun";
 
   switch (style) {
@@ -215,16 +215,18 @@ export default function JubileeTemplate({
     case "photo-frame":
       return (
         <div
-          className="relative bg-white p-8 rounded-lg shadow-lg"
-          style={{ minHeight: "550px" }}
+          className="relative bg-amber-50 p-8 rounded-lg shadow-lg"
+          style={{
+            minHeight: "550px"
+          }}
         >
-          <div className="mb-6 flex justify-center">
+          <div className="flex justify-center">
             {uploadedImage ? (
-              <div className="w-64 h-64 rounded-lg overflow-hidden mb-4 mx-auto border-2 border-amber-200 relative">
+              <div className="w-64 h-96 rounded-lg overflow-hidden mx-auto border-2 border-amber-200 relative">
                 <img
                   src={uploadedImage}
                   alt="Yuklangan rasm"
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover absolute z-10"
                 />
               </div>
             ) : (
@@ -242,7 +244,7 @@ export default function JubileeTemplate({
               {firstName || "JOHN & EVA"}
             </h2>
             <p className="text-lg uppercase tracking-wide text-gray-800 mb-4">
-              {age || "50"}Yosh
+              {age || "50"} Yosh
             </p>
 
             <p className="text-sm text-gray-700 mb-1">
@@ -260,14 +262,12 @@ export default function JubileeTemplate({
             <div
               className="absolute inset-0 bg-contain bg-no-repeat bg-center"
               style={{
-                backgroundImage: "url('/templates/jubilee-photo-frame.jpg')",
                 opacity: 0.3,
               }}
             ></div>
           </div>
         </div>
       );
-
     default:
       return (
         <div

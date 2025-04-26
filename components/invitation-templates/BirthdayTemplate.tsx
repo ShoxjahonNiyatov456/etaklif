@@ -19,22 +19,19 @@ export default function BirthdayTemplate({
   additionalInfo,
   uploadedImage,
 }: BirthdayTemplateProps) {
-  // Format date if provided
   const formattedDate = date
     ? (() => {
-        const dateObj = new Date(date);
-        const day = dateObj.getDate();
-        const months = [
-          "Yanvar", "Fevral", "Mart", "Aprel", "May", "Iyun",
-          "Iyul", "Avgust", "Sentyabr", "Oktyabr", "Noyabr", "Dekabr"
-        ];
-        const month = months[dateObj.getMonth()];
-        // Faqat kun va oy qaytarish, yil yo'q
-        return `${day} ${month}`;
-      })()
+      const dateObj = new Date(date);
+      const day = dateObj.getDate();
+      const months = [
+        "Yanvar", "Fevral", "Mart", "Aprel", "May", "Iyun",
+        "Iyul", "Avgust", "Sentyabr", "Oktyabr", "Noyabr", "Dekabr"
+      ];
+      const month = months[dateObj.getMonth()];
+      // Faqat kun va oy qaytarish, yil yo'q
+      return `${day} ${month}`;
+    })()
     : "15 Iyun";
-
-  // Matnlarni 30 belgigacha cheklash va ularni to'g'ri uzish
   const truncateText = (text: string | undefined, maxLength: number = 30): string => {
     if (!text) return "";
     return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
@@ -42,8 +39,6 @@ export default function BirthdayTemplate({
 
   const formattedLocation = truncateText(location);
   const formattedAdditionalInfo = truncateText(additionalInfo);
-
-  // Get template based on style
   switch (style) {
     case "colorful":
       return (
@@ -105,135 +100,110 @@ export default function BirthdayTemplate({
 
     case "floral-frame":
       return (
-        <div className="relative bg-[#f9f3e9] p-8 rounded-lg shadow-lg" style={{ minHeight: "550px" }}>
-          <div className="relative z-10 text-center py-12">
-            <h2 className="text-3xl font-bold uppercase mb-2">Tug'ulgan Kuning Bilan</h2>
-            <h3 className="text-4xl font-cursive mb-6">{firstName || "Chelsea"}</h3>
-            <p className="text-lg italic text-gray-700">cheers to more years!</p>
-
-            <div className="mt-8">
-              {formattedAdditionalInfo && <p className="text-sm text-gray-600 mt-4 invitation-text">{formattedAdditionalInfo}</p>}
-            </div>
-          </div>
-
-          {/* Background image with floral frame */}
-          <div className="absolute inset-0 pointer-events-none">
-            <div
-              className="absolute inset-0 bg-contain bg-no-repeat bg-center"
-              style={{
-                backgroundImage: "url('/templates/birthday-floral-frame.png')",
-                opacity: 0.9,
-              }}
-            ></div>
+        <div className="relative bg-gradient-to-br from-pink-50 via-yellow-50 to-pink-100 p-10 rounded-3xl shadow-2xl overflow-hidden" style={{ minHeight: "600px" }}>
+          <div className="absolute top-5 left-5 text-5xl animate-bounce">🎈</div>
+          <div className="absolute top-10 right-8 text-5xl animate-bounce">🎈</div>
+          <div className="absolute bottom-8 left-12 text-6xl">🎂</div>
+          <div className="absolute bottom-5 right-10 text-4xl">✨</div>
+          <div className="relative z-10 text-center py-16">
+            <h2 className="text-4xl font-extrabold text-pink-700 uppercase mb-4 drop-shadow-lg">Tug‘ilgan Kuning Bilan</h2>
+            <h3 className="text-5xl font-cursive text-yellow-600 mb-6">{firstName || "Chelsea"}</h3>
+            <p className="text-lg italic text-gray-700 mb-8">Bu Yillarni Ko‘pini Ko‘r!</p>
+            {formattedAdditionalInfo && (
+              <p className="text-base text-gray-600 mt-6 bg-white/70 p-4 rounded-lg shadow-md invitation-text">{formattedAdditionalInfo}</p>
+            )}
           </div>
         </div>
-      )
+      );
+
 
     case "butterfly":
       return (
-        <div className="relative bg-white p-8 rounded-lg shadow-lg" style={{ minHeight: "550px" }}>
-          <div className="relative z-10 text-center pt-64 pb-8">
-            <h2 className="text-3xl font-cursive text-gray-700 mb-4">Tug'ulgan Kuning Bilan</h2>
+        <div className="relative bg-gradient-to-b from-white via-purple-50 to-pink-50 p-8 rounded-3xl shadow-2xl overflow-hidden" style={{ minHeight: "600px" }}>
+          <div className="absolute top-10 left-8 text-4xl animate-fly">🦋</div>
+          <div className="absolute top-20 right-10 text-5xl animate-fly-slow">🦋</div>
+          <div className="absolute bottom-20 left-16 text-3xl animate-fly">🦋</div>
+          <div className="absolute bottom-8 right-14 text-4xl animate-fly-slow">🦋</div>
+          <div className="relative z-10 text-center pt-48 pb-8">
+            <h2 className="text-4xl font-cursive text-purple-700 mb-4 drop-shadow-md">Tug‘ilgan Kuning Bilan</h2>
             <p className="text-sm uppercase tracking-wide text-gray-600 max-w-xs mx-auto">
               Sizga go'zal kun va yana bir yil farovonlik va quvonch tilayman
             </p>
-
-            <div className="mt-8">
+            <div className="mt-10">
               <p className="text-gray-700 mb-1">{formattedDate}</p>
               <p className="text-gray-700 mb-1">Soat: {time || "15:00"}</p>
               <p className="text-gray-700 invitation-text">{formattedLocation || "Toshkent, Yunusobod tumani"}</p>
-              {formattedAdditionalInfo && <p className="text-sm text-gray-600 mt-4 invitation-text">{formattedAdditionalInfo}</p>}
+              {formattedAdditionalInfo && (
+                <p className="text-sm text-gray-600 mt-4 invitation-text">{formattedAdditionalInfo}</p>
+              )}
             </div>
           </div>
-
-          {/* Background image with butterflies */}
-          <div className="absolute inset-0 pointer-events-none">
-            <div
-              className="absolute inset-0 bg-contain bg-no-repeat bg-top"
-              style={{
-                backgroundImage: "url('/templates/birthday-butterfly.png')",
-                backgroundSize: "80%",
-                backgroundPosition: "center 20%",
-              }}
-            ></div>
-          </div>
         </div>
-      )
+      );
+
 
     case "kids-photo":
       return (
-        <div className="relative bg-white p-4 rounded-lg shadow-lg" style={{ minHeight: "550px" }}>
-          <div
-            className="absolute inset-0 bg-contain bg-no-repeat bg-center"
-            style={{
-              backgroundImage: "url('/templates/birthday-kids-photo.png')",
-              opacity: 0.95,
-            }}
-          ></div>
-
-          {/* Photo upload area */}
-          <div
-            className="relative z-10 flex justify-center items-center"
-            style={{ height: "180px", marginTop: "100px" }}
-          >
+        <div className="relative bg-gradient-to-br from-yellow-100 via-pink-100 to-purple-100 p-6 rounded-3xl shadow-2xl overflow-hidden" style={{ minHeight: "600px" }}>
+          <div className="absolute top-6 left-6 text-3xl animate-bounce">🎈</div>
+          <div className="absolute top-10 right-8 text-4xl animate-pulse">🎂</div>
+          <div className="absolute bottom-10 left-12 text-3xl animate-bounce">🎁</div>
+          <div className="absolute bottom-8 right-14 text-4xl animate-pulse">🎉</div>
+          <div className="relative z-10 flex justify-center items-center" style={{ height: "200px", marginTop: "80px" }}>
             {uploadedImage ? (
-              <div className="w-40 h-40 rounded-full overflow-hidden border-4 border-white relative">
-                <img 
-                  src={uploadedImage} 
-                  alt="Yuklangan rasm" 
+              <div className="w-44 h-44 rounded-full overflow-hidden border-8 border-white shadow-lg relative">
+                <img
+                  src={uploadedImage}
+                  alt="Yuklangan rasm"
                   className="w-full h-full object-cover"
                 />
               </div>
             ) : (
-              <div className="w-40 h-40 rounded-full bg-gray-200 border-4 border-white flex items-center justify-center">
-                <p className="text-gray-500 text-sm text-center">
-                  Rasm
-                  <br />
-                  yuklang
-                </p>
+              <div className="w-44 h-44 rounded-full bg-gray-200 border-8 border-white flex items-center justify-center shadow-lg">
+                <p className="text-gray-500 text-sm text-center">Rasm<br />yuklang</p>
               </div>
             )}
           </div>
-
-          <div className="relative z-10 text-center mt-32">
-            <h3 className="text-2xl font-cursive text-teal-700">Tug'ulgan Kuning Bilan!</h3>
-            <p className="text-sm text-gray-700 mt-2">Kuningiz Quvonchga To'lsin {firstName || "Oliver"}</p>
-            <div className="mt-4">{formattedAdditionalInfo && <p className="text-xs text-gray-600 invitation-text">{formattedAdditionalInfo}</p>}</div>
+          <div className="relative z-10 text-center mt-10">
+            <h3 className="text-4xl font-cursive text-pink-700 drop-shadow-md">Tug‘ulgan Kuning Bilan!</h3>
+            <p className="text-base text-gray-700 mt-3">
+              Quvonch, baxt va mehr bilan to‘la bo‘lsin, {firstName || "Oliver"}!
+            </p>
+            <div className="mt-6">
+              {formattedAdditionalInfo && (
+                <p className="text-sm text-gray-600 invitation-text">{formattedAdditionalInfo}</p>
+              )}
+            </div>
           </div>
         </div>
-      )
+      );
+
 
     case "unicorn":
       return (
-        <div className="relative bg-[#7d3b5a] p-8 rounded-lg shadow-lg" style={{ minHeight: "550px" }}>
-          <div
-            className="absolute inset-0 bg-contain bg-no-repeat bg-center"
-            style={{
-              backgroundImage: "url('/templates/birthday-unicorn.png')",
-              opacity: 0.95,
-            }}
-          ></div>
-
-          <div className="relative z-10 text-center pt-64">
-            <div className="text-white max-w-xs mx-auto mt-16">
-              <p className="mb-1">Among</p>
-              <p className="mb-1">the moon and stars</p>
-              <p className="mb-1">the unicorns may see</p>
-              <p className="mb-1">a love too big</p>
-              <p className="mb-4">for the world to hold...</p>
-
-              <p className="font-cursive text-xl">the love of you from me</p>
-
-              <div className="mt-8">
-                <p className="text-sm">
-                  {firstName || "Aziza"}, {age || "7"} yoshga to'ldi!
-                </p>
-                {formattedAdditionalInfo && <p className="text-xs mt-2 invitation-text">{formattedAdditionalInfo}</p>}
+        <div className="relative bg-gradient-to-br from-pink-300 via-purple-300 to-blue-300 p-8 rounded-3xl shadow-2xl overflow-hidden" style={{ minHeight: "600px" }}>
+          <div className="absolute top-4 left-6 text-4xl animate-bounce">🦄</div>
+          <div className="absolute top-12 right-8 text-3xl animate-pulse">🌈</div>
+          <div className="absolute bottom-12 left-10 text-4xl animate-bounce">⭐</div>
+          <div className="absolute bottom-8 right-12 text-3xl animate-pulse">✨</div>
+          <div className="relative z-10 text-center pt-40">
+            <div className="text-white max-w-md mx-auto px-4">
+              <p className="mb-2 text-lg font-light">Oy va yulduzlar orasida,</p>
+              <p className="mb-2 text-lg font-light">Sehrli otlar ko‘radi,</p>
+              <p className="mb-2 text-lg font-light">Dunyo sig‘dira olmaydigan,</p>
+              <p className="mb-6 text-lg font-light">cheksiz sevgini...</p>
+              <p className="font-cursive text-3xl text-yellow-200 drop-shadow-lg">Men seni shunday sevaman!</p>
+              <div className="mt-10 text-pink-100">
+                <p className="text-lg font-semibold">{firstName || "Aziza"}, {age || "7"} yoshga to‘ldi! 🎉</p>
+                {formattedAdditionalInfo && (
+                  <p className="text-sm mt-4 invitation-text">{formattedAdditionalInfo}</p>
+                )}
               </div>
             </div>
           </div>
         </div>
-      )
+      );
+
 
     default:
       return (

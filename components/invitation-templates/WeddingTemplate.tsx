@@ -19,16 +19,16 @@ export default function WeddingTemplate({
 }: WeddingTemplateProps) {
   const formattedDate = date
     ? (() => {
-        const dateObj = new Date(date);
-        const day = dateObj.getDate();
-        const months = [
-          "Yanvar", "Fevral", "Mart", "Aprel", "May", "Iyun",
-          "Iyul", "Avgust", "Sentyabr", "Oktyabr", "Noyabr", "Dekabr"
-        ];
-        const month = months[dateObj.getMonth()];
-        // Faqat kun va oy qaytarish, yil yo'q
-        return `${day} ${month}`;
-      })()
+      const dateObj = new Date(date);
+      const day = dateObj.getDate();
+      const months = [
+        "Yanvar", "Fevral", "Mart", "Aprel", "May", "Iyun",
+        "Iyul", "Avgust", "Sentyabr", "Oktyabr", "Noyabr", "Dekabr"
+      ];
+      const month = months[dateObj.getMonth()];
+      // Faqat kun va oy qaytarish, yil yo'q
+      return `${day} ${month}`;
+    })()
     : "15 Iyun";
 
   // Matnlarni 30 belgigacha cheklash va ularni to'g'ri uzish
@@ -82,9 +82,9 @@ export default function WeddingTemplate({
               </h2>
               <div className="space-y-1 mb-4">
                 <p className="text-sm text-gray-700">
-                  {formattedDate} • {time || "7 :00 PM"}
+                  Soat: {time || "7 :00 PM"}
                 </p>
-                <p className="text-sm text-gray-700 uppercase invitation-text">
+                <p className="text-sm text-gray-700 first-letter:uppercase invitation-text">
                   {formattedLocation || "Asr To'yxonasi"}
                 </p>
               </div>
@@ -140,12 +140,7 @@ export default function WeddingTemplate({
               </p>
               <p className="text-xl font-serif mb-6">To'y</p>
               <div className="grid grid-cols-2 gap-4 mb-4">
-                <div>
-                  <p className="text-sm font-medium text-gray-700">
-                    {formattedDate || "Sunday"}
-                  </p>
-                  <p className="text-sm text-gray-700">{time || "AT 2 PM"}</p>
-                </div>
+                <p className="text-sm text-gray-700">{time || "AT 2 PM"}</p>
                 <div>
                   <p className="text-sm font-medium text-gray-700">
                     {location || "Chapel"}
@@ -207,10 +202,8 @@ export default function WeddingTemplate({
               </div>
             </div>
 
-            {/* Content */}
             <div className="relative z-10 py-10">
               <p className="text-sm text-amber-700 mb-1">Ikki yosh</p>
-
               <h2 className="text-3xl font-serif tracking-wide uppercase mb-1 text-amber-700">
                 {firstName || "ALEXIS"}
               </h2>
@@ -222,16 +215,14 @@ export default function WeddingTemplate({
                 ning to'yiga taklif qilindingiz
               </p>
               <p className="text-lg font-medium text-amber-700 mb-4">
-                {formattedDate || "JUNE | 22 | 2PM"}
+                {time || "JUNE | 22 | 2PM"}
               </p>
-
               <p className="text-sm text-amber-700">
                 {location || "First Church Sanctuary"}
               </p>
               <p className="text-sm text-amber-700 mb-4">
                 {location ? "" : "771 Pierce Drive, Mason"}
               </p>
-
               {formattedAdditionalInfo && (
                 <p className="text-xs text-amber-700 italic mt-2 invitation-text">
                   {formattedAdditionalInfo}
@@ -299,7 +290,7 @@ export default function WeddingTemplate({
 
             <div className="relative z-10 py-16">
               <p className="text-gray-700 mb-6 italic">
-                together with their families
+                oilangiz bilan birga
               </p>
 
               <h2 className="text-2xl font-serif tracking-wide uppercase mb-1 text-gray-900">
@@ -308,20 +299,19 @@ export default function WeddingTemplate({
               <h2 className="text-2xl font-serif tracking-wide uppercase mb-6 text-gray-900">
                 {secondName || "MARCUS WRIGHT"}
               </h2>
-
               <p className="text-sm text-gray-700 mb-4">
-                joyfully invite you to attend their
+                sizlarni ishtirok etishiga taklif qilamiz
               </p>
-              <p className="text-2xl font-cursive mb-6">Wedding Ceremony</p>
+              <p className="text-2xl font-cursive mb-6">To'y Seremoniyasi</p>
 
               <p className="text-lg font-medium text-gray-800 mb-4 tracking-widest">
                 {formattedDate
-                  ? formattedDate.replace(/\s/g, ".")
+                  ? formattedDate.replace(/\s/g, "-")
                   : "06.23.2025"}
               </p>
 
               <p className="text-sm text-gray-700 mb-1">
-                at {time || "half past five o'clock"} in the evening
+                Soat: {time || "half past five o'clock"}
               </p>
               <p className="text-sm text-gray-700 uppercase mb-1">
                 {location || "SUNRISES PARADISE RESORT"}

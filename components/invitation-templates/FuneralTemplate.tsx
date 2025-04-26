@@ -19,19 +19,17 @@ export default function FuneralTemplate({
 }: FuneralTemplateProps) {
   const formattedDate = date
     ? (() => {
-        const dateObj = new Date(date);
-        const day = dateObj.getDate();
-        const months = [
-          "Yanvar", "Fevral", "Mart", "Aprel", "May", "Iyun",
-          "Iyul", "Avgust", "Sentyabr", "Oktyabr", "Noyabr", "Dekabr"
-        ];
-        const month = months[dateObj.getMonth()];
-        // Faqat kun va oy qaytarish, yil yo'q
-        return `${day} ${month}`;
-      })()
+      const dateObj = new Date(date);
+      const day = dateObj.getDate();
+      const months = [
+        "Yanvar", "Fevral", "Mart", "Aprel", "May", "Iyun",
+        "Iyul", "Avgust", "Sentyabr", "Oktyabr", "Noyabr", "Dekabr"
+      ];
+      const month = months[dateObj.getMonth()];
+      // Faqat kun va oy qaytarish, yil yo'q
+      return `${day} ${month}`;
+    })()
     : "15 Iyun";
-
-  // Matnlarni 30 belgigacha cheklash va ularni to'g'ri uzish
   const truncateText = (text: string | undefined, maxLength: number = 30): string => {
     if (!text) return "";
     return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
@@ -40,126 +38,133 @@ export default function FuneralTemplate({
   switch (style) {
     case "traditional":
       return (
-        <div className="bg-gray-50 p-8 rounded-lg shadow-lg border border-gray-300" style={{ minHeight: "500px" }}>
-          <div className="text-center">
-            <h2 className="text-xl font-serif text-gray-800 mb-6">El oshi marosimi</h2>
-            <p className="text-2xl font-serif text-gray-900 mb-6">Marhumning xotirasiga</p>
-            <h3 className="text-3xl font-serif text-gray-900 mb-8">{truncateText(firstName) || "Akbar Karimov"}</h3>
-
-            <div className="border-t border-b border-gray-300 py-4 mb-6">
-              <p className="text-gray-700 mb-1">{truncateText(formattedDate)}</p>
-              <p className="text-gray-700 mb-1">Soat: {truncateText(time) || "12:00"}</p>
-              <p className="text-gray-700">{truncateText(location) || "Toshkent, Yunusobod tumani"}</p>
-            </div>
-
-            {truncateText(additionalInfo) && <p className="text-sm text-gray-600 mt-4">{truncateText(additionalInfo)}</p>}
+        <div className="relative bg-gradient-to-br from-amber-100 to-white p-10 rounded-xl shadow-xl border border-amber-300" style={{ minHeight: "500px" }}>
+          <div className="absolute top-0 left-0 right-0 flex justify-center mt-4">
+            <div className="bg-amber-400 text-white text-xs font-bold px-4 py-1 rounded-full shadow">EL OSHI</div>
           </div>
+          <div className="text-center relative z-10 mt-10">
+            <h2 className="text-2xl font-serif text-gray-800 mb-4">Hurmatli yurtdoshlar!</h2>
+            <p className="text-lg text-gray-700 mb-6">Sizni el oshi marosimiga taklif qilamiz</p>
+            <h3 className="text-3xl font-cursive text-amber-700 mb-6">{truncateText(firstName) || "Akbar Karimov"}</h3>
+            <div className="border-t border-b border-amber-300 py-4 mb-6">
+              <p className="text-gray-700 font-medium mb-1">{truncateText(formattedDate)}</p>
+              <p className="text-gray-700 font-medium mb-1">Soat: {truncateText(time) || "12:00"}</p>
+              <p className="text-gray-700 font-medium">{truncateText(location) || "Toshkent, Yunusobod tumani"}</p>
+            </div>
+            {truncateText(additionalInfo) && (
+              <p className="text-sm text-gray-600 italic mt-4">{truncateText(additionalInfo)}</p>
+            )}
+          </div>
+          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-amber-400 text-xs">Savobga niyat qilindi</div>
         </div>
       )
-
     case "calm":
       return (
-        <div className="bg-blue-50 p-8 rounded-lg shadow-lg" style={{ minHeight: "500px" }}>
-          <div className="text-center">
-            <h2 className="text-xl font-serif text-blue-900 mb-4">El oshi marosimi</h2>
-            <div className="w-16 h-1 bg-blue-200 mx-auto mb-6"></div>
+        <div className="relative bg-gradient-to-br from-blue-50 to-white p-10 rounded-xl shadow-xl border border-blue-200" style={{ minHeight: "500px" }}>
+          <div className="absolute top-0 left-0 right-0 flex justify-center mt-4">
+            <div className="bg-blue-400 text-white text-xs font-bold px-4 py-1 rounded-full shadow">EL OSHI</div>
+          </div>
 
-            <p className="text-lg text-blue-800 mb-2">Marhumning xotirasiga</p>
-            <h3 className="text-3xl font-serif text-blue-900 mb-6">{truncateText(firstName) || "Akbar Karimov"}</h3>
+          <div className="text-center relative z-10 mt-10">
+            <h2 className="text-2xl font-serif text-blue-800 mb-4">Aziz yurtdoshlar!</h2>
+            <p className="text-lg text-blue-700 mb-6">Sizni el oshi marosimiga taklif etamiz</p>
 
-            <div className="bg-white bg-opacity-70 p-4 rounded-lg mb-6">
-              <p className="text-gray-700 mb-1">{truncateText(formattedDate)}</p>
-              <p className="text-gray-700 mb-1">Soat: {truncateText(time) || "12:00"}</p>
-              <p className="text-gray-700">{truncateText(location) || "Toshkent, Yunusobod tumani"}</p>
+            <h3 className="text-3xl font-cursive text-blue-900 mb-6">{truncateText(firstName) || "Akbar Karimov"}</h3>
+
+            <div className="bg-white bg-opacity-80 p-6 rounded-lg shadow mb-6">
+              <p className="text-blue-800 font-medium mb-2">{truncateText(formattedDate)}</p>
+              <p className="text-blue-800 font-medium mb-2">Soat: {truncateText(time) || "12:00"}</p>
+              <p className="text-blue-800 font-medium">{truncateText(location) || "Toshkent, Yunusobod tumani"}</p>
             </div>
 
-            {truncateText(additionalInfo) && <p className="text-sm text-blue-700 mt-4">{truncateText(additionalInfo)}</p>}
+            {truncateText(additionalInfo) && (
+              <p className="text-sm text-blue-600 italic mt-4">{truncateText(additionalInfo)}</p>
+            )}
           </div>
+
+          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-blue-400 text-xs">Savobga niyat qilindi</div>
         </div>
       )
 
     case "photo-memorial":
       return (
-        <div className="bg-gray-100 p-8 rounded-lg shadow-lg" style={{ minHeight: "550px" }}>
-          <div className="text-center">
-            <h2 className="text-xl font-serif text-gray-800 mb-4">El oshi marosimi</h2>
+        <div className="relative bg-gradient-to-b from-gray-100 to-white p-10 rounded-xl shadow-2xl border border-gray-300" style={{ minHeight: "550px" }}>
 
-            {/* Photo area */}
-            <div className="mb-6 flex justify-center">
+          <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-gray-400 text-white text-xs font-semibold px-4 py-1 rounded-full shadow">
+            EL OSHI
+          </div>
+
+          <div className="text-center relative z-10 mt-16">
+            <h2 className="text-2xl font-serif text-gray-700 mb-4">Marhum xotirasiga bag'ishlanadi</h2>
+
+            <div className="flex justify-center mb-6">
               {uploadedImage ? (
-                <div className="w-32 h-32 rounded-full border-4 border-gray-300 overflow-hidden relative">
+                <div className="w-36 h-36 rounded-full border-4 border-white shadow-lg overflow-hidden">
                   <img
                     src={uploadedImage}
-                    alt="Marhumning rasmi"
+                    alt="Marhum rasmi"
                     className="w-full h-full object-cover"
                   />
                 </div>
               ) : (
-                <div className="w-32 h-32 rounded-full border-4 border-gray-300 bg-gray-200 flex items-center justify-center">
-                  <p className="text-gray-500 text-sm">Rasm yuklang</p>
+                <div className="w-36 h-36 rounded-full border-4 border-white bg-gray-200 flex items-center justify-center shadow-lg">
+                  <p className="text-gray-400 text-sm">Rasm yuklang</p>
                 </div>
               )}
             </div>
 
-            <h3 className="text-3xl font-serif text-gray-900 mb-4">{truncateText(firstName) || "Akbar Karimov"}</h3>
+            <h3 className="text-3xl font-cursive text-gray-900 mb-2">{truncateText(firstName) || "Akbar Karimov"}</h3>
 
-            <div className="w-16 h-1 bg-gray-400 mx-auto mb-6"></div>
+            <div className="w-20 h-1 bg-gray-400 mx-auto mb-6 rounded"></div>
 
-            <div className="bg-white p-4 rounded-lg shadow-sm mb-4">
-              <p className="text-gray-700 mb-1">{truncateText(formattedDate)}</p>
-              <p className="text-gray-700 mb-1">Soat: {truncateText(time) || "12:00"}</p>
-              <p className="text-gray-700">{truncateText(location) || "Toshkent, Yunusobod tumani"}</p>
+            <div className="bg-white bg-opacity-80 p-6 rounded-lg shadow-md mb-6">
+              <p className="text-gray-700 font-medium mb-2">{truncateText(formattedDate)}</p>
+              <p className="text-gray-700 font-medium mb-2">Soat: {truncateText(time) || "12:00"}</p>
+              <p className="text-gray-700 font-medium">{truncateText(location) || "Toshkent, Yunusobod tumani"}</p>
             </div>
 
-            {truncateText(additionalInfo) && <p className="text-sm text-gray-600 mt-4">{truncateText(additionalInfo)}</p>}
+            {truncateText(additionalInfo) && (
+              <p className="text-sm text-gray-600 italic mt-4">{truncateText(additionalInfo)}</p>
+            )}
+          </div>
+
+          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-gray-400 text-xs">
+            Albatta Keling!
           </div>
         </div>
       )
-
     case "elegant-memorial":
       return (
-        <div className="bg-white p-8 rounded-lg shadow-lg border border-gray-200" style={{ minHeight: "550px" }}>
+        <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-200 max-w-3xl mx-auto" style={{ minHeight: "550px" }}>
           <div className="text-center">
-            <h2 className="text-xl font-serif text-gray-800 mb-4">El oshi marosimi</h2>
-
-            {/* Decorative elements */}
-            <div className="flex justify-center mb-6">
-              <div className="w-24 h-px bg-gray-400"></div>
-              <div className="w-2 h-2 rounded-full bg-gray-400 mx-2"></div>
-              <div className="w-24 h-px bg-gray-400"></div>
+            <div className="flex justify-center items-center mb-6">
+              <h2 className="text-2xl font-semibold text-gray-800 tracking-tight">El oshi marosimi</h2>
             </div>
-
-            {/* Photo area */}
-            <div className="mb-6 flex justify-center">
-              {uploadedImage ? (
-                <div className="w-40 h-40 border-2 border-gray-300 overflow-hidden relative">
+            {uploadedImage && (
+              <div className="mb-6 flex justify-center">
+                <div className="w-40 h-40 rounded-full overflow-hidden shadow-lg">
                   <img
                     src={uploadedImage}
-                    alt="Marhumning rasmi"
+                    alt="Marhum"
                     className="w-full h-full object-cover"
                   />
                 </div>
-              ) : (
-                <div className="w-40 h-40 border-2 border-gray-300 bg-gray-100 flex items-center justify-center">
-                  <p className="text-gray-500 text-sm">Rasm yuklang</p>
-                </div>
-              )}
-            </div>
-
+              </div>
+            )}
             <h3 className="text-3xl font-serif text-gray-900 mb-2">{truncateText(firstName) || "Akbar Karimov"}</h3>
-
-            <div className="border-t border-b border-gray-200 py-4 my-6">
-              <p className="text-gray-700 mb-1">{truncateText(formattedDate)}</p>
-              <p className="text-gray-700 mb-1">Soat: {truncateText(time) || "12:00"}</p>
-              <p className="text-gray-700">{truncateText(location) || "Toshkent, Yunusobod tumani"}</p>
+            <div className="text-sm text-gray-600 space-y-1 mb-6 leading-tight">
+              <p>{truncateText(formattedDate) || "2025-yil 5-may"}</p>
+              <p>Soat: {truncateText(time) || "12:00"}</p>
+              <p>{truncateText(location) || "Toshkent, Yunusobod tumani"}</p>
             </div>
-
-            {truncateText(additionalInfo) && <p className="text-sm text-gray-600 mt-4">{truncateText(additionalInfo)}</p>}
-
-            <p className="text-sm text-gray-500 mt-6">Marhumning xotirasiga bag'ishlangan marosim</p>
+            {truncateText(additionalInfo) && (
+              <p className="text-gray-500 text-sm leading-relaxed mt-4">
+                {truncateText(additionalInfo)}
+              </p>
+            )}
           </div>
         </div>
-      )
+      );
 
     case "islamic-memorial":
       return (
@@ -176,7 +181,7 @@ export default function FuneralTemplate({
                 <div className="w-36 h-36 rounded-lg border-2 border-green-700 overflow-hidden relative">
                   <img
                     src={uploadedImage}
-                    alt="Marhumning rasmi"
+                    alt="El oshi egasiningc rasmi"
                     className="w-full h-full object-cover"
                   />
                 </div>
