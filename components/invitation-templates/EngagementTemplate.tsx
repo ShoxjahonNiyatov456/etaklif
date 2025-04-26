@@ -21,19 +21,16 @@ export default function EngagementTemplate({
 }: EngagementTemplateProps) {
   const formattedDate = date
     ? (() => {
-        const dateObj = new Date(date);
-        const day = dateObj.getDate();
-        const months = [
-          "Yanvar", "Fevral", "Mart", "Aprel", "May", "Iyun",
-          "Iyul", "Avgust", "Sentyabr", "Oktyabr", "Noyabr", "Dekabr"
-        ];
-        const month = months[dateObj.getMonth()];
-        // Faqat kun va oy qaytarish, yil yo'q
-        return `${day} ${month}`;
-      })()
+      const dateObj = new Date(date);
+      const day = dateObj.getDate();
+      const months = [
+        "Yanvar", "Fevral", "Mart", "Aprel", "May", "Iyun",
+        "Iyul", "Avgust", "Sentyabr", "Oktyabr", "Noyabr", "Dekabr"
+      ];
+      const month = months[dateObj.getMonth()];
+      return `${day} ${month}`;
+    })()
     : "15 Iyun";
-
-  // Matnlarni 30 belgigacha cheklash va ularni to'g'ri uzish
   const truncateText = (text: string | undefined, maxLength: number = 30): string => {
     if (!text) return "";
     return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
@@ -48,25 +45,20 @@ export default function EngagementTemplate({
         >
           <div className="text-center">
             <h2 className="text-2xl font-serif text-rose-700 mb-4">Qiz uzatish marosimi</h2>
-
             <h3 className="text-3xl font-serif text-rose-800 mb-2">{truncateText(firstName) || "Madina Karimova"}</h3>
             {parents && <p className="text-lg text-rose-600 mb-6">Ota-onasi: {truncateText(parents)}</p>}
-
             <div className="bg-white bg-opacity-70 p-4 rounded-lg mb-4">
               <p className="text-gray-700 mb-1">{truncateText(formattedDate)}</p>
               <p className="text-gray-700 mb-1">Soat: {truncateText(time) || "17:00"}</p>
               <p className="text-gray-700">{truncateText(location) || "Toshkent, Yunusobod tumani"}</p>
             </div>
-
             {truncateText(additionalInfo) && <p className="text-sm text-rose-600 mt-4">{truncateText(additionalInfo)}</p>}
-
             <div className="mt-4 flex justify-center">
               <span className="inline-block text-2xl">💝</span>
             </div>
           </div>
         </div>
       )
-
     case "national":
       return (
         <div className="bg-red-50 p-8 rounded-lg shadow-lg border-2 border-red-300" style={{ minHeight: "500px" }}>
