@@ -9,8 +9,6 @@ import {
   X,
   ArrowLeft,
   Check,
-  ArrowRight,
-  Trash,
   Share2,
 } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
@@ -923,20 +921,18 @@ export default function CreatePage() {
                     value={formData.location}
                     onChange={handleInputChange}
                     placeholder="Asr To'yxonasi"
-                    className={`form-input ${
-                      countChars(formData.location) >= 30
-                        ? "border-red-500"
-                        : ""
-                    }`}
+                    className={`form-input ${countChars(formData.location) >= 30
+                      ? "border-red-500"
+                      : ""
+                      }`}
                     maxLength={30}
                   />
                   <div className="text-xs flex justify-between mt-1">
                     <span
-                      className={`${
-                        countChars(formData.location) >= 30
-                          ? "text-red-500 font-medium"
-                          : "text-gray-500"
-                      }`}
+                      className={`${countChars(formData.location) >= 30
+                        ? "text-red-500 font-medium"
+                        : "text-gray-500"
+                        }`}
                     >
                       {`${countChars(formData.location)}/30 belgi`}
                     </span>
@@ -959,20 +955,18 @@ export default function CreatePage() {
                     onChange={handleInputChange}
                     rows={3}
                     placeholder="Yoshlarizmi Baxtli Bo'lishsin"
-                    className={`form-input ${
-                      countChars(formData.additionalInfo) >= 30
-                        ? "border-red-500"
-                        : ""
-                    }`}
+                    className={`form-input ${countChars(formData.additionalInfo) >= 30
+                      ? "border-red-500"
+                      : ""
+                      }`}
                     maxLength={30}
                   ></textarea>
                   <div className="text-xs flex justify-between mt-1">
                     <span
-                      className={`${
-                        countChars(formData.additionalInfo) >= 30
-                          ? "text-red-500 font-medium"
-                          : "text-gray-500"
-                      }`}
+                      className={`${countChars(formData.additionalInfo) >= 30
+                        ? "text-red-500 font-medium"
+                        : "text-gray-500"
+                        }`}
                     >
                       {`${countChars(formData.additionalInfo)}/30 belgi`}
                     </span>
@@ -1003,11 +997,10 @@ export default function CreatePage() {
                     {templates.map((template) => (
                       <div
                         key={template.id}
-                        className={`border rounded-lg p-1 cursor-pointer transition-colors relative ${
-                          selectedTemplate === template.id
-                            ? "border-primary-500 shadow-md"
-                            : "border-gray-200 hover:border-primary-300"
-                        }`}
+                        className={`border rounded-lg p-1 cursor-pointer transition-colors relative ${selectedTemplate === template.id
+                          ? "border-primary-500 shadow-md"
+                          : "border-gray-200 hover:border-primary-300"
+                          }`}
                         onClick={() => handleTemplateSelect(template.id)}
                       >
                         <div className="h-14 w-full flex items-center justify-center">

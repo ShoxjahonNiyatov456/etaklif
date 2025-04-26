@@ -266,11 +266,10 @@ export default function CreatePage() {
                   <button
                     key={type.id}
                     onClick={() => setSelectedType(type.id)}
-                    className={`w-full text-left px-4 py-3 rounded-md transition-colors ${
-                      selectedType === type.id
-                        ? "bg-primary-100 text-primary-700 font-medium"
-                        : "hover:bg-gray-100"
-                    }`}
+                    className={`w-full text-left px-4 py-3 rounded-md transition-colors ${selectedType === type.id
+                      ? "bg-primary-100 text-primary-700 font-medium"
+                      : "hover:bg-gray-100"
+                      }`}
                   >
                     {type.name}
                   </button>
@@ -514,19 +513,17 @@ export default function CreatePage() {
                         value={formData.location}
                         onChange={handleInputChange}
                         placeholder="Asr To'yxonasi"
-                        className={`form-input ${
-                          countWords(formData.location) >= 30
-                            ? "border-red-500"
-                            : ""
-                        }`}
+                        className={`form-input ${countWords(formData.location) >= 30
+                          ? "border-red-500"
+                          : ""
+                          }`}
                       />
                       <div className="text-xs flex justify-between mt-1">
                         <span
-                          className={`${
-                            countWords(formData.location) >= 30
-                              ? "text-red-500 font-medium"
-                              : "text-gray-500"
-                          }`}
+                          className={`${countWords(formData.location) >= 30
+                            ? "text-red-500 font-medium"
+                            : "text-gray-500"
+                            }`}
                         >
                           {`${countWords(formData.location)}/30 so'z`}
                         </span>
@@ -549,19 +546,17 @@ export default function CreatePage() {
                         onChange={handleInputChange}
                         rows={3}
                         placeholder="Yoshlarizmi Baxtli Bo'lishsin"
-                        className={`form-input ${
-                          countWords(formData.additionalInfo) >= 30
-                            ? "border-red-500"
-                            : ""
-                        }`}
+                        className={`form-input ${countWords(formData.additionalInfo) >= 30
+                          ? "border-red-500"
+                          : ""
+                          }`}
                       ></textarea>
                       <div className="text-xs flex justify-between mt-1">
                         <span
-                          className={`${
-                            countWords(formData.additionalInfo) >= 30
-                              ? "text-red-500 font-medium"
-                              : "text-gray-500"
-                          }`}
+                          className={`${countWords(formData.additionalInfo) >= 30
+                            ? "text-red-500 font-medium"
+                            : "text-gray-500"
+                            }`}
                         >
                           {`${countWords(formData.additionalInfo)}/30 so'z`}
                         </span>
@@ -598,11 +593,10 @@ export default function CreatePage() {
                       {templates.map((template) => (
                         <div
                           key={template.id}
-                          className={`border rounded-lg p-2 cursor-pointer transition-colors ${
-                            selectedTemplate === template.id
-                              ? "border-primary-500 shadow-md"
-                              : "border-gray-200 hover:border-primary-300"
-                          }`}
+                          className={`border rounded-lg p-2 cursor-pointer transition-colors ${selectedTemplate === template.id
+                            ? "border-primary-500 shadow-md"
+                            : "border-gray-200 hover:border-primary-300"
+                            }`}
                           onClick={() => setSelectedTemplate(template.id)}
                         >
                           <div className="flex items-center">
@@ -706,15 +700,15 @@ export default function CreatePage() {
                     </h2>
                     {(selectedType === "wedding" ||
                       selectedType === "engagement") && (
-                      <>
-                        <div className="font-cursive text-xl my-2">va</div>
-                        <h2
-                          className={`${getFontFamilyClass()} text-3xl font-medium`}
-                        >
-                          {formData.secondName || "Jasur Aliyev"}
-                        </h2>
-                      </>
-                    )}
+                        <>
+                          <div className="font-cursive text-xl my-2">va</div>
+                          <h2
+                            className={`${getFontFamilyClass()} text-3xl font-medium`}
+                          >
+                            {formData.secondName || "Jasur Aliyev"}
+                          </h2>
+                        </>
+                      )}
                     {selectedType === "birthday" && formData.age && (
                       <div className="font-cursive text-xl my-2">
                         {formData.age} yosh
@@ -732,13 +726,13 @@ export default function CreatePage() {
                       <p className="mb-1">
                         {formData.date
                           ? new Date(formData.date).toLocaleDateString(
-                              "uz-UZ",
-                              {
-                                year: "numeric",
-                                month: "long",
-                                day: "numeric",
-                              }
-                            )
+                            "uz-UZ",
+                            {
+                              year: "numeric",
+                              month: "long",
+                              day: "numeric",
+                            }
+                          )
                           : "2023-yil 15-iyun"}{" "}
                         | {formData.time || "18:00"}
                       </p>
