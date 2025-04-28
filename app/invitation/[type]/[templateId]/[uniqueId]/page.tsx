@@ -354,28 +354,7 @@ export default function InvitationPage() {
           variants={fadeIn}
           className="mb-8"
         >
-          <h1 className="text-2xl font-bold mb-2">
-            {getInvitationTypeName()} taklifnomasi
-          </h1>
-          <p className="text-gray-600">Ushbu taklifnoma sizga yuborildi.</p>
         </motion.div>
-
-        <div className="flex flex-wrap gap-4 mb-8">
-          <Link href="/">
-            <Button className="flex items-center gap-2">
-              <Home className="h-4 w-4" />
-              Bosh sahifa
-            </Button>
-          </Link>
-          <Button
-            onClick={openSupportModal}
-            variant="outline"
-            className="flex items-center gap-2"
-          >
-            <AlertCircle className="h-4 w-4" />
-            Texnik yordam
-          </Button>
-        </div>
         <motion.div
           initial="hidden"
           animate="visible"

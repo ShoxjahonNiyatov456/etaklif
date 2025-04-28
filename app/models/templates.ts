@@ -2,7 +2,7 @@ export interface Template {
   id: string;
   title: string;
   description: string;
-  eventTypeId: string; // Qaysi bayram turiga tegishli
+  eventTypeId: string;
   previewImage: string;
   content: TemplateContent;
   isActive: boolean;
@@ -14,8 +14,8 @@ export interface Template {
 export interface TemplateContent {
   html: string;
   css: string;
-  json?: any; // Shablonning barcha elementlarini saqlaydi
-  config?: any; // Shablon konfiguratsiyasi
+  json?: any;
+  config?: any;
 }
 
 export interface TemplateFormData {
@@ -31,4 +31,4 @@ export interface TemplateFormData {
   };
   isActive: boolean;
   isPremium: boolean;
-} 
+}

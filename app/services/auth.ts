@@ -1,4 +1,4 @@
-import { initializeApp } from 'firebase/app';
+import { initializeApp } from "firebase/app";
 import {
   getAuth,
   createUserWithEmailAndPassword,
@@ -8,8 +8,8 @@ import {
   signInWithPopup,
   signOut,
   User,
-  UserCredential
-} from 'firebase/auth';
+  UserCredential,
+} from "firebase/auth";
 
 // Firebase konfiguratsiyasi
 const firebaseConfig = {
@@ -18,7 +18,7 @@ const firebaseConfig = {
   projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
   storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
   messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
 // Firebase-ni ishga tushirish
@@ -26,47 +26,62 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
 // Ro'yxatdan o'tish funksiyasi
-export const registerUser = async (name: string, email: string, password: string): Promise<{
+export const registerUser = async (
+  name: string,
+  email: string,
+  password: string
+): Promise<{
   success: boolean;
   user?: User;
   error?: string;
 }> => {
   try {
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
     const user = userCredential.user;
-    
+
     // Foydalanuvchi ma'lumotlarini qaytarish
     return {
       success: true,
-      user
+      user,
     };
   } catch (error: any) {
     return {
       success: false,
-      error: "Ro'yxatdan o'tishda xatolik yuz berdi"
+      error: "Ro'yxatdan o'tishda xatolik yuz berdi",
     };
   }
 };
 
 // Kirish funksiyasi
-export const loginUser = async (email: string, password: string): Promise<{
+export const loginUser = async (
+  email: string,
+  password: string
+): Promise<{
   success: boolean;
   user?: User;
   error?: string;
 }> => {
   try {
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const userCredential = await signInWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
     const user = userCredential.user;
-    
+
     return {
       success: true,
-      user
+      user,
     };
   } catch (error: any) {
     // Xatolik xabarni qaytarish
     return {
       success: false,
-      error: "Noto'g'ri ma'lumotlar kiritildi"
+      error: "Noto'g'ri ma'lumotlar kiritildi",
     };
   }
 };
@@ -81,15 +96,15 @@ export const loginWithGoogle = async (): Promise<{
     const provider = new GoogleAuthProvider();
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
-    
+
     return {
       success: true,
-      user
+      user,
     };
   } catch (error: any) {
     return {
       success: false,
-      error: "Kirishda xatolik yuz berdi"
+      error: "Kirishda xatolik yuz berdi",
     };
   }
 };
@@ -104,20 +119,19 @@ export const loginWithFacebook = async (): Promise<{
     const provider = new FacebookAuthProvider();
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
-    
+
     return {
       success: true,
-      user
+      user,
     };
   } catch (error: any) {
     return {
       success: false,
-      error: "Kirishda xatolik yuz berdi"
+      error: "Kirishda xatolik yuz berdi",
     };
   }
 };
 
-// Tizimdan chiqish
 export const logoutUser = async (): Promise<boolean> => {
   try {
     await signOut(auth);

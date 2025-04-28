@@ -11,27 +11,22 @@ export default function AdminLoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  
+
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirect = searchParams?.get("redirect") || "/admin/dashboard";
-  
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setLoading(true);
-    
+
     try {
       const result = await adminAuthService.loginAdmin(email, password);
-      
       if (result.success && result.user) {
-        // Admin sessiyasini saqlash va cookie o'rnatish
         const expires = new Date();
         expires.setDate(expires.getDate() + 7); // 7 kunlik
-        
         document.cookie = `admin-session=${result.user.uid}; expires=${expires.toUTCString()}; path=/`;
-        
-        // Admin boshqaruv paneliga yo'naltirish
         router.push(redirect);
       } else {
         setError(result.error || "Kirish muvaffaqiyatsiz bo'ldi");
@@ -42,7 +37,7 @@ export default function AdminLoginPage() {
       setLoading(false);
     }
   };
-  
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="max-w-md w-full space-y-8 p-10 bg-white rounded-xl shadow-lg">
@@ -54,7 +49,7 @@ export default function AdminLoginPage() {
             Faqat adminlar uchun
           </p>
         </div>
-        
+
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           {error && (
             <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
@@ -70,7 +65,7 @@ export default function AdminLoginPage() {
               </div>
             </div>
           )}
-          
+
           <div className="rounded-md shadow-sm -space-y-px">
             <div>
               <label htmlFor="email" className="sr-only">
@@ -116,7 +111,7 @@ export default function AdminLoginPage() {
               </button>
             </div>
           </div>
-          
+
           <div>
             <button
               type="submit"

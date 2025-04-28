@@ -28,7 +28,6 @@ export default function BirthdayTemplate({
         "Iyul", "Avgust", "Sentyabr", "Oktyabr", "Noyabr", "Dekabr"
       ];
       const month = months[dateObj.getMonth()];
-      // Faqat kun va oy qaytarish, yil yo'q
       return `${day} ${month}`;
     })()
     : "15 Iyun";
@@ -203,7 +202,6 @@ export default function BirthdayTemplate({
           </div>
         </div>
       );
-
 
     default:
       return (

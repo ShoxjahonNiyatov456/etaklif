@@ -1,1 +1,18 @@
-{} 
+{
+  "1gv4t5qtteyxj179on2d5": {
+    "type": "jubilee",
+    "templateId": "celebration",
+    "invitationData": {
+      "firstName": "Zahro",
+      "secondName": "",
+      "date": "2026-02-01",
+      "time": "08:15",
+      "location": "Asr To'yxonasi",
+      "additionalInfo": "",
+      "age": "12",
+      "parents": "",
+      "uploadedImage": null
+    },
+    "createdAt": "2025-04-28T12:57:01.964Z"
+  }
+}

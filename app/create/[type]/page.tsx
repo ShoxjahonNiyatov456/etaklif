@@ -10,6 +10,7 @@ import {
   ArrowLeft,
   Check,
   Share2,
+  ArrowRight,
 } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import WeddingTemplate from "@/components/invitation-templates/WeddingTemplate";
@@ -152,6 +153,26 @@ export default function CreatePage() {
       requiredFields.every(
         (field) => formData[field as keyof typeof formData]?.trim() !== ""
       ) && !dateError;
+
+    console.log("Form completion check:", {
+      isComplete,
+      formData,
+      requiredFields,
+      fieldsStatus: requiredFields.map(field => ({
+        field,
+        value: formData[field as keyof typeof formData],
+        isEmpty: !formData[field as keyof typeof formData]?.trim()
+      }))
+    });
+
+    // Oldingi qiymat bilan taqqoslash
+    if (isComplete !== formCompleted) {
+      console.log("Form completion changed:", {
+        from: formCompleted,
+        to: isComplete,
+        formData
+      });
+    }
 
     setFormCompleted(isComplete);
   };
@@ -372,27 +393,71 @@ export default function CreatePage() {
     checkFormCompletion();
   }, [formData, type]);
 
-  // Sana va vaqt o'zgarishlarini kuzatish
+  // Komponenti yuklanganda dastlabki qiymatlarni o'rnatish
   useEffect(() => {
-    if (day && month) {
-      const currentYear = new Date().getFullYear();
-      const dateObj = new Date(currentYear, parseInt(month), parseInt(day));
-      setFormData((prev) => ({
-        ...prev,
-        date: dateObj.toISOString().split("T")[0],
-      }));
-      setDateError(null);
-    }
-  }, [day, month]);
+    // Ertangi sana uchun default qiymatlar
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
 
+    // Sana default qiymatlari
+    setDay(tomorrow.getDate().toString());
+    setMonth(tomorrow.getMonth().toString());
+
+    // Vaqt default qiymatlari (12:00)
+    setHours("12");
+    setMinutes("00");
+
+  }, []);
+
+  // Sana va vaqt o'zgarganida formData ni yangilash
   useEffect(() => {
-    if (hours && minutes) {
-      setFormData((prev) => ({
-        ...prev,
-        time: `${hours}:${minutes}`,
-      }));
+    let newFormData = { ...formData };
+    let changed = false;
+
+    if (day && month) {
+      const today = new Date();
+      const year = today.getFullYear();
+      const newDate = new Date(year, parseInt(month), parseInt(day));
+
+      // Ertangi kundan oldin bo'lmasligi tekshirish
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      tomorrow.setHours(0, 0, 0, 0);
+
+      if (newDate < tomorrow) {
+        // Agar sana bugungi yoki o'tgan kunlar bo'lsa, keyingi yilga o'tkazish
+        newDate.setFullYear(year + 1);
+      }
+
+      const formattedDate = newDate.toISOString().split('T')[0];
+      newFormData.date = formattedDate;
+      setDateError(null);
+      changed = true;
     }
-  }, [hours, minutes]);
+
+    if (hours && minutes) {
+      const formattedTime = `${hours}:${minutes}`;
+      newFormData.time = formattedTime;
+      changed = true;
+    }
+
+    if (changed) {
+      setFormData(newFormData);
+      // formData o'zgargandan keyin checkFormCompletion chaqirilishini ta'minlamaslik uchun qo'shimcha chaqirish
+      setTimeout(() => {
+        checkFormCompletion();
+      }, 0);
+    }
+
+  }, [day, month, hours, minutes]);
+
+  // formData o'zgarishlarini kuzatish
+  useEffect(() => {
+    // Faqat dastlabki yuklanishdan keyingi haqiqiy o'zgarishlarni tekshirish
+    if (formData.firstName || formData.location) {
+      checkFormCompletion();
+    }
+  }, [formData, type]);
 
   const fadeIn = {
     hidden: { opacity: 0, y: 20 },
@@ -598,10 +663,9 @@ export default function CreatePage() {
         <label className="form-label">Sana</label>
         <div className="grid grid-cols-2 gap-2">
           <Select value={day} onValueChange={(value) => setDay(value)}>
-            <SelectTrigger className="w-full border border-slate-300 ">
+            <SelectTrigger className="w-full border border-slate-300 h-10">
               <SelectValue
                 placeholder="Kun"
-                className="text-slate-300 bg-white"
               />
             </SelectTrigger>
             <SelectContent>
@@ -614,7 +678,7 @@ export default function CreatePage() {
           </Select>
 
           <Select value={month} onValueChange={(value) => setMonth(value)}>
-            <SelectTrigger className="w-full border border-slate-300">
+            <SelectTrigger className="w-full border border-slate-300 h-10">
               <SelectValue placeholder="Oy" />
             </SelectTrigger>
             <SelectContent>
@@ -640,7 +704,7 @@ export default function CreatePage() {
         <label className="form-label">Vaqt</label>
         <div className="grid grid-cols-2 gap-2">
           <Select value={hours} onValueChange={(value) => setHours(value)}>
-            <SelectTrigger className="w-full border border-slate-300">
+            <SelectTrigger className="w-full border border-slate-300 h-10">
               <SelectValue placeholder="Soat" />
             </SelectTrigger>
             <SelectContent>
@@ -653,7 +717,7 @@ export default function CreatePage() {
           </Select>
 
           <Select value={minutes} onValueChange={(value) => setMinutes(value)}>
-            <SelectTrigger className="w-full border border-slate-300">
+            <SelectTrigger className="w-full border border-slate-300 h-10">
               <SelectValue placeholder="Daqiqa" />
             </SelectTrigger>
             <SelectContent>
@@ -981,9 +1045,10 @@ export default function CreatePage() {
             </div>
 
             {formCompleted && (
-              <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-200 z-10">
-                <Button onClick={handleProceedToTemplates} className="w-full">
-                  Davom etish
+              <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-200 z-10 shadow-lg">
+                <Button onClick={handleProceedToTemplates} className="w-full bg-primary-600 hover:bg-primary-700">
+                  <ArrowRight className="h-4 w-4 mr-2" />
+                  Shablonlar tanlashga o'tish
                 </Button>
               </div>
             )}

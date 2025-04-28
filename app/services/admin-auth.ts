@@ -1,6 +1,12 @@
-import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, User } from 'firebase/auth';
-import { getFirestore, collection, doc, getDoc } from 'firebase/firestore';
-import { initializeApp } from 'firebase/app';
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
+  User,
+} from "firebase/auth";
+import { getFirestore, collection, doc, getDoc } from "firebase/firestore";
+import { initializeApp } from "firebase/app";
 
 // Firebase konfiguratsiyasi
 const firebaseConfig = {
@@ -9,7 +15,7 @@ const firebaseConfig = {
   projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
   storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
   messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
 // Firebase-ni ishga tushirish
@@ -20,7 +26,7 @@ const db = getFirestore(app);
 export interface AdminUser {
   uid: string;
   email: string;
-  role: 'admin' | 'superadmin';
+  role: "admin" | "superadmin";
   name?: string;
   createdAt: Date;
   lastLogin?: Date;
@@ -28,104 +34,110 @@ export interface AdminUser {
 
 export const adminAuthService = {
   // Admin sifatida kirish
-  async loginAdmin(email: string, password: string): Promise<{ success: boolean; user?: AdminUser; error?: string }> {
+  async loginAdmin(
+    email: string,
+    password: string
+  ): Promise<{ success: boolean; user?: AdminUser; error?: string }> {
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
       const user = userCredential.user;
-      
+
       // Foydalanuvchi admin ekanligini tekshirish
       const isAdmin = await this.isUserAdmin(user.uid);
-      
+
       if (!isAdmin) {
         await signOut(auth);
         return {
           success: false,
-          error: 'Sizning admin huquqingiz yo\'q'
+          error: "Sizning admin huquqingiz yo'q",
         };
       }
-      
+
       // Admin ma'lumotlarini olish
       const adminData = await this.getAdminData(user.uid);
-      
+
       if (!adminData) {
         await signOut(auth);
         return {
           success: false,
-          error: 'Admin ma\'lumotlari topilmadi'
+          error: "Admin ma'lumotlari topilmadi",
         };
       }
-      
+
       return {
         success: true,
-        user: adminData
+        user: adminData,
       };
-      
     } catch (error: any) {
-      let errorMessage = 'Kirishda xatolik yuz berdi';
-      
-      if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
-        errorMessage = 'Email yoki parol noto\'g\'ri';
+      let errorMessage = "Kirishda xatolik yuz berdi";
+
+      if (
+        error.code === "auth/user-not-found" ||
+        error.code === "auth/wrong-password"
+      ) {
+        errorMessage = "Email yoki parol noto'g'ri";
       }
-      
+
       return {
         success: false,
-        error: errorMessage
+        error: errorMessage,
       };
     }
   },
-  
-  // Tizimdan chiqish
+
   async logoutAdmin(): Promise<boolean> {
     try {
       await signOut(auth);
       return true;
     } catch (error) {
-      console.error('Chiqishda xatolik:', error);
+      console.error("Chiqishda xatolik:", error);
       return false;
     }
   },
-  
-  // Joriy admin foydalanuvchisini olish
   getCurrentAdmin(): Promise<AdminUser | null> {
     return new Promise((resolve) => {
       const unsubscribe = onAuthStateChanged(auth, async (user) => {
         unsubscribe();
-        
+
         if (!user) {
           resolve(null);
           return;
         }
-        
+
         const isAdmin = await this.isUserAdmin(user.uid);
-        
+
         if (!isAdmin) {
           resolve(null);
           return;
         }
-        
+
         const adminData = await this.getAdminData(user.uid);
         resolve(adminData);
       });
     });
   },
-  
+
   // Foydalanuvchi admin ekanligini tekshirish
   async isUserAdmin(uid: string): Promise<boolean> {
-    const adminDocRef = doc(db, 'admins', uid);
+    const adminDocRef = doc(db, "admins", uid);
     const adminDoc = await getDoc(adminDocRef);
-    
+
     return adminDoc.exists();
   },
-  
+
   // Admin ma'lumotlarini olish
   async getAdminData(uid: string): Promise<AdminUser | null> {
-    const adminDocRef = doc(db, 'admins', uid);
+    const adminDocRef = doc(db, "admins", uid);
     const adminDoc = await getDoc(adminDocRef);
-    
+
     if (!adminDoc.exists()) {
       return null;
     }
-    
+
     const data = adminDoc.data();
     return {
       uid: adminDoc.id,
@@ -133,7 +145,7 @@ export const adminAuthService = {
       role: data.role,
       name: data.name,
       createdAt: data.createdAt.toDate(),
-      lastLogin: data.lastLogin ? data.lastLogin.toDate() : undefined
+      lastLogin: data.lastLogin ? data.lastLogin.toDate() : undefined,
     };
-  }
-}; 
+  },
+};
