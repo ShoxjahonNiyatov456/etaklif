@@ -7,8 +7,8 @@ import Footer from "@/components/footer";
 export default function ClientWrapper({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isAdminPage = pathname?.startsWith("/admin");
-
-  if (isAdminPage) {
+  const isInvitationPage = pathname?.startsWith("/invitation");
+  if (isAdminPage || isInvitationPage) {
     return children;
   }
 
@@ -19,4 +19,4 @@ export default function ClientWrapper({ children }: { children: React.ReactNode 
       <Footer />
     </div>
   );
-} 
+}

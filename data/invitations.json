@@ -1,1 +1,18 @@
-{}
+{
+  "7wbmgp3cpjfvgyergxz5bf": {
+    "type": "wedding",
+    "templateId": "elegant-frame",
+    "invitationData": {
+      "firstName": "Zahro",
+      "secondName": "Tohir",
+      "date": "2026-02-02",
+      "time": "02:15",
+      "location": "Asr To'yxonasi",
+      "additionalInfo": "fsdfsdfsdfsfsdfdsf",
+      "age": "",
+      "parents": "",
+      "uploadedImage": null
+    },
+    "createdAt": "2025-04-29T17:39:50.827Z"
+  }
+}
