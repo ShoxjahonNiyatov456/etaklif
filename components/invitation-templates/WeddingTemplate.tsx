@@ -19,17 +19,32 @@ export default function WeddingTemplate({
 }: WeddingTemplateProps) {
   const formattedDate = date
     ? (() => {
-      const dateObj = new Date(date);
-      const day = dateObj.getDate();
-      const months = [
-        "Yanvar", "Fevral", "Mart", "Aprel", "May", "Iyun",
-        "Iyul", "Avgust", "Sentyabr", "Oktyabr", "Noyabr", "Dekabr"
-      ];
-      const month = months[dateObj.getMonth()];
-      // Faqat kun va oy qaytarish, yil yo'q
-      return `${day} ${month}`;
+      try {
+        // Agar date YYYY-MM-DD formatida kelsa
+        if (date.includes("-")) {
+          const dateObj = new Date(date);
+          if (isNaN(dateObj.getTime())) {
+            return "Sana belgilanmagan";
+          }
+          const day = dateObj.getDate();
+          const months = [
+            "Yanvar", "Fevral", "Mart", "Aprel", "May", "Iyun",
+            "Iyul", "Avgust", "Sentyabr", "Oktyabr", "Noyabr", "Dekabr"
+          ];
+          const month = months[dateObj.getMonth()];
+          // Faqat kun va oy qaytarish, yil yo'q
+          return `${day} ${month}`;
+        } 
+        // Agar date allaqachon DD Month formatida kelsa (formattan o'tgan)
+        else {
+          return date;
+        }
+      } catch (error) {
+        console.error("Date formatting error:", error);
+        return date || "Sana belgilanmagan";
+      }
     })()
-    : "15 Iyun";
+    : "Sana belgilanmagan";
 
   // Matnlarni 30 belgigacha cheklash va ularni to'g'ri uzish
   const truncateText = (
@@ -81,6 +96,9 @@ export default function WeddingTemplate({
                 {secondName || "CHRISTOPHER"}
               </h2>
               <div className="space-y-1 mb-4">
+                <p className="text-sm text-gray-700">
+                  {formattedDate}
+                </p>
                 <p className="text-sm text-gray-700">
                   Soat: {time || "7 :00 PM"}
                 </p>
@@ -140,6 +158,7 @@ export default function WeddingTemplate({
               </p>
               <p className="text-xl font-serif mb-6">To'y</p>
               <div className="grid grid-cols-2 gap-4 mb-4">
+                <p className="text-sm text-gray-700">{formattedDate}</p>
                 <p className="text-sm text-gray-700">{time || "AT 2 PM"}</p>
                 <div>
                   <p className="text-sm font-medium text-gray-700">
@@ -215,7 +234,10 @@ export default function WeddingTemplate({
                 ning to'yiga taklif qilindingiz
               </p>
               <p className="text-lg font-medium text-amber-700 mb-4">
-                {time || "JUNE | 22 | 2PM"}
+                {formattedDate}
+              </p>
+              <p className="text-lg font-medium text-amber-700 mb-4">
+                Soat: {time || "2 PM"}
               </p>
               <p className="text-sm text-amber-700">
                 {location || "First Church Sanctuary"}

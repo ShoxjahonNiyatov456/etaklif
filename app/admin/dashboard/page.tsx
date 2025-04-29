@@ -10,28 +10,46 @@ import {
   FileText,
   Grid,
   Clock,
-  AlertCircle
+  AlertCircle,
+  Palette,
+  X
 } from "lucide-react";
 import Link from "next/link";
+import { localTemplatesService } from "@/app/services/local-templates";
+import WeddingTemplate from "@/components/invitation-templates/WeddingTemplate";
 
 export default function AdminDashboard() {
   const [eventTypes, setEventTypes] = useState<EventType[]>([]);
   const [templates, setTemplates] = useState<Template[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedStyle, setSelectedStyle] = useState<string | null>(null);
+
+  // Wedding styles for direct display
+  const weddingStyles = ['floral-gold', 'elegant-frame', 'blue-floral', 'golden-ornament', 'floral-hexagon'];
+
+  // Translation map for style names
+  const styleNameMap: Record<string, string> = {
+    'floral-gold': 'Guldor oltin',
+    'elegant-frame': 'Elegant ramka',
+    'blue-floral': 'Ko\'k guldor',
+    'golden-ornament': 'Oltin naqsh',
+    'floral-hexagon': 'Guldor olti burchak'
+  };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
         setError(null);
-        
-        // Bayram turlari va shablonlarni olish
+
+        // Use local template data instead of Firebase
         const [fetchedEventTypes, fetchedTemplates] = await Promise.all([
-          eventTypesService.getAllEventTypes(),
-          templatesService.getAllTemplates()
+          localTemplatesService.getAllEventTypes(),
+          localTemplatesService.getAllTemplates()
         ]);
-        
+
         setEventTypes(fetchedEventTypes);
         setTemplates(fetchedTemplates);
       } catch (err) {
@@ -41,7 +59,7 @@ export default function AdminDashboard() {
         setLoading(false);
       }
     };
-    
+
     fetchData();
   }, []);
 
@@ -49,12 +67,11 @@ export default function AdminDashboard() {
   const activeEventTypes = eventTypes.filter(et => et.isActive).length;
   const activeTemplates = templates.filter(t => t.isActive).length;
   const premiumTemplates = templates.filter(t => t.isPremium).length;
-  
-  // So'nggi bayram turlari
+
   const latestEventTypes = [...eventTypes]
     .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
     .slice(0, 5);
-  
+
   // So'nggi shablonlar
   const latestTemplates = [...templates]
     .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
@@ -83,256 +100,218 @@ export default function AdminDashboard() {
     );
   }
 
+  // Sample data for templates
+  const sampleData = {
+    firstName: 'Alisher',
+    secondName: 'Gulnora',
+    date: new Date().toISOString(),
+    time: '17:00',
+    location: 'Toshkent shahri, Yunusobod tumani',
+    additionalInfo: 'Marhamat tashrif buyuring'
+  };
+
+  const openModal = (style: string) => {
+    setSelectedStyle(style);
+    setModalOpen(true);
+    // Prevent background scrolling when modal is open
+    document.body.style.overflow = 'hidden';
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+    setSelectedStyle(null);
+    // Re-enable scrolling
+    document.body.style.overflow = 'auto';
+  };
+
+  // Card o'lchami
+  const cardWidth = 240;
+  const cardGap = 24; // gap-6 = 1.5rem = 24px
+
+  // Styles ni 5 tadan guruhlash
+  const chunkStyles = (styles: string[], size: number) => {
+    return styles.reduce((result: string[][], item, index) => {
+      const chunkIndex = Math.floor(index / size);
+
+      if (!result[chunkIndex]) {
+        result[chunkIndex] = []; // Yangi chunk yaratish
+      }
+
+      result[chunkIndex].push(item);
+      return result;
+    }, []);
+  };
+
+  const groupedStyles = chunkStyles(weddingStyles, 5);
+
   return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Admin Dashboard</h1>
-      
-      {/* Asosiy statistika */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex items-center">
-            <div className="p-3 rounded-full bg-indigo-100 text-indigo-600 mr-4">
-              <Calendar size={24} />
+    <>
+      <div className="space-y-6">
+        <h1 className="text-2xl font-bold">Admin Dashboard</h1>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="bg-white rounded-lg shadow p-6">
+            <div className="flex items-center">
+              <div className="p-3 rounded-full bg-indigo-100 text-indigo-600 mr-4">
+                <Calendar size={24} />
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Jami bayram turlari</p>
+                <p className="text-2xl font-semibold">{eventTypes.length}</p>
+              </div>
             </div>
-            <div>
-              <p className="text-sm text-gray-500">Jami bayram turlari</p>
-              <p className="text-2xl font-semibold">{eventTypes.length}</p>
-            </div>
-          </div>
-          <div className="mt-4 text-sm text-gray-500">
-            <span className="text-green-500 font-medium">{activeEventTypes}</span> faol
-          </div>
-        </div>
-        
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex items-center">
-            <div className="p-3 rounded-full bg-green-100 text-green-600 mr-4">
-              <FileText size={24} />
-            </div>
-            <div>
-              <p className="text-sm text-gray-500">Jami shablonlar</p>
-              <p className="text-2xl font-semibold">{templates.length}</p>
+            <div className="mt-4 text-sm text-gray-500">
+              <span className="text-green-500 font-medium">{activeEventTypes}</span> faol
             </div>
           </div>
-          <div className="mt-4 text-sm text-gray-500">
-            <span className="text-green-500 font-medium">{activeTemplates}</span> faol,{" "}
-            <span className="text-indigo-500 font-medium">{premiumTemplates}</span> premium
-          </div>
-        </div>
-        
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex items-center">
-            <div className="p-3 rounded-full bg-purple-100 text-purple-600 mr-4">
-              <Grid size={24} />
+
+          <div className="bg-white rounded-lg shadow p-6">
+            <div className="flex items-center">
+              <div className="p-3 rounded-full bg-green-100 text-green-600 mr-4">
+                <FileText size={24} />
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Jami shablonlar</p>
+                <p className="text-2xl font-semibold">{templates.length}</p>
+              </div>
             </div>
-            <div>
-              <p className="text-sm text-gray-500">Shablonlar / Tur</p>
-              <p className="text-2xl font-semibold">
-                {eventTypes.length > 0 
-                  ? (templates.length / eventTypes.length).toFixed(1) 
-                  : "0"}
-              </p>
+            <div className="mt-4 text-sm text-gray-500">
+              <span className="text-green-500 font-medium">{activeTemplates}</span> faol,{" "}
+              <span className="text-indigo-500 font-medium">{premiumTemplates}</span> premium
             </div>
           </div>
-          <div className="mt-4 text-sm text-gray-500">
-            O'rtacha har bir bayram turi uchun
-          </div>
-        </div>
-        
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex items-center">
-            <div className="p-3 rounded-full bg-blue-100 text-blue-600 mr-4">
-              <Clock size={24} />
+
+          <div className="bg-white rounded-lg shadow p-6">
+            <div className="flex items-center">
+              <div className="p-3 rounded-full bg-purple-100 text-purple-600 mr-4">
+                <Grid size={24} />
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Shablonlar / Tur</p>
+                <p className="text-2xl font-semibold">
+                  {eventTypes.length > 0
+                    ? (templates.length / eventTypes.length).toFixed(1)
+                    : "0"}
+                </p>
+              </div>
             </div>
-            <div>
-              <p className="text-sm text-gray-500">Oxirgi yangilanish</p>
-              <p className="text-2xl font-semibold">
-                {eventTypes.length > 0 || templates.length > 0
-                  ? new Date(
-                      Math.max(
-                        ...[
-                          ...eventTypes.map(et => et.updatedAt.getTime()),
-                          ...templates.map(t => t.updatedAt.getTime())
-                        ]
-                      )
-                    ).toLocaleDateString("uz-UZ")
-                  : "Yo'q"}
-              </p>
+            <div className="mt-4 text-sm text-gray-500">
+              O'rtacha har bir bayram turi uchun
             </div>
-          </div>
-          <div className="mt-4 text-sm text-gray-500">
-            Oxirgi tahrirlangan ma'lumot sanasi
           </div>
         </div>
-      </div>
-      
-      {/* So'nggi qo'shilgan bayram turlari */}
-      <div className="bg-white rounded-lg shadow">
-        <div className="p-6 border-b border-gray-200">
-          <h2 className="text-lg font-semibold">So'nggi qo'shilgan bayram turlari</h2>
-        </div>
-        <div className="p-6">
-          {latestEventTypes.length > 0 ? (
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Nomi
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Yaratilgan sana
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Holati
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Amallar
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {latestEventTypes.map((eventType) => (
-                    <tr key={eventType.id}>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="font-medium text-gray-900">{eventType.title}</div>
-                        <div className="text-sm text-gray-500">{eventType.description}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {eventType.createdAt.toLocaleDateString("uz-UZ")}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        {eventType.isActive ? (
-                          <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                            Faol
-                          </span>
-                        ) : (
-                          <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
-                            Nofaol
-                          </span>
-                        )}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        <Link 
-                          href={`/admin/event-types/edit/${eventType.id}`}
-                          className="text-indigo-600 hover:text-indigo-900 mr-4"
-                        >
-                          Tahrirlash
-                        </Link>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          ) : (
-            <div className="text-center py-4 text-gray-500">
-              Bayram turlari mavjud emas
-            </div>
-          )}
-          <div className="mt-4 text-right">
-            <Link 
-              href="/admin/event-types"
-              className="text-indigo-600 hover:text-indigo-900"
+        <div className="bg-white rounded-lg shadow">
+          <div className="p-6 border-b border-gray-200 flex justify-between items-center">
+            <h2 className="text-lg font-semibold">To'y Taklifnoma Shablonlari</h2>
+            <Link
+              href="/admin/invitation-previews"
+              className="text-indigo-600 hover:text-indigo-900 flex items-center"
             >
-              Barchasini ko'rish
+              <Palette size={18} className="mr-1" />
+              Barcha shablonlarni ko'rish
             </Link>
           </div>
+          <div className="p-6 overflow-y-auto max-h-[600px] scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+            {groupedStyles.map((styleGroup, groupIndex) => (
+              <div key={groupIndex} className="grid grid-cols-5 gap-6 mb-6">
+                {styleGroup.map((style, index) => (
+                  <div
+                    key={index}
+                    className="border rounded-lg overflow-hidden shadow-sm cursor-pointer transition-transform hover:shadow-md hover:scale-105"
+                    onClick={() => openModal(style)}
+                  >
+                    <div className="p-2 bg-gray-50 border-b">
+                      <h4 className="font-medium text-sm text-gray-700">{styleNameMap[style] || style}</h4>
+                    </div>
+                    <div
+                      className="relative bg-white flex justify-center items-center"
+                      style={{ height: '300px', overflow: 'hidden' }}
+                    >
+                      <div style={{ transform: 'scale(0.45)', display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }}>
+                        <WeddingTemplate
+                          style={style}
+                          firstName={sampleData.firstName}
+                          secondName={sampleData.secondName}
+                          date={sampleData.date}
+                          time={sampleData.time}
+                          location={sampleData.location}
+                          additionalInfo={sampleData.additionalInfo}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
-      
-      {/* So'nggi qo'shilgan shablonlar */}
-      <div className="bg-white rounded-lg shadow">
-        <div className="p-6 border-b border-gray-200">
-          <h2 className="text-lg font-semibold">So'nggi qo'shilgan shablonlar</h2>
-        </div>
-        <div className="p-6">
-          {latestTemplates.length > 0 ? (
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Nomi
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Bayram turi
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Yaratilgan sana
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Holati
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Amallar
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {latestTemplates.map((template) => {
-                    const eventType = eventTypes.find(et => et.id === template.eventTypeId);
-                    
-                    return (
-                      <tr key={template.id}>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="font-medium text-gray-900">{template.title}</div>
-                          <div className="text-sm text-gray-500">{template.description}</div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {eventType?.title || "Noma'lum"}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {template.createdAt.toLocaleDateString("uz-UZ")}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex space-x-1">
-                            {template.isActive ? (
-                              <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                Faol
-                              </span>
-                            ) : (
-                              <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
-                                Nofaol
-                              </span>
-                            )}
-                            
-                            {template.isPremium && (
-                              <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-purple-100 text-purple-800">
-                                Premium
-                              </span>
-                            )}
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          <Link 
-                            href={`/admin/templates/edit/${template.id}`}
-                            className="text-indigo-600 hover:text-indigo-900 mr-4"
-                          >
-                            Tahrirlash
-                          </Link>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          ) : (
-            <div className="text-center py-4 text-gray-500">
-              Shablonlar mavjud emas
-            </div>
-          )}
-          <div className="mt-4 text-right">
-            <Link 
-              href="/admin/templates"
-              className="text-indigo-600 hover:text-indigo-900"
+        <div className="bg-white rounded-lg shadow">
+          <div className="p-6 border-b border-gray-200 flex justify-between items-center">
+            <h2 className="text-lg font-semibold">Barcha Taklifnoma Turlari</h2>
+            <Link
+              href="/admin/invitation-previews"
+              className="text-indigo-600 hover:text-indigo-900 flex items-center"
             >
-              Barchasini ko'rish
+              <Palette size={18} className="mr-1" />
+              Barcha shablonlarni ko'rish
             </Link>
+          </div>
+          <div className="p-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+              {eventTypes.map((eventType) => (
+                <div key={eventType.id} className="border rounded-lg overflow-hidden">
+                  <div className="p-3 bg-gray-50 border-b">
+                    <h3 className="font-medium text-gray-700">{eventType.title}</h3>
+                  </div>
+                  <div className="p-4">
+                    <p className="text-gray-600 text-sm mb-3">{eventType.description}</p>
+                    <div className="flex justify-between items-center">
+                      <span className="text-xs text-gray-500">
+                        {templates.filter(t => t.eventTypeId === eventType.id).length} shablon
+                      </span>
+                      <Link
+                        href={`/admin/invitation-previews`}
+                        className="text-xs text-indigo-600 hover:text-indigo-800"
+                      >
+                        Ko'rish
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
-    </div>
+
+      {/* Modal for fullscreen preview */}
+      {modalOpen && selectedStyle && (
+        <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex justify-center items-center p-4">
+          <div className="bg-white rounded-lg max-w-4xl w-full max-h-screen overflow-auto relative">
+            <div className="sticky top-0 bg-white p-4 border-b border-gray-200 flex justify-between items-center z-10">
+              <h3 className="text-lg font-medium">{styleNameMap[selectedStyle] || selectedStyle}</h3>
+              <button
+                onClick={closeModal}
+                className="p-2 rounded-full hover:bg-gray-100"
+              >
+                <X size={20} />
+              </button>
+            </div>
+            <div className="p-6 flex justify-center">
+              <div className="relative">
+                <WeddingTemplate
+                  style={selectedStyle}
+                  firstName={sampleData.firstName}
+                  secondName={sampleData.secondName}
+                  date={sampleData.date}
+                  time={sampleData.time}
+                  location={sampleData.location}
+                  additionalInfo={sampleData.additionalInfo}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 } 

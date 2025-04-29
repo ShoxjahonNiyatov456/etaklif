@@ -144,42 +144,53 @@ export default function CreatePage() {
   };
 
   const checkFormCompletion = () => {
-    const requiredFields = ["firstName", "date", "time", "location"];
-    if (type === "wedding") requiredFields.push("secondName");
-    if (type === "birthday" || type === "jubilee") requiredFields.push("age");
-    if (type === "engagement") requiredFields.push("parents");
+    // Basic fields required for all invitation types
+    let isComplete = false;
 
-    const isComplete =
-      requiredFields.every(
-        (field) => formData[field as keyof typeof formData]?.trim() !== ""
-      ) && !dateError;
-
-    console.log("Form completion check:", {
-      isComplete,
-      formData,
-      requiredFields,
-      fieldsStatus: requiredFields.map(field => ({
-        field,
-        value: formData[field as keyof typeof formData],
-        isEmpty: !formData[field as keyof typeof formData]?.trim()
-      }))
-    });
-
-    // Oldingi qiymat bilan taqqoslash
-    if (isComplete !== formCompleted) {
-      console.log("Form completion changed:", {
-        from: formCompleted,
-        to: isComplete,
-        formData
-      });
+    // Validate based on invitation type
+    if (type === "wedding") {
+      isComplete = !!formData.firstName &&
+        !!formData.secondName &&
+        !!formData.date &&
+        !!formData.time &&
+        !!formData.location;
+    } else if (type === "birthday") {
+      isComplete = !!formData.firstName &&
+        !!formData.age &&
+        !!formData.date &&
+        !!formData.time &&
+        !!formData.location;
+    } else if (type === "funeral") {
+      isComplete = !!formData.firstName &&
+        !!formData.date &&
+        !!formData.time &&
+        !!formData.location;
+    } else if (type === "jubilee") {
+      isComplete = !!formData.firstName &&
+        !!formData.age &&
+        !!formData.date &&
+        !!formData.time &&
+        !!formData.location;
+    } else if (type === "engagement") {
+      isComplete = !!formData.firstName &&
+        !!formData.parents &&
+        !!formData.date &&
+        !!formData.time &&
+        !!formData.location;
     }
 
-    setFormCompleted(isComplete);
+    if (dateError && isComplete) {
+      isComplete = false;
+    }
+    if (isComplete !== formCompleted) {
+      setFormCompleted(isComplete);
+    }
   };
 
   const handleTemplateSelect = (templateId: string) => {
     setSelectedTemplate(templateId);
     setTemplateSelected(true);
+    console.log("Template selected:", templateId);
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -307,34 +318,64 @@ export default function CreatePage() {
       case "jubilee":
         return [
           {
-            id: "celebration",
-            name: "Tantanali",
-            style: "celebration",
+            id: "classic",
+            name: "Klassik",
+            style: "classic",
             hasImageUpload: false,
           },
           {
-            id: "elegant",
-            name: "Elegant",
-            style: "elegant",
+            id: "modern",
+            name: "Zamonaviy",
+            style: "modern",
             hasImageUpload: false,
           },
           {
-            id: "geometric-floral",
-            name: "Geometrik guldor",
-            style: "geometric-floral",
+            id: "ornate",
+            name: "Bezakli",
+            style: "ornate",
             hasImageUpload: false,
           },
           {
-            id: "blue-floral",
-            name: "Ko'k guldor",
-            style: "blue-floral",
+            id: "minimalist",
+            name: "Minimalist",
+            style: "minimalist",
             hasImageUpload: false,
           },
           {
-            id: "photo-frame",
-            name: "Suratli ramka",
-            style: "photo-frame",
+            id: "traditional",
+            name: "An'anaviy",
+            style: "traditional",
             hasImageUpload: true,
+          },
+          {
+            id: "luxury",
+            name: "Hashamatli",
+            style: "luxury",
+            hasImageUpload: false,
+          },
+          {
+            id: "festive",
+            name: "Bayramona",
+            style: "festive",
+            hasImageUpload: false,
+          },
+          {
+            id: "photo-centric",
+            name: "Suratli",
+            style: "photo-centric",
+            hasImageUpload: true,
+          },
+          {
+            id: "geometric",
+            name: "Geometrik",
+            style: "geometric",
+            hasImageUpload: false,
+          },
+          {
+            id: "nature",
+            name: "Tabiat",
+            style: "nature",
+            hasImageUpload: false,
           },
         ];
       case "engagement":
@@ -381,6 +422,7 @@ export default function CreatePage() {
   useEffect(() => {
     if (templates.length > 0 && !selectedTemplate) {
       setSelectedTemplate(templates[0].id);
+      setTemplateSelected(true);
     }
   }, [templates, selectedTemplate]);
   useEffect(() => {
@@ -393,42 +435,30 @@ export default function CreatePage() {
     checkFormCompletion();
   }, [formData, type]);
 
-  // Komponenti yuklanganda dastlabki qiymatlarni o'rnatish
   useEffect(() => {
-    // Ertangi sana uchun default qiymatlar
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
-
-    // Sana default qiymatlari
     setDay(tomorrow.getDate().toString());
     setMonth(tomorrow.getMonth().toString());
-
-    // Vaqt default qiymatlari (12:00)
     setHours("12");
     setMinutes("00");
 
   }, []);
 
-  // Sana va vaqt o'zgarganida formData ni yangilash
   useEffect(() => {
     let newFormData = { ...formData };
     let changed = false;
-
     if (day && month) {
       const today = new Date();
       const year = today.getFullYear();
       const newDate = new Date(year, parseInt(month), parseInt(day));
-
-      // Ertangi kundan oldin bo'lmasligi tekshirish
       const tomorrow = new Date();
       tomorrow.setDate(tomorrow.getDate() + 1);
       tomorrow.setHours(0, 0, 0, 0);
 
       if (newDate < tomorrow) {
-        // Agar sana bugungi yoki o'tgan kunlar bo'lsa, keyingi yilga o'tkazish
         newDate.setFullYear(year + 1);
       }
-
       const formattedDate = newDate.toISOString().split('T')[0];
       newFormData.date = formattedDate;
       setDateError(null);
@@ -443,7 +473,6 @@ export default function CreatePage() {
 
     if (changed) {
       setFormData(newFormData);
-      // formData o'zgargandan keyin checkFormCompletion chaqirilishini ta'minlamaslik uchun qo'shimcha chaqirish
       setTimeout(() => {
         checkFormCompletion();
       }, 0);
@@ -451,14 +480,17 @@ export default function CreatePage() {
 
   }, [day, month, hours, minutes]);
 
-  // formData o'zgarishlarini kuzatish
   useEffect(() => {
-    // Faqat dastlabki yuklanishdan keyingi haqiqiy o'zgarishlarni tekshirish
     if (formData.firstName || formData.location) {
       checkFormCompletion();
     }
   }, [formData, type]);
-
+  useEffect(() => {
+    if (activeTab === "templates" && selectedTemplate && !templateSelected) {
+      console.log("Setting templateSelected to true based on selectedTemplate:", selectedTemplate);
+      setTemplateSelected(true);
+    }
+  }, [activeTab, selectedTemplate, templateSelected]);
   const fadeIn = {
     hidden: { opacity: 0, y: 20 },
     visible: {
@@ -486,10 +518,12 @@ export default function CreatePage() {
   };
 
   const handleProceedToTemplates = () => {
+    console.log("Proceeding to templates, formCompleted:", formCompleted);
     setActiveTab("templates");
   };
 
   const handleProceedToPreview = () => {
+    console.log("Proceeding to preview, templateSelected:", templateSelected);
     setActiveTab("preview");
   };
 
@@ -533,7 +567,8 @@ export default function CreatePage() {
       ? formData.additionalInfo.substring(0, 30)
       : "";
 
-    const formattedDate = formatDateForDisplay(formData.date);
+    // Sanani yuborish uchun formattedDate - bu shablonlarga uzatiladigan qiymat
+    const formattedDate = formData.date;
 
     switch (type) {
       case "wedding":
@@ -578,7 +613,7 @@ export default function CreatePage() {
           <JubileeTemplate
             style={templateStyle}
             firstName={formData.firstName}
-            age={formData.age}
+            celebrationType={formData.age}
             date={formattedDate}
             time={formData.time}
             location={wrappedLocationText}
@@ -660,7 +695,9 @@ export default function CreatePage() {
   const renderDateSection = () => {
     return (
       <div>
-        <label className="form-label">Sana</label>
+        <label className="form-label">
+          Sana <span className="text-red-500">*</span>
+        </label>
         <div className="grid grid-cols-2 gap-2">
           <Select value={day} onValueChange={(value) => setDay(value)}>
             <SelectTrigger className="w-full border border-slate-300 h-10">
@@ -701,7 +738,9 @@ export default function CreatePage() {
   const renderTimeSection = () => {
     return (
       <div>
-        <label className="form-label">Vaqt</label>
+        <label className="form-label">
+          Vaqt <span className="text-red-500">*</span>
+        </label>
         <div className="grid grid-cols-2 gap-2">
           <Select value={hours} onValueChange={(value) => setHours(value)}>
             <SelectTrigger className="w-full border border-slate-300 h-10">
@@ -759,37 +798,47 @@ export default function CreatePage() {
           <TabsList className="grid w-full grid-cols-3 mb-6">
             <TabsTrigger
               value="form"
-              disabled={activeTab !== "form" && !formCompleted}
+              disabled={false}
             >
               Ma'lumotlar
             </TabsTrigger>
             <TabsTrigger
               value="templates"
-              disabled={
-                activeTab !== "templates" &&
-                (!formCompleted || activeTab === "form")
-              }
+              disabled={!formCompleted}
+              onClick={(e) => {
+                if (!formCompleted) {
+                  e.preventDefault();
+                  alert("Iltimos, avval formdagi ma'lumotlarni to'ldiring!");
+                }
+              }}
             >
               Shablonlar
             </TabsTrigger>
             <TabsTrigger
               value="preview"
-              disabled={
-                activeTab !== "preview" && (!templateSelected || !formCompleted)
-              }
+              disabled={!formCompleted || !templateSelected}
+              onClick={(e) => {
+                if (!formCompleted) {
+                  e.preventDefault();
+                  alert("Iltimos, avval formdagi ma'lumotlarni to'ldiring!");
+                } else if (!templateSelected) {
+                  e.preventDefault();
+                  alert("Iltimos, avval shablonni tanlang!");
+                }
+              }}
             >
               Ko'rinish
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="form" className="mt-0">
-            <div className="bg-white p-5 rounded-lg shadow-sm border border-gray-200">
+            <div className="bg-white p-5 rounded-lg shadow-sm border border-gray-200 mb-20">
               <form className="space-y-4">
                 {type === "wedding" && (
                   <>
                     <div>
                       <label htmlFor="firstName" className="form-label">
-                        Kelin ismi
+                        Kelin ismi <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="text"
@@ -807,7 +856,7 @@ export default function CreatePage() {
                     </div>
                     <div>
                       <label htmlFor="secondName" className="form-label">
-                        Kuyov ismi
+                        Kuyov ismi <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="text"
@@ -829,7 +878,7 @@ export default function CreatePage() {
                 {type === "birthday" && (
                   <div>
                     <label htmlFor="firstName" className="form-label">
-                      Tug'ilgan kun egasi
+                      Tug'ilgan kun egasi <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
@@ -846,7 +895,7 @@ export default function CreatePage() {
                     </div>
                     <div className="mt-4">
                       <label htmlFor="age" className="form-label">
-                        Yoshi
+                        Yoshi <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="number"
@@ -868,7 +917,7 @@ export default function CreatePage() {
                 {type === "funeral" && (
                   <div>
                     <label htmlFor="firstName" className="form-label">
-                      El oshi egasi ismi
+                      El oshi egasi ismi <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
@@ -890,7 +939,7 @@ export default function CreatePage() {
                   <>
                     <div>
                       <label htmlFor="firstName" className="form-label">
-                        Yubilyar ismi
+                        Yubilyar ismi <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="text"
@@ -908,7 +957,7 @@ export default function CreatePage() {
                     </div>
                     <div>
                       <label htmlFor="age" className="form-label">
-                        Yoshi
+                        Yoshi <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="number"
@@ -931,7 +980,7 @@ export default function CreatePage() {
                   <>
                     <div>
                       <label htmlFor="firstName" className="form-label">
-                        Qiz ismi
+                        Qiz ismi <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="text"
@@ -949,7 +998,7 @@ export default function CreatePage() {
                     </div>
                     <div>
                       <label htmlFor="parents" className="form-label">
-                        Qizning ota-onasi
+                        Qizning ota-onasi <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="text"
@@ -976,7 +1025,7 @@ export default function CreatePage() {
 
                 <div>
                   <label htmlFor="location" className="form-label">
-                    Manzil
+                    Manzil <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -1041,21 +1090,38 @@ export default function CreatePage() {
                     )}
                   </div>
                 </div>
+
+                <div className="mt-4 text-xs text-gray-500">
+                  <span className="text-red-500">*</span> Majburiy to'ldiriladigan maydonlar
+                </div>
+                <div className="p-4 border-t z-10">
+                  {formCompleted ? (
+                    <Button
+                      onClick={() => {
+                        console.log("Proceeding to templates, formCompleted:", formCompleted);
+                        setActiveTab("templates");
+                      }}
+                      className="w-full bg-primary-600 hover:bg-primary-700"
+                    >
+                      <ArrowRight className="h-4 w-4 mr-2" />
+                      Shablonlar tanlashga o'tish
+                    </Button>
+                  ) : (
+                    <p className="text-orange-500 text-center text-sm">
+                      Davom etish uchun barcha majburiy maydonlarni to'ldiring
+                    </p>
+                  )}
+                </div>
               </form>
+
             </div>
 
-            {formCompleted && (
-              <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-200 z-10 shadow-lg">
-                <Button onClick={handleProceedToTemplates} className="w-full bg-primary-600 hover:bg-primary-700">
-                  <ArrowRight className="h-4 w-4 mr-2" />
-                  Shablonlar tanlashga o'tish
-                </Button>
-              </div>
-            )}
+            {/* Fixed bottom button */}
+
           </TabsContent>
 
           <TabsContent value="templates" className="mt-0">
-            <div className="bg-white p-5 rounded-lg shadow-sm border border-gray-200">
+            <div className="bg-white p-5 rounded-lg shadow-sm border border-gray-200 mb-20">
               <div className={`${uploadedImage ? "flex gap-3" : ""}`}>
                 <div className={`${uploadedImage ? "w-[350px]" : ""}`}>
                   <div className="grid grid-cols-1 gap-2 mb-3 sm:grid-cols-2">
@@ -1066,7 +1132,10 @@ export default function CreatePage() {
                           ? "border-primary-500 shadow-md"
                           : "border-gray-200 hover:border-primary-300"
                           }`}
-                        onClick={() => handleTemplateSelect(template.id)}
+                        onClick={() => {
+                          handleTemplateSelect(template.id);
+                          console.log(`Template clicked: ${template.id}, templateSelected now: true`);
+                        }}
                       >
                         <div className="h-14 w-full flex items-center justify-center">
                           <p className="text-xs font-medium">{template.name}</p>
@@ -1138,15 +1207,28 @@ export default function CreatePage() {
                   </div>
                 )}
               </div>
+              <div className="p-4 border-t z-10 ">
+                {selectedTemplate ? (
+                  <Button
+                    onClick={() => {
+                      console.log("Continue button clicked. Template selected:", selectedTemplate);
+                      setActiveTab("preview");
+                    }}
+                    className="w-full bg-primary-600 hover:bg-primary-700"
+                  >
+                    <ArrowRight className="h-4 w-4 mr-2" />
+                    Ko'rinishni ko'rish
+                  </Button>
+                ) : (
+                  <p className="text-orange-500 text-center text-sm">
+                    Davom etish uchun shablonni tanlang
+                  </p>
+                )}
+              </div>
             </div>
 
-            {templateSelected && (
-              <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-200 z-10">
-                <Button onClick={handleProceedToPreview} className="w-full">
-                  Davom etish
-                </Button>
-              </div>
-            )}
+            {/* Fixed bottom button */}
+
           </TabsContent>
           <TabsContent value="preview" className="mt-0">
             <div className="bg-white p-5 rounded-lg shadow-sm border border-gray-200">
@@ -1162,30 +1244,27 @@ export default function CreatePage() {
               <div className="mt-8 border-t pt-6">
                 {!paymentCompleted ? (
                   <div className="space-y-4">
-                    <div className="p-4 bg-amber-50 border border-amber-200 rounded-md">
-                      <h3 className="text-lg font-semibold mb-2 text-amber-800">
-                        To'lov qilinmagan
-                      </h3>
-                      <p className="text-amber-700 text-sm mb-2">
-                        Taklifnomani to'liq ko'rish va yuklab olish uchun
-                        to'lovni amalga oshiring.
-                      </p>
+                    <div className="p-4 bg-amber-50 border rounded-md">
                       <Button
                         className="w-full"
                         onClick={handlePayment}
-                        disabled={paymentCompleted || paymentProcessing}
+                        disabled={paymentCompleted || paymentProcessing || !formCompleted || !templateSelected}
                       >
                         {paymentProcessing ? (
                           <span className="flex items-center">
                             <div className="animate-spin h-4 w-4 border-2 border-white rounded-full border-t-transparent mr-2"></div>
-                            To'lov jarayoni...
+                            Yaratish jarayonida...
                           </span>
                         ) : paymentCompleted ? (
                           <span className="flex items-center">
-                            <Check className="h-4 w-4 mr-2" /> To'lov qilindi
+                            <Check className="h-4 w-4 mr-2" /> Yaratildi
                           </span>
+                        ) : !formCompleted ? (
+                          "Avval barcha ma'lumotlarni to'ldiring"
+                        ) : !templateSelected ? (
+                          "Avval shablonni tanlang"
                         ) : (
-                          "To'lovni amalga oshirish"
+                          "Yakunlash uchun bosing!"
                         )}
                       </Button>
                     </div>
@@ -1194,13 +1273,12 @@ export default function CreatePage() {
                   <div className="space-y-4">
                     <div className="p-4 bg-green-50 border border-green-200 rounded-md">
                       <h3 className="text-lg font-semibold mb-2 text-green-800">
-                        To'lov muvaffaqiyatli amalga oshirildi
+                        Muvoffaqiyatli yakunlandi
                       </h3>
                       <p className="text-green-700 text-sm mb-4">
                         Endi taklifnomangizni do'stlaringiz va yaqinlaringiz
                         bilan ulashishingiz mumkin.
                       </p>
-
                       <div className="mb-4">
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                           Taklifnoma havolasi

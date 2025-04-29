@@ -94,27 +94,24 @@ export function MobileProposalFlow({
           <button
             key={tab.id}
             onClick={() => goToTab(index)}
-            className={`flex flex-col items-center ${
-              index === activeTabIndex
-                ? "text-primary-600"
-                : tab.isCompleted
+            className={`flex flex-col items-center ${index === activeTabIndex
+              ? "text-primary-600"
+              : tab.isCompleted
                 ? "text-green-600"
                 : "text-gray-400"
-            } 
-              ${
-                index > activeTabIndex && !tab.isCompleted ? "opacity-50" : ""
+              } 
+              ${index > activeTabIndex && !tab.isCompleted ? "opacity-50" : ""
               }`}
             disabled={index > activeTabIndex && !tabs[index - 1].isCompleted}
           >
             <div
               className={`w-8 h-8 rounded-full flex items-center justify-center mb-1 
-              ${
-                index === activeTabIndex
+              ${index === activeTabIndex
                   ? "bg-primary-100 text-primary-600"
                   : tab.isCompleted
-                  ? "bg-green-100 text-green-600"
-                  : "bg-gray-100 text-gray-400"
-              }`}
+                    ? "bg-green-100 text-green-600"
+                    : "bg-gray-100 text-gray-400"
+                }`}
             >
               {tab.isCompleted ? (
                 <Check className="w-4 h-4" />
@@ -126,40 +123,28 @@ export function MobileProposalFlow({
           </button>
         ))}
       </div>
-
-      {/* Asosiy kontent */}
       <div className="flex-grow overflow-auto">
         {tabs[activeTabIndex].content}
       </div>
-
-      {/* To'lov qilinmagan taklifnoma ko'rinishi */}
       {activeTabIndex === 2 && !isPaid && (
         <div className="absolute inset-0 bg-white/80 backdrop-blur-sm flex flex-col items-center justify-center z-10">
           <div className="bg-white p-6 rounded-xl shadow-lg max-w-sm text-center">
             <AlertCircle className="w-12 h-12 text-amber-500 mx-auto mb-4" />
-            <h3 className="text-xl font-bold mb-2">To'lov qilinmagan</h3>
-            <p className="text-gray-600 mb-4">
-              Taklifnomani to'liq ko'rish va yuklab olish uchun to'lovni amalga
-              oshiring.
-            </p>
             <button className="w-full px-4 py-3 bg-primary-600 text-white font-medium rounded-xl hover:bg-primary-700 transition-colors">
-              To'lovni amalga oshirish
+              Yakunlash uchun bosing!
             </button>
           </div>
         </div>
       )}
-
-      {/* Pastki tugma */}
       {activeTabIndex < 2 && (
         <div className="p-4 border-t bg-white">
           <button
             onClick={goToNextTab}
             disabled={!tabs[activeTabIndex].content}
             className={`w-full px-4 py-3 bg-primary-600 text-white font-medium rounded-xl flex items-center justify-center
-              ${
-                !tabs[activeTabIndex].content
-                  ? "opacity-50"
-                  : "hover:bg-primary-700"
+              ${!tabs[activeTabIndex].content
+                ? "opacity-50"
+                : "hover:bg-primary-700"
               } transition-colors`}
           >
             {activeTabIndex === 0 ? "Davom etish" : "Keyingi bosqich"}

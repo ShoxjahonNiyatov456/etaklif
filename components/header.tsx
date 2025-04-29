@@ -40,7 +40,7 @@ export default function Header() {
       className={`fixed top-0 w-full z-50 shadow-sm transition-all duration-300 ${isScrolled ? "bg-white/90 backdrop-blur-md shadow-sm" : "bg-transparent"
         }`}
     >
-      <div className="container mx-auto px-4 ">
+      <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           <Link href="/" className="text-2xl font-bold text-primary-600">
             Taklifnoma

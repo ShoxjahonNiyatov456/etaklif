@@ -384,6 +384,10 @@ body {
 .invitation-preview {
   transition: all 0.3s ease;
 }
+main,
+.container {
+  padding-bottom: 0rem;
+}
 
 .form-input {
   @apply w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent;

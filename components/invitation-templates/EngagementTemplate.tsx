@@ -21,16 +21,31 @@ export default function EngagementTemplate({
 }: EngagementTemplateProps) {
   const formattedDate = date
     ? (() => {
-      const dateObj = new Date(date);
-      const day = dateObj.getDate();
-      const months = [
-        "Yanvar", "Fevral", "Mart", "Aprel", "May", "Iyun",
-        "Iyul", "Avgust", "Sentyabr", "Oktyabr", "Noyabr", "Dekabr"
-      ];
-      const month = months[dateObj.getMonth()];
-      return `${day} ${month}`;
+      try {
+        // Agar date YYYY-MM-DD formatida kelsa
+        if (date.includes("-")) {
+          const dateObj = new Date(date);
+          if (isNaN(dateObj.getTime())) {
+            return "Sana belgilanmagan";
+          }
+          const day = dateObj.getDate();
+          const months = [
+            "Yanvar", "Fevral", "Mart", "Aprel", "May", "Iyun",
+            "Iyul", "Avgust", "Sentyabr", "Oktyabr", "Noyabr", "Dekabr"
+          ];
+          const month = months[dateObj.getMonth()];
+          return `${day} ${month}`;
+        }
+        // Agar date allaqachon DD Month formatida kelsa (formattan o'tgan)
+        else {
+          return date;
+        }
+      } catch (error) {
+        console.error("Date formatting error:", error);
+        return date || "Sana belgilanmagan";
+      }
     })()
-    : "15 Iyun";
+    : "Sana belgilanmagan";
   const truncateText = (text: string | undefined, maxLength: number = 30): string => {
     if (!text) return "";
     return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;

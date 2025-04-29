@@ -21,16 +21,31 @@ export default function BirthdayTemplate({
 }: BirthdayTemplateProps) {
   const formattedDate = date
     ? (() => {
-      const dateObj = new Date(date);
-      const day = dateObj.getDate();
-      const months = [
-        "Yanvar", "Fevral", "Mart", "Aprel", "May", "Iyun",
-        "Iyul", "Avgust", "Sentyabr", "Oktyabr", "Noyabr", "Dekabr"
-      ];
-      const month = months[dateObj.getMonth()];
-      return `${day} ${month}`;
+      try {
+        // Agar date YYYY-MM-DD formatida kelsa
+        if (date.includes("-")) {
+          const dateObj = new Date(date);
+          if (isNaN(dateObj.getTime())) {
+            return "Sana belgilanmagan";
+          }
+          const day = dateObj.getDate();
+          const months = [
+            "Yanvar", "Fevral", "Mart", "Aprel", "May", "Iyun",
+            "Iyul", "Avgust", "Sentyabr", "Oktyabr", "Noyabr", "Dekabr"
+          ];
+          const month = months[dateObj.getMonth()];
+          return `${day} ${month}`;
+        }
+        // Agar date allaqachon DD Month formatida kelsa (formattan o'tgan)
+        else {
+          return date;
+        }
+      } catch (error) {
+        console.error("Date formatting error:", error);
+        return date || "Sana belgilanmagan";
+      }
     })()
-    : "15 Iyun";
+    : "Sana belgilanmagan";
   const truncateText = (text: string | undefined, maxLength: number = 30): string => {
     if (!text) return "";
     return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
@@ -105,9 +120,9 @@ export default function BirthdayTemplate({
           <div className="absolute bottom-8 left-12 text-6xl">🎂</div>
           <div className="absolute bottom-5 right-10 text-4xl">✨</div>
           <div className="relative z-10 text-center py-16">
-            <h2 className="text-4xl font-extrabold text-pink-700 uppercase mb-4 drop-shadow-lg">Tug‘ilgan Kuning Bilan</h2>
+            <h2 className="text-4xl font-extrabold text-pink-700 uppercase mb-4 drop-shadow-lg">Tug'ilgan Kuning Bilan</h2>
             <h3 className="text-5xl font-cursive text-yellow-600 mb-6">{firstName || "Chelsea"}</h3>
-            <p className="text-lg italic text-gray-700 mb-8">Bu Yillarni Ko‘pini Ko‘r!</p>
+            <p className="text-lg italic text-gray-700 mb-8">Bu Yillarni Ko'pini Ko'r!</p>
             {formattedAdditionalInfo && (
               <p className="text-base text-gray-600 mt-6 bg-white/70 p-4 rounded-lg shadow-md invitation-text">{formattedAdditionalInfo}</p>
             )}
@@ -124,7 +139,7 @@ export default function BirthdayTemplate({
           <div className="absolute bottom-20 left-16 text-3xl animate-fly">🦋</div>
           <div className="absolute bottom-8 right-14 text-4xl animate-fly-slow">🦋</div>
           <div className="relative z-10 text-center pt-48 pb-8">
-            <h2 className="text-4xl font-cursive text-purple-700 mb-4 drop-shadow-md">Tug‘ilgan Kuning Bilan</h2>
+            <h2 className="text-4xl font-cursive text-purple-700 mb-4 drop-shadow-md">Tug'ilgan Kuning Bilan</h2>
             <p className="text-sm uppercase tracking-wide text-gray-600 max-w-xs mx-auto">
               Sizga go'zal kun va yana bir yil farovonlik va quvonch tilayman
             </p>
@@ -164,9 +179,9 @@ export default function BirthdayTemplate({
             )}
           </div>
           <div className="relative z-10 text-center mt-10">
-            <h3 className="text-4xl font-cursive text-pink-700 drop-shadow-md">Tug‘ulgan Kuning Bilan!</h3>
+            <h3 className="text-4xl font-cursive text-pink-700 drop-shadow-md">Tug'ulgan Kuning Bilan!</h3>
             <p className="text-base text-gray-700 mt-3">
-              Quvonch, baxt va mehr bilan to‘la bo‘lsin, {firstName || "Oliver"}!
+              Quvonch, baxt va mehr bilan to'la bo'lsin, {firstName || "Oliver"}!
             </p>
             <div className="mt-6">
               {formattedAdditionalInfo && (
@@ -188,12 +203,12 @@ export default function BirthdayTemplate({
           <div className="relative z-10 text-center pt-40">
             <div className="text-white max-w-md mx-auto px-4">
               <p className="mb-2 text-lg font-light">Oy va yulduzlar orasida,</p>
-              <p className="mb-2 text-lg font-light">Sehrli otlar ko‘radi,</p>
-              <p className="mb-2 text-lg font-light">Dunyo sig‘dira olmaydigan,</p>
+              <p className="mb-2 text-lg font-light">Sehrli otlar ko'radi,</p>
+              <p className="mb-2 text-lg font-light">Dunyo sig'dira olmaydigan,</p>
               <p className="mb-6 text-lg font-light">cheksiz sevgini...</p>
-              <p className="font-cursive text-3xl text-yellow-200 drop-shadow-lg">Men seni shunday sevaman!</p>
+              <p className="font-cursive text-3xl text-yellow-200 drop-shadow-lg">Men seni shunday yaxshi ko'ramiz!</p>
               <div className="mt-10 text-pink-100">
-                <p className="text-lg font-semibold">{firstName || "Aziza"}, {age || "7"} yoshga to‘ldi! 🎉</p>
+                <p className="text-lg font-semibold">{firstName || "Aziza"}, {age || "7"} yoshga to'ldi! 🎉</p>
                 {formattedAdditionalInfo && (
                   <p className="text-sm mt-4 invitation-text">{formattedAdditionalInfo}</p>
                 )}
