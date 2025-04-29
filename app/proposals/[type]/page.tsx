@@ -14,8 +14,6 @@ export default function ProposalTypePage() {
 
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState("templates")
-
-  // Define templates based on the type
   const getTemplates = () => {
     switch (type) {
       case "business":
@@ -52,9 +50,7 @@ export default function ProposalTypePage() {
         return []
     }
   }
-
   const templates = getTemplates()
-
   const getCategoryTitle = () => {
     switch (type) {
       case "business":
@@ -111,21 +107,19 @@ export default function ProposalTypePage() {
             <div className="border-b border-gray-200">
               <div className="flex -mb-px">
                 <button
-                  className={`mr-4 py-2 px-4 ${
-                    activeTab === "templates"
-                      ? "border-b-2 border-purple-600 text-purple-600 font-medium"
-                      : "text-gray-600 hover:text-purple-600"
-                  }`}
+                  className={`mr-4 py-2 px-4 ${activeTab === "templates"
+                    ? "border-b-2 border-purple-600 text-purple-600 font-medium"
+                    : "text-gray-600 hover:text-purple-600"
+                    }`}
                   onClick={() => setActiveTab("templates")}
                 >
                   Shablonlar
                 </button>
                 <button
-                  className={`py-2 px-4 ${
-                    activeTab === "custom"
-                      ? "border-b-2 border-purple-600 text-purple-600 font-medium"
-                      : "text-gray-600 hover:text-purple-600"
-                  }`}
+                  className={`py-2 px-4 ${activeTab === "custom"
+                    ? "border-b-2 border-purple-600 text-purple-600 font-medium"
+                    : "text-gray-600 hover:text-purple-600"
+                    }`}
                   onClick={() => setActiveTab("custom")}
                 >
                   Yangi yaratish
@@ -148,11 +142,10 @@ export default function ProposalTypePage() {
                       whileHover={{ y: -5, transition: { duration: 0.2 } }}
                     >
                       <div
-                        className={`bg-white rounded-lg overflow-hidden shadow-sm border cursor-pointer transition-all ${
-                          selectedTemplate === template.id
-                            ? "border-purple-600 shadow-md"
-                            : "border-gray-100 hover:border-gray-300 hover:shadow-sm"
-                        }`}
+                        className={`bg-white rounded-lg overflow-hidden shadow-sm border cursor-pointer transition-all ${selectedTemplate === template.id
+                          ? "border-purple-600 shadow-md"
+                          : "border-gray-100 hover:border-gray-300 hover:shadow-sm"
+                          }`}
                         onClick={() => setSelectedTemplate(template.id)}
                       >
                         <div className="relative h-64 w-full">
@@ -184,11 +177,10 @@ export default function ProposalTypePage() {
                               Ko'rish
                             </button>
                             <button
-                              className={`px-3 py-1 rounded-md text-sm ${
-                                selectedTemplate === template.id
-                                  ? "bg-purple-600 text-white"
-                                  : "border border-purple-600 text-purple-600 hover:bg-purple-50"
-                              }`}
+                              className={`px-3 py-1 rounded-md text-sm ${selectedTemplate === template.id
+                                ? "bg-purple-600 text-white"
+                                : "border border-purple-600 text-purple-600 hover:bg-purple-50"
+                                }`}
                             >
                               {selectedTemplate === template.id ? "Tanlandi" : "Tanlash"}
                             </button>
@@ -236,9 +228,8 @@ export default function ProposalTypePage() {
             <Link href={selectedTemplate ? `/proposals/edit/${type}/${selectedTemplate}` : "#"}>
               <button
                 disabled={!selectedTemplate}
-                className={`px-4 py-2 bg-purple-600 text-white rounded-md flex items-center group ${
-                  !selectedTemplate ? "opacity-50 cursor-not-allowed" : "hover:bg-purple-700"
-                }`}
+                className={`px-4 py-2 bg-purple-600 text-white rounded-md flex items-center group ${!selectedTemplate ? "opacity-50 cursor-not-allowed" : "hover:bg-purple-700"
+                  }`}
               >
                 Tahrirlashga o'tish
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />

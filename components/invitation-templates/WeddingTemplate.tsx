@@ -34,7 +34,7 @@ export default function WeddingTemplate({
           const month = months[dateObj.getMonth()];
           // Faqat kun va oy qaytarish, yil yo'q
           return `${day} ${month}`;
-        } 
+        }
         // Agar date allaqachon DD Month formatida kelsa (formattan o'tgan)
         else {
           return date;

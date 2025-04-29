@@ -10,10 +10,7 @@ import {
   Menu,
   X,
   LayoutDashboard,
-  FileText,
-  Calendar,
   Palette,
-  Image
 } from "lucide-react";
 import Link from "next/link";
 

@@ -244,17 +244,12 @@ const JubileeTemplate: React.FC<JubileeTemplateProps> = ({
       return (
         <div className="relative w-full h-full flex items-center justify-center">
           <div className="relative w-[650px] h-[400px] bg-[#1a1a2e] overflow-hidden">
-            {/* Luxury gold accents */}
             <div className="absolute top-0 left-0 right-0 bottom-0 border-[10px] border-[#c9a36f]"></div>
             <div className="absolute top-6 left-6 right-6 bottom-6 border-[1px] border-[#c9a36f]"></div>
-
-            {/* Corner decorative elements */}
             <div className="absolute top-10 left-10 w-12 h-12 border-t-2 border-l-2 border-[#c9a36f]"></div>
             <div className="absolute top-10 right-10 w-12 h-12 border-t-2 border-r-2 border-[#c9a36f]"></div>
             <div className="absolute bottom-10 left-10 w-12 h-12 border-b-2 border-l-2 border-[#c9a36f]"></div>
             <div className="absolute bottom-10 right-10 w-12 h-12 border-b-2 border-r-2 border-[#c9a36f]"></div>
-
-            {/* Content */}
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center w-[75%]">
               <div className="text-[#c9a36f] text-sm tracking-widest uppercase mb-2">Yubiley Taklifi</div>
               <div className="text-[#c9a36f] text-3xl font-bold mb-1">{firstName}</div>
@@ -286,14 +281,12 @@ const JubileeTemplate: React.FC<JubileeTemplateProps> = ({
       return (
         <div className="relative w-full h-full flex items-center justify-center">
           <div className="relative w-[650px] h-[400px] bg-gradient-to-r from-[#ff5e62] to-[#ff9966] overflow-hidden">
-            {/* Festive confetti background */}
             <div className="absolute inset-0 opacity-20" style={{
               backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px), radial-gradient(circle, #fff 1px, transparent 1px)',
               backgroundSize: '20px 20px',
               backgroundPosition: '0 0, 10px 10px'
             }}></div>
 
-            {/* Content */}
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center w-[80%] bg-white bg-opacity-20 backdrop-blur-sm p-6 rounded-lg">
               <div className="text-white text-sm uppercase tracking-wider mb-1">Bayramona Yubiley</div>
               <div className="text-white text-3xl font-bold mb-1">{firstName}</div>
@@ -327,7 +320,6 @@ const JubileeTemplate: React.FC<JubileeTemplateProps> = ({
       return (
         <div className="relative w-full h-full flex items-center justify-center">
           <div className="relative w-[650px] h-[400px] bg-gray-100 overflow-hidden">
-            {/* Photo area - will use uploaded image or placeholder */}
             <div className="absolute inset-0">
               {uploadedImage ? (
                 <img src={uploadedImage} alt="Jubilee" className="w-full h-full object-cover" />
@@ -336,11 +328,9 @@ const JubileeTemplate: React.FC<JubileeTemplateProps> = ({
                   <span className="text-white text-xl">Rasm yuklanmagan</span>
                 </div>
               )}
-              {/* Semi-transparent overlay */}
               <div className="absolute inset-0 bg-black bg-opacity-40"></div>
             </div>
 
-            {/* Content */}
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center w-[70%] backdrop-blur-sm p-6 border border-white border-opacity-30 rounded-lg">
               <div className="text-white text-sm uppercase tracking-widest mb-1">Yubiley Tantanasi</div>
               <div className="text-white text-3xl font-bold mb-1">{firstName}</div>
@@ -366,7 +356,6 @@ const JubileeTemplate: React.FC<JubileeTemplateProps> = ({
       return (
         <div className="relative w-full h-full flex items-center justify-center">
           <div className="relative w-[650px] h-[400px] bg-[#1a2a3a] overflow-hidden">
-            {/* Geometric patterns */}
             <div className="absolute top-0 left-0 w-full h-full">
               <svg width="100%" height="100%" viewBox="0 0 650 400" xmlns="http://www.w3.org/2000/svg">
                 <pattern id="triangles" width="50" height="50" patternUnits="userSpaceOnUse">
@@ -377,13 +366,10 @@ const JubileeTemplate: React.FC<JubileeTemplateProps> = ({
             </div>
 
             <div className="absolute top-6 left-6 right-6 bottom-6 border-[1px] border-[#4a7eb5]"></div>
-
-            {/* Content */}
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center w-[75%]">
               <div className="text-[#4a7eb5] text-sm uppercase tracking-widest mb-2">Yubiley Taklifi</div>
               <div className="text-[#a3c2e2] text-3xl font-bold mb-1">{firstName}</div>
               <div className="text-[#a3c2e2] text-5xl font-bold mb-3">{age}</div>
-
               <div className="flex items-center justify-center my-3">
                 <div className="w-12 h-[1px] bg-[#4a7eb5]"></div>
                 <div className="mx-3 text-[#4a7eb5]">◆</div>
@@ -408,7 +394,6 @@ const JubileeTemplate: React.FC<JubileeTemplateProps> = ({
       return (
         <div className="relative w-full h-full flex items-center justify-center">
           <div className="relative w-[650px] h-[400px] bg-[#f0f7e6] overflow-hidden">
-            {/* Nature-inspired background elements */}
             <div className="absolute top-0 left-0 w-32 h-32">
               <svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
                 <path d="M10,90 Q30,60 50,80 Q70,100 90,70 Q95,40 70,30 Q40,20 30,50 Q20,80 10,90 Z" fill="none" stroke="#88b06a" strokeWidth="1" />
@@ -420,7 +405,6 @@ const JubileeTemplate: React.FC<JubileeTemplateProps> = ({
               </svg>
             </div>
 
-            {/* Content */}
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center w-[75%] p-7 bg-white bg-opacity-70 rounded-lg border border-[#88b06a]">
               <div className="text-[#4a752d] text-sm uppercase tracking-wider mb-1">Tabiatdagi Yubiley</div>
               <div className="text-[#4a752d] text-3xl font-bold mb-1">{firstName}</div>

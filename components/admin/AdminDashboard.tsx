@@ -1,13 +1,11 @@
 import React from 'react';
 import TemplateStats from './TemplateStats';
-import { styleNameMap } from './styleNameMap';
 
 interface Template {
     name: string;
     styles: string[];
 }
 
-// Barcha mavjud shablonlar turlari va ularning uslublari
 const templates: Template[] = [
     {
         name: 'Tug\'ilgan kun',
@@ -27,17 +25,7 @@ const templates: Template[] = [
     }
 ];
 
-// Shablon turlarini o'zbek tilidagi nomlari bilan bog'lash
-const templateTypeMap = {
-    'BirthdayTemplate': 'Tug\'ilgan kun',
-    'WeddingTemplate': 'To\'y',
-    'EngagementTemplate': 'Qiz uzatish',
-    'FuneralTemplate': 'El oshi',
-    'JubileeTemplate': 'Yubiley'
-};
-
 export default function AdminDashboard() {
-    // Bu yerda backend dan ma'lumotlarni olish kerak
     const mockPurchaseData = {
         totalTemplates: templates.reduce((acc, template) => acc + template.styles.length, 0),
         templates: templates.map(template => ({

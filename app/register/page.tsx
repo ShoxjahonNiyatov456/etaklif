@@ -160,12 +160,11 @@ export default function RegisterPage() {
                       {error}
                     </div>
                   )}
-                  
+
                   <button
                     type="submit"
-                    className={`w-full px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors ${
-                      isLoading || !formData.agreeTerms ? "opacity-50 cursor-not-allowed" : ""
-                    }`}
+                    className={`w-full px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors ${isLoading || !formData.agreeTerms ? "opacity-50 cursor-not-allowed" : ""
+                      }`}
                     disabled={isLoading || !formData.agreeTerms}
                   >
                     {isLoading ? (
@@ -190,7 +189,7 @@ export default function RegisterPage() {
                   </div>
 
                   <div className="mt-6 grid grid-cols-2 gap-4">
-                    <button 
+                    <button
                       onClick={async (e) => {
                         e.preventDefault();
                         setIsLoading(true);
@@ -232,7 +231,7 @@ export default function RegisterPage() {
                       </svg>
                       Google
                     </button>
-                    <button 
+                    <button
                       onClick={async (e) => {
                         e.preventDefault();
                         setIsLoading(true);

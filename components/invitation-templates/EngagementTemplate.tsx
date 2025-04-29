@@ -22,7 +22,6 @@ export default function EngagementTemplate({
   const formattedDate = date
     ? (() => {
       try {
-        // Agar date YYYY-MM-DD formatida kelsa
         if (date.includes("-")) {
           const dateObj = new Date(date);
           if (isNaN(dateObj.getTime())) {
@@ -36,7 +35,6 @@ export default function EngagementTemplate({
           const month = months[dateObj.getMonth()];
           return `${day} ${month}`;
         }
-        // Agar date allaqachon DD Month formatida kelsa (formattan o'tgan)
         else {
           return date;
         }
@@ -143,8 +141,6 @@ export default function EngagementTemplate({
         >
           <div className="text-center">
             <h2 className="text-xl font-sans text-purple-700 uppercase tracking-wider mb-4">Qiz uzatish marosimi</h2>
-
-            {/* Photo area */}
             <div className="mb-6 flex justify-center">
               {uploadedImage ? (
                 <div className="w-40 h-40 rounded-lg overflow-hidden shadow-md relative">
@@ -186,8 +182,6 @@ export default function EngagementTemplate({
         <div className="bg-[#fff9f0] p-8 rounded-lg shadow-lg border-2 border-amber-200" style={{ minHeight: "550px" }}>
           <div className="text-center">
             <h2 className="text-2xl font-serif text-amber-800 mb-4">Qiz uzatish marosimi</h2>
-
-            {/* Photo area */}
             <div className="mb-6 flex justify-center">
               {uploadedImage ? (
                 <div className="relative">

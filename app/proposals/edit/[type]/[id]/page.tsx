@@ -32,7 +32,6 @@ export default function ProposalEditPage() {
   }
 
   const handleSave = () => {
-    // Save logic would go here
     alert("Taklifnoma saqlandi!")
   }
 
@@ -133,21 +132,19 @@ export default function ProposalEditPage() {
                   <div className="border-b border-gray-200 mb-4">
                     <div className="flex -mb-px">
                       <button
-                        className={`mr-4 py-2 px-4 ${
-                          activeTab === "content"
-                            ? "border-b-2 border-purple-600 text-purple-600 font-medium"
-                            : "text-gray-600 hover:text-purple-600"
-                        }`}
+                        className={`mr-4 py-2 px-4 ${activeTab === "content"
+                          ? "border-b-2 border-purple-600 text-purple-600 font-medium"
+                          : "text-gray-600 hover:text-purple-600"
+                          }`}
                         onClick={() => setActiveTab("content")}
                       >
                         Tarkib
                       </button>
                       <button
-                        className={`py-2 px-4 ${
-                          activeTab === "design"
-                            ? "border-b-2 border-purple-600 text-purple-600 font-medium"
-                            : "text-gray-600 hover:text-purple-600"
-                        }`}
+                        className={`py-2 px-4 ${activeTab === "design"
+                          ? "border-b-2 border-purple-600 text-purple-600 font-medium"
+                          : "text-gray-600 hover:text-purple-600"
+                          }`}
                         onClick={() => setActiveTab("design")}
                       >
                         Dizayn

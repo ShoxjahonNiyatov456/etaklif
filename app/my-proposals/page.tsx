@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Calendar, Clock, MapPin, Eye, Trash, ChevronRight } from "lucide-react";
@@ -27,16 +26,13 @@ type Invitation = {
 };
 
 export default function MyProposalsPage() {
-  const router = useRouter();
   const [invitations, setInvitations] = useState<Invitation[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Taklifnomalarni yuklash
     const loadInvitations = async () => {
       try {
         setLoading(true);
-        // getInvitationsByUser funksiyasi orqali barcha ma'lumotlarni olish
         const myInvitations = await getInvitationsByUser();
         setInvitations(myInvitations);
       } catch (error) {
@@ -50,18 +46,13 @@ export default function MyProposalsPage() {
   }, []);
 
   const deleteInvitation = (uniqueId: string) => {
-    // localStorage dan o'chirish
     const storedInvitations = localStorage.getItem("invitations");
     if (storedInvitations) {
       const parsedInvitations = JSON.parse(storedInvitations);
       delete parsedInvitations[uniqueId];
       localStorage.setItem("invitations", JSON.stringify(parsedInvitations));
     }
-
-    // sessionStorage dan o'chirish
     sessionStorage.removeItem(`invitation_${uniqueId}`);
-
-    // State yangilash
     setInvitations(prevInvitations => prevInvitations.filter(inv => inv.uniqueId !== uniqueId));
   };
 
@@ -84,15 +75,14 @@ export default function MyProposalsPage() {
 
   const formatDate = (dateString: string) => {
     if (!dateString) return "";
-    
+
     try {
       const months = [
         "Yanvar", "Fevral", "Mart", "Aprel", "May", "Iyun",
         "Iyul", "Avgust", "Sentyabr", "Oktyabr", "Noyabr", "Dekabr"
       ];
-      
+
       const date = new Date(dateString);
-      // Format: DD Oy_nomi
       const day = date.getDate();
       const month = months[date.getMonth()];
       return `${day} ${month}`;
@@ -156,12 +146,12 @@ export default function MyProposalsPage() {
                       <Calendar className="h-4 w-4 mr-2" />
                       <span className="text-sm">{formatDate(invitation.invitationData.date)}</span>
                     </div>
-                    
+
                     <div className="flex items-center text-gray-600">
                       <Clock className="h-4 w-4 mr-2" />
                       <span className="text-sm">{invitation.invitationData.time}</span>
                     </div>
-                    
+
                     <div className="flex items-start text-gray-600">
                       <MapPin className="h-4 w-4 mr-2 mt-0.5" />
                       <span className="text-sm line-clamp-1">{invitation.invitationData.location}</span>
@@ -169,14 +159,14 @@ export default function MyProposalsPage() {
                   </div>
 
                   <div className="flex justify-between items-center">
-                    <Link 
+                    <Link
                       href={`/invitation/${invitation.type}/${invitation.templateId}/${invitation.uniqueId}`}
                       className="inline-flex items-center text-primary-600 hover:text-primary-800"
                     >
                       <Eye className="h-4 w-4 mr-1" />
                       <span className="text-sm font-medium">Ko'rish</span>
                     </Link>
-                    
+
                     <span className="text-xs text-gray-500">
                       {new Date(invitation.createdAt).toLocaleDateString("uz-UZ")}
                     </span>

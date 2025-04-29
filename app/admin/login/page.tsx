@@ -25,7 +25,7 @@ export default function AdminLoginPage() {
       const result = await adminAuthService.loginAdmin(email, password);
       if (result.success && result.user) {
         const expires = new Date();
-        expires.setDate(expires.getDate() + 7); // 7 kunlik
+        expires.setDate(expires.getDate() + 7);
         document.cookie = `admin-session=${result.user.uid}; expires=${expires.toUTCString()}; path=/`;
         router.push(redirect);
       } else {

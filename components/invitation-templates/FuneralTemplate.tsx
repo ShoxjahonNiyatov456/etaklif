@@ -20,7 +20,6 @@ export default function FuneralTemplate({
   const formattedDate = date
     ? (() => {
       try {
-        // Agar date YYYY-MM-DD formatida kelsa
         if (date.includes("-")) {
           const dateObj = new Date(date);
           if (isNaN(dateObj.getTime())) {
@@ -32,10 +31,8 @@ export default function FuneralTemplate({
             "Iyul", "Avgust", "Sentyabr", "Oktyabr", "Noyabr", "Dekabr"
           ];
           const month = months[dateObj.getMonth()];
-          // Faqat kun va oy qaytarish, yil yo'q
           return `${day} ${month}`;
         }
-        // Agar date allaqachon DD Month formatida kelsa (formattan o'tgan)
         else {
           return date;
         }
@@ -79,24 +76,19 @@ export default function FuneralTemplate({
           <div className="absolute top-0 left-0 right-0 flex justify-center mt-4">
             <div className="bg-blue-400 text-white text-xs font-bold px-4 py-1 rounded-full shadow">EL OSHI</div>
           </div>
-
           <div className="text-center relative z-10 mt-10">
             <h2 className="text-2xl font-serif text-blue-800 mb-4">Aziz yurtdoshlar!</h2>
             <p className="text-lg text-blue-700 mb-6">Sizni el oshi marosimiga taklif etamiz</p>
-
             <h3 className="text-3xl font-cursive text-blue-900 mb-6">{truncateText(firstName) || "Akbar Karimov"}</h3>
-
             <div className="bg-white bg-opacity-80 p-6 rounded-lg shadow mb-6">
               <p className="text-blue-800 font-medium mb-2">{truncateText(formattedDate)}</p>
               <p className="text-blue-800 font-medium mb-2">Soat: {truncateText(time) || "12:00"}</p>
               <p className="text-blue-800 font-medium">{truncateText(location) || "Toshkent, Yunusobod tumani"}</p>
             </div>
-
             {truncateText(additionalInfo) && (
               <p className="text-sm text-blue-600 italic mt-4">{truncateText(additionalInfo)}</p>
             )}
           </div>
-
           <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-blue-400 text-xs">Savobga niyat qilindi</div>
         </div>
       )
@@ -108,10 +100,8 @@ export default function FuneralTemplate({
           <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-gray-400 text-white text-xs font-semibold px-4 py-1 rounded-full shadow">
             EL OSHI
           </div>
-
           <div className="text-center relative z-10 mt-16">
             <h2 className="text-2xl font-serif text-gray-700 mb-4">Marhum xotirasiga bag'ishlanadi</h2>
-
             <div className="flex justify-center mb-6">
               {uploadedImage ? (
                 <div className="w-36 h-36 rounded-full border-4 border-white shadow-lg overflow-hidden">
@@ -127,11 +117,8 @@ export default function FuneralTemplate({
                 </div>
               )}
             </div>
-
             <h3 className="text-3xl font-cursive text-gray-900 mb-2">{truncateText(firstName) || "Akbar Karimov"}</h3>
-
             <div className="w-20 h-1 bg-gray-400 mx-auto mb-6 rounded"></div>
-
             <div className="bg-white bg-opacity-80 p-6 rounded-lg shadow-md mb-6">
               <p className="text-gray-700 font-medium mb-2">{truncateText(formattedDate)}</p>
               <p className="text-gray-700 font-medium mb-2">Soat: {truncateText(time) || "12:00"}</p>
@@ -180,7 +167,6 @@ export default function FuneralTemplate({
           </div>
         </div>
       );
-
     case "islamic-memorial":
       return (
         <div className="bg-[#f8f4e8] p-8 rounded-lg shadow-lg" style={{ minHeight: "550px" }}>
@@ -189,8 +175,6 @@ export default function FuneralTemplate({
               <div className="text-2xl mb-2">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيم</div>
               <div className="text-sm">Mehribon va rahmli Alloh nomi bilan</div>
             </div>
-
-            {/* Photo area */}
             <div className="mb-6 flex justify-center">
               {uploadedImage ? (
                 <div className="w-36 h-36 rounded-lg border-2 border-green-700 overflow-hidden relative">

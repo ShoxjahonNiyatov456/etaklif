@@ -23,13 +23,12 @@ export default function TemplateStats({
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
       <h2 className="text-2xl font-semibold text-gray-800 mb-4">{templateName}</h2>
-      
+
       <div className="grid grid-cols-2 gap-4 mb-6">
         <div className="bg-blue-50 p-4 rounded-lg">
           <p className="text-sm text-blue-600">Jami sotuvlar</p>
           <p className="text-2xl font-bold text-blue-700">{totalSales}</p>
         </div>
-        
         <div className="bg-green-50 p-4 rounded-lg">
           <p className="text-sm text-green-600">Jami daromad</p>
           <p className="text-2xl font-bold text-green-700">

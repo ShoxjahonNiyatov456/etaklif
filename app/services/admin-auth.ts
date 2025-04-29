@@ -30,7 +30,6 @@ export interface AdminUser {
 }
 
 export const adminAuthService = {
-  // Admin sifatida kirish
   async loginAdmin(
     email: string,
     password: string
@@ -42,8 +41,6 @@ export const adminAuthService = {
         password
       );
       const user = userCredential.user;
-
-      // Foydalanuvchi admin ekanligini tekshirish
       const isAdmin = await this.isUserAdmin(user.uid);
 
       if (!isAdmin) {
@@ -53,10 +50,7 @@ export const adminAuthService = {
           error: "Sizning admin huquqingiz yo'q",
         };
       }
-
-      // Admin ma'lumotlarini olish
       const adminData = await this.getAdminData(user.uid);
-
       if (!adminData) {
         await signOut(auth);
         return {
@@ -64,7 +58,6 @@ export const adminAuthService = {
           error: "Admin ma'lumotlari topilmadi",
         };
       }
-
       return {
         success: true,
         user: adminData,
@@ -104,37 +97,28 @@ export const adminAuthService = {
           resolve(null);
           return;
         }
-
         const isAdmin = await this.isUserAdmin(user.uid);
-
         if (!isAdmin) {
           resolve(null);
           return;
         }
-
         const adminData = await this.getAdminData(user.uid);
         resolve(adminData);
       });
     });
   },
-
-  // Foydalanuvchi admin ekanligini tekshirish
   async isUserAdmin(uid: string): Promise<boolean> {
     const adminDocRef = doc(db, "admins", uid);
     const adminDoc = await getDoc(adminDocRef);
 
     return adminDoc.exists();
   },
-
-  // Admin ma'lumotlarini olish
   async getAdminData(uid: string): Promise<AdminUser | null> {
     const adminDocRef = doc(db, "admins", uid);
     const adminDoc = await getDoc(adminDocRef);
-
     if (!adminDoc.exists()) {
       return null;
     }
-
     const data = adminDoc.data();
     return {
       uid: adminDoc.id,

@@ -52,13 +52,11 @@ export default function CreatePage() {
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Kun va oy uchun alohida state'lar
   const [day, setDay] = useState<string>("");
   const [month, setMonth] = useState<string>("");
   const [hours, setHours] = useState<string>("");
   const [minutes, setMinutes] = useState<string>("");
 
-  // O'zbek tilidagi oylar ro'yxati
   const months = [
     { value: "0", label: "Yanvar" },
     { value: "1", label: "Fevral" },
@@ -74,13 +72,11 @@ export default function CreatePage() {
     { value: "11", label: "Dekabr" },
   ];
 
-  // Kunlarni generatsiya qilish (1-31)
   const days = Array.from({ length: 31 }, (_, i) => ({
     value: String(i + 1),
     label: String(i + 1),
   }));
 
-  // Soatlarni generatsiya qilish (0-23)
   const hoursOptions = Array.from({ length: 24 }, (_, i) => ({
     value: String(i).padStart(2, "0"),
     label: String(i).padStart(2, "0"),
@@ -144,10 +140,7 @@ export default function CreatePage() {
   };
 
   const checkFormCompletion = () => {
-    // Basic fields required for all invitation types
     let isComplete = false;
-
-    // Validate based on invitation type
     if (type === "wedding") {
       isComplete = !!formData.firstName &&
         !!formData.secondName &&
@@ -1115,11 +1108,7 @@ export default function CreatePage() {
               </form>
 
             </div>
-
-            {/* Fixed bottom button */}
-
           </TabsContent>
-
           <TabsContent value="templates" className="mt-0">
             <div className="bg-white p-5 rounded-lg shadow-sm border border-gray-200 mb-20">
               <div className={`${uploadedImage ? "flex gap-3" : ""}`}>

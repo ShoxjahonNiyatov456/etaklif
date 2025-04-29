@@ -1,15 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { eventTypesService } from "@/app/services/database";
-import { templatesService } from "@/app/services/database";
 import { EventType } from "@/app/models/eventTypes";
 import { Template } from "@/app/models/templates";
 import {
   Calendar,
   FileText,
   Grid,
-  Clock,
   AlertCircle,
   Palette,
   X
@@ -26,10 +23,8 @@ export default function AdminDashboard() {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedStyle, setSelectedStyle] = useState<string | null>(null);
 
-  // Wedding styles for direct display
   const weddingStyles = ['floral-gold', 'elegant-frame', 'blue-floral', 'golden-ornament', 'floral-hexagon'];
 
-  // Translation map for style names
   const styleNameMap: Record<string, string> = {
     'floral-gold': 'Guldor oltin',
     'elegant-frame': 'Elegant ramka',
@@ -43,13 +38,10 @@ export default function AdminDashboard() {
       try {
         setLoading(true);
         setError(null);
-
-        // Use local template data instead of Firebase
         const [fetchedEventTypes, fetchedTemplates] = await Promise.all([
           localTemplatesService.getAllEventTypes(),
           localTemplatesService.getAllTemplates()
         ]);
-
         setEventTypes(fetchedEventTypes);
         setTemplates(fetchedTemplates);
       } catch (err) {
@@ -63,19 +55,9 @@ export default function AdminDashboard() {
     fetchData();
   }, []);
 
-  // Statistika hisoblanishi
   const activeEventTypes = eventTypes.filter(et => et.isActive).length;
   const activeTemplates = templates.filter(t => t.isActive).length;
   const premiumTemplates = templates.filter(t => t.isPremium).length;
-
-  const latestEventTypes = [...eventTypes]
-    .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
-    .slice(0, 5);
-
-  // So'nggi shablonlar
-  const latestTemplates = [...templates]
-    .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
-    .slice(0, 5);
 
   if (loading) {
     return (
@@ -100,7 +82,6 @@ export default function AdminDashboard() {
     );
   }
 
-  // Sample data for templates
   const sampleData = {
     firstName: 'Alisher',
     secondName: 'Gulnora',
@@ -113,30 +94,20 @@ export default function AdminDashboard() {
   const openModal = (style: string) => {
     setSelectedStyle(style);
     setModalOpen(true);
-    // Prevent background scrolling when modal is open
     document.body.style.overflow = 'hidden';
   };
 
   const closeModal = () => {
     setModalOpen(false);
     setSelectedStyle(null);
-    // Re-enable scrolling
     document.body.style.overflow = 'auto';
   };
-
-  // Card o'lchami
-  const cardWidth = 240;
-  const cardGap = 24; // gap-6 = 1.5rem = 24px
-
-  // Styles ni 5 tadan guruhlash
   const chunkStyles = (styles: string[], size: number) => {
     return styles.reduce((result: string[][], item, index) => {
       const chunkIndex = Math.floor(index / size);
-
       if (!result[chunkIndex]) {
-        result[chunkIndex] = []; // Yangi chunk yaratish
+        result[chunkIndex] = [];
       }
-
       result[chunkIndex].push(item);
       return result;
     }, []);
@@ -283,7 +254,6 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      {/* Modal for fullscreen preview */}
       {modalOpen && selectedStyle && (
         <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex justify-center items-center p-4">
           <div className="bg-white rounded-lg max-w-4xl w-full max-h-screen overflow-auto relative">

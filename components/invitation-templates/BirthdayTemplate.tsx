@@ -22,7 +22,6 @@ export default function BirthdayTemplate({
   const formattedDate = date
     ? (() => {
       try {
-        // Agar date YYYY-MM-DD formatida kelsa
         if (date.includes("-")) {
           const dateObj = new Date(date);
           if (isNaN(dateObj.getTime())) {
@@ -36,7 +35,6 @@ export default function BirthdayTemplate({
           const month = months[dateObj.getMonth()];
           return `${day} ${month}`;
         }
-        // Agar date allaqachon DD Month formatida kelsa (formattan o'tgan)
         else {
           return date;
         }

@@ -1,11 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useSearchParams, useRouter } from "next/navigation";
-import { motion } from "framer-motion";
+import { useParams, useSearchParams } from "next/navigation";
 import {
-  Share2,
-  Download,
   Home,
   Phone,
   Mail,
@@ -23,10 +20,7 @@ import {
   getInvitationDataFromLink,
   getInvitationByUniqueId,
 } from "@/app/services/share";
-import { ShareModal } from "@/components/ui/share-modal";
 import Link from "next/link";
-
-// Texnik yordam uchun modal komponenti
 interface SupportModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -124,13 +118,11 @@ const SupportModal = ({ isOpen, onClose }: SupportModalProps) => {
 export default function InvitationPage() {
   const params = useParams();
   const searchParams = useSearchParams();
-  const router = useRouter();
   const { type, templateId, uniqueId } = params;
 
   const [invitationData, setInvitationData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [isSupportModalOpen, setIsSupportModalOpen] = useState(false);
 
   useEffect(() => {
@@ -138,8 +130,6 @@ export default function InvitationPage() {
       try {
         setLoading(true);
         setError(null);
-
-        // URL parametrlaridan ma'lumotlarni olish
         try {
           const dataFromUrl = getInvitationDataFromLink(
             searchParams.toString()
@@ -155,8 +145,6 @@ export default function InvitationPage() {
             urlError
           );
         }
-
-        // localStorage yoki serverdan ma'lumotlarni olish
         if (uniqueId) {
           try {
             const dataFromStorage = await getInvitationByUniqueId(
@@ -174,8 +162,6 @@ export default function InvitationPage() {
             );
           }
         }
-
-        // Ma'lumotlar topilmadi
         setError("Taklifnoma ma'lumotlari topilmadi");
         setLoading(false);
       } catch (error) {
@@ -188,35 +174,12 @@ export default function InvitationPage() {
     fetchData();
   }, [searchParams, uniqueId]);
 
-  const handleShare = () => {
-    if (typeof window !== "undefined") {
-      setIsShareModalOpen(true);
-    }
-  };
-
   const openSupportModal = () => {
     setIsSupportModalOpen(true);
   };
 
   const closeSupportModal = () => {
     setIsSupportModalOpen(false);
-  };
-
-  const getInvitationTypeName = () => {
-    switch (type) {
-      case "wedding":
-        return "To'y";
-      case "birthday":
-        return "Tug'ilgan kun";
-      case "funeral":
-        return "El oshi";
-      case "jubilee":
-        return "Yubiley";
-      case "engagement":
-        return "Qiz uzatish";
-      default:
-        return "Taklifnoma";
-    }
   };
 
   const renderTemplate = () => {
@@ -265,7 +228,7 @@ export default function InvitationPage() {
           <JubileeTemplate
             style={templateId as string}
             firstName={invitationData.firstName}
-            age={invitationData.age}
+            celebrationType={invitationData.age}
             date={invitationData.date}
             time={invitationData.time}
             location={invitationData.location}
@@ -291,14 +254,6 @@ export default function InvitationPage() {
     }
   };
 
-  const fadeIn = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.6 },
-    },
-  };
 
   if (loading) {
     return (
@@ -346,33 +301,10 @@ export default function InvitationPage() {
   }
 
   return (
-    <div className="pt-16 pb-24">
-      <div className="container mx-auto px-4 py-6">
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={fadeIn}
-          className="mb-8"
-        >
-        </motion.div>
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={fadeIn}
-          className="bg-white p-6 rounded-lg shadow-md border border-gray-200"
-        >
-          <div className="max-w-md mx-auto">{renderTemplate()}</div>
-        </motion.div>
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="w-full max-w-md">
+        {renderTemplate()}
       </div>
-
-      <ShareModal
-        isOpen={isShareModalOpen}
-        onClose={() => setIsShareModalOpen(false)}
-        url={typeof window !== "undefined" ? window.location.href : ""}
-        title={`${getInvitationTypeName()} taklifnomasi`}
-      />
-
-      <SupportModal isOpen={isSupportModalOpen} onClose={closeSupportModal} />
     </div>
   );
 }

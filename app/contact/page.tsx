@@ -25,8 +25,6 @@ export default function ContactPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-
-    // Simulate form submission
     setTimeout(() => {
       setIsSubmitting(false);
       setIsSubmitted(true);
@@ -35,8 +33,6 @@ export default function ContactPage() {
         email: "",
         message: "",
       });
-
-      // Reset success message after 5 seconds
       setTimeout(() => {
         setIsSubmitted(false);
       }, 5000);
@@ -111,9 +107,8 @@ export default function ContactPage() {
 
                     <button
                       type="submit"
-                      className={`btn-primary w-full flex items-center justify-center ${
-                        isSubmitting ? "opacity-70 cursor-not-allowed" : ""
-                      }`}
+                      className={`btn-primary w-full flex items-center justify-center ${isSubmitting ? "opacity-70 cursor-not-allowed" : ""
+                        }`}
                       disabled={isSubmitting}
                     >
                       {isSubmitting ? (

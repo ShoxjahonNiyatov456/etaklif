@@ -1,38 +1,6 @@
 "use client";
 
 export default function AboutPage() {
-  const fadeIn = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.6 },
-    },
-  };
-
-  const teamMembers = [
-    {
-      name: "Alisher Karimov",
-      role: "Asoschisi & CEO",
-      image: "/placeholder.svg?height=300&width=300",
-    },
-    {
-      name: "Dilnoza Rahimova",
-      role: "Dizayner",
-      image: "/placeholder.svg?height=300&width=300",
-    },
-    {
-      name: "Bobur Saidov",
-      role: "Dasturchi",
-      image: "/placeholder.svg?height=300&width=300",
-    },
-    {
-      name: "Madina Umarova",
-      role: "Marketing Menejeri",
-      image: "/placeholder.svg?height=300&width=300",
-    },
-  ];
-
   return (
     <div className="pt-16">
       <div className="container mx-auto px-4 py-10">
