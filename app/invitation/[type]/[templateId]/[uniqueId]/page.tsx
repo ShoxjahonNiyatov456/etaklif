@@ -2,13 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useSearchParams } from "next/navigation";
+import type { Metadata, ResolvingMetadata } from 'next';
 import {
   Home,
-  Phone,
-  Mail,
-  AlertCircle,
-  Instagram,
-  ExternalLink,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import WeddingTemplate from "@/components/invitation-templates/WeddingTemplate";
@@ -21,12 +17,130 @@ import {
   getInvitationByUniqueId,
 } from "@/app/services/share";
 import Link from "next/link";
+
+// Generate metadata for the page
+export async function generateMetadata(
+  { params }: { params: { type: string; templateId: string; uniqueId: string } },
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const { type, uniqueId } = params;
+  let invitationData: any = null;
+  try {
+    invitationData = await getInvitationByUniqueId(uniqueId as string);
+  } catch (error) {
+    console.error("Metadata uchun ma'lumot olishda xatolik:", error);
+  }
+
+  if (!invitationData) {
+    return {
+      title: "Taklifnoma",
+      description: "Taklifnomani ko'rish uchun havolani oching.",
+      openGraph: {
+        title: "Taklifnoma",
+        description: "Taklifnomani ko'rish uchun havolani oching.",
+        images: [
+          {
+            url: '/placeholder.svg',
+            width: 800,
+            height: 600,
+            alt: 'Taklifnoma',
+          },
+        ],
+        type: 'website',
+      },
+    };
+  }
+
+  let title = "Taklifnoma";
+  let description = "";
+
+  const eventType = type === 'wedding' ? "To'y"
+    : type === 'birthday' ? "Tug'ilgan kun"
+      : type === 'funeral' ? "El oshi"
+        : type === 'jubilee' ? "Yubiley"
+          : type === 'engagement' ? "Qiz uzatish"
+            : "Tadbir";
+
+  title = `${eventType} taklifnomasi`;
+
+  if (type === "wedding") {
+    description = `${invitationData.firstName} va ${invitationData.secondName}ning nikoh to'yiga taklifnoma.`;
+  } else if (type === "birthday") {
+    description = `${invitationData.firstName}ning ${invitationData.age} yoshga to'lish munosabati bilan o'tkaziladigan tug'ilgan kuniga taklifnoma.`;
+  } else if (type === "funeral") {
+    description = `${invitationData.firstName}ning el oshiga taklifnoma.`;
+  } else if (type === "jubilee") {
+    description = `${invitationData.firstName}ning ${invitationData.age} yosh yubileyiga taklifnoma.`;
+  } else if (type === "engagement") {
+    description = `${invitationData.firstName}ning qiz uzatish marosimiga taklifnoma.`;
+  } else {
+    description = `${invitationData.firstName}ning tadbiriga taklifnoma.`;
+  }
+  description += ` Vaqt: ${invitationData.date}, ${invitationData.time}. Manzil: ${invitationData.location}.`;
+  
+  // Rasm URL-i (yuklab olingan rasm yoki placeholder)
+  const imageUrl = invitationData.uploadedImage || '/placeholder.svg';
+  
+  // Full websitesda to'g'ri URL generatsiya qilish
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://taklifnoma.uz';
+  const fullUrl = `${baseUrl}/invitation/${type}/${params.templateId}/${uniqueId}`;
+  const fullImageUrl = `${baseUrl}/invitation/${type}/${params.templateId}/${uniqueId}/opengraph-image`;
+
+  return {
+    title: title,
+    description: description,
+    openGraph: {
+      title: title,
+      description: description,
+      images: [
+        {
+          url: fullImageUrl,
+          width: 1200,
+          height: 630,
+          alt: title,
+        },
+      ],
+      type: 'website',
+      url: fullUrl,
+      siteName: 'taklifnoma.uz',
+      locale: 'uz-UZ',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: title,
+      description: description,
+      images: [fullImageUrl],
+      creator: '@taklifnoma_uz',
+      site: '@taklifnoma_uz',
+    },
+    other: {
+      // Telegram Meta tags
+      'telegram:card': 'summary_large_image',
+      'telegram:site': '@taklifnoma_uz',
+      'telegram:title': title,
+      'telegram:description': description,
+      'telegram:image': fullImageUrl,
+      'telegram:creator': '@taklifnoma_uz',
+      // Facebook va boshqa tarmoqlar uchun
+      'og:url': fullUrl,
+      'og:title': title,
+      'og:description': description,
+      'og:image': fullImageUrl,
+      'og:image:width': '1200',
+      'og:image:height': '630',
+      'og:image:alt': title,
+      'og:site_name': 'taklifnoma.uz',
+      'og:locale': 'uz_UZ',
+      'og:type': 'website',
+    }
+  };
+}
+
 export default function InvitationPage() {
   const params = useParams();
   const searchParams = useSearchParams();
   const { type, templateId, uniqueId } = params;
-  
-  // Sahifa orqa fonini oq rangga o'zgartiramiz
+
   useEffect(() => {
     document.body.style.backgroundColor = 'white';
     return () => {

@@ -21,7 +21,8 @@ export function ShareModal({ isOpen, onClose, url, title }: ShareModalProps) {
   useEffect(() => {
     if (isBrowser && isOpen) {
       try {
-        navigator.clipboard.writeText(url);
+        const cleanUrl = url.replace(/localhost:\d+/, '').replace(/^https?:\/\/https?:\/\//, 'https://');
+        navigator.clipboard.writeText(cleanUrl);
         setCopied(true);
         const timer = setTimeout(() => {
           setCopied(false);
@@ -33,8 +34,6 @@ export function ShareModal({ isOpen, onClose, url, title }: ShareModalProps) {
       }
     }
   }, [isOpen, url, isBrowser]);
-
-  // Safe window.open function
   const safeWindowOpen = (url: string) => {
     if (isBrowser) {
       window.open(url, "_blank");
@@ -84,7 +83,8 @@ export function ShareModal({ isOpen, onClose, url, title }: ShareModalProps) {
   const safeCopyToClipboard = () => {
     if (isBrowser) {
       try {
-        navigator.clipboard.writeText(url);
+        const cleanUrl = url.replace(/localhost:\d+/, '').replace(/^https?:\/\/https?:\/\//, 'https://');
+        navigator.clipboard.writeText(cleanUrl);
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
       } catch (error) {
@@ -120,7 +120,7 @@ export function ShareModal({ isOpen, onClose, url, title }: ShareModalProps) {
                 <div className="flex mb-2">
                   <input
                     type="text"
-                    value={url}
+                    value={url.replace(/localhost:\d+/, '').replace(/^https?:\/\/https?:\/\//, 'https://')}
                     readOnly
                     className="w-full px-3 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-1 focus:ring-primary-500 text-sm"
                   />

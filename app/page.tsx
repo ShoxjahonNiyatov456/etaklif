@@ -26,7 +26,6 @@ export default function Home() {
       appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID
     };
 
-    // Firebase-ni ishga tushirish (agar ilova ishga tushirilmagan bo'lsa)
     try {
       initializeApp(firebaseConfig);
     } catch (error) {

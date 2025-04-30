@@ -53,17 +53,13 @@ export async function GET(request: Request) {
         { status: 200, headers }
       );
     }
-
-    // Ma'lumotlar topilmagan bo'lsa
     if (!invitationData) {
-      console.log(`Taklifnoma topilmadi: ${uniqueId}`);
       return NextResponse.json(
         { message: "Ko'rsatilgan taklifnoma topilmadi", invitationData: null },
         { status: 200, headers }
       );
     }
 
-    // Ma'lumotlarni qaytarish
     return NextResponse.json(invitationData, { headers });
   } catch (error) {
     console.error("Taklifnomani olishda xatolik:", error);

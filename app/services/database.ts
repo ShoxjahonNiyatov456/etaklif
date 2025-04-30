@@ -125,8 +125,6 @@ export const eventTypesService = {
       return false;
     }
   },
-
-  // Event turini o'chirish
   async deleteEventType(id: string): Promise<boolean> {
     const eventTypeRef = doc(db, "eventTypes", id);
 
@@ -283,7 +281,6 @@ export const templatesService = {
     }
   },
 
-  // Shablonni o'chirish
   async deleteTemplate(id: string): Promise<boolean> {
     const templateRef = doc(db, "templates", id);
 
@@ -296,7 +293,6 @@ export const templatesService = {
     }
   },
 
-  // ID bo'yicha shablonni olish
   async getTemplateById(id: string): Promise<Template | null> {
     const templateRef = doc(db, "templates", id);
     const templateSnap = await getDoc(templateRef);

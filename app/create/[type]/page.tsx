@@ -183,7 +183,6 @@ export default function CreatePage() {
   const handleTemplateSelect = (templateId: string) => {
     setSelectedTemplate(templateId);
     setTemplateSelected(true);
-    console.log("Template selected:", templateId);
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -480,7 +479,6 @@ export default function CreatePage() {
   }, [formData, type]);
   useEffect(() => {
     if (activeTab === "templates" && selectedTemplate && !templateSelected) {
-      console.log("Setting templateSelected to true based on selectedTemplate:", selectedTemplate);
       setTemplateSelected(true);
     }
   }, [activeTab, selectedTemplate, templateSelected]);
@@ -510,48 +508,10 @@ export default function CreatePage() {
     }
   };
 
-  const handleProceedToTemplates = () => {
-    console.log("Proceeding to templates, formCompleted:", formCompleted);
-    setActiveTab("templates");
-  };
-
-  const handleProceedToPreview = () => {
-    console.log("Proceeding to preview, templateSelected:", templateSelected);
-    setActiveTab("preview");
-  };
-
-  const formatDateForDisplay = (dateString: string) => {
-    const months = [
-      "Yanvar",
-      "Fevral",
-      "Mart",
-      "Aprel",
-      "May",
-      "Iyun",
-      "Iyul",
-      "Avgust",
-      "Sentyabr",
-      "Oktyabr",
-      "Noyabr",
-      "Dekabr",
-    ];
-
-    if (!dateString) return "";
-
-    try {
-      const date = new Date(dateString);
-      const day = date.getDate();
-      const month = months[date.getMonth()];
-      return `${day} ${month}`;
-    } catch (error) {
-      return dateString;
-    }
-  };
 
   const renderTemplatePreview = () => {
     const templateStyle =
       templates.find((t) => t.id === selectedTemplate)?.style || "";
-
     const wrappedLocationText = formData.location
       ? formData.location.substring(0, 30)
       : "";
@@ -560,7 +520,6 @@ export default function CreatePage() {
       ? formData.additionalInfo.substring(0, 30)
       : "";
 
-    // Sanani yuborish uchun formattedDate - bu shablonlarga uzatiladigan qiymat
     const formattedDate = formData.date;
 
     switch (type) {
@@ -1091,7 +1050,6 @@ export default function CreatePage() {
                   {formCompleted ? (
                     <Button
                       onClick={() => {
-                        console.log("Proceeding to templates, formCompleted:", formCompleted);
                         setActiveTab("templates");
                       }}
                       className="w-full bg-primary-600 hover:bg-primary-700"
@@ -1123,7 +1081,6 @@ export default function CreatePage() {
                           }`}
                         onClick={() => {
                           handleTemplateSelect(template.id);
-                          console.log(`Template clicked: ${template.id}, templateSelected now: true`);
                         }}
                       >
                         <div className="h-14 w-full flex items-center justify-center">
@@ -1200,7 +1157,6 @@ export default function CreatePage() {
                 {selectedTemplate ? (
                   <Button
                     onClick={() => {
-                      console.log("Continue button clicked. Template selected:", selectedTemplate);
                       setActiveTab("preview");
                     }}
                     className="w-full bg-primary-600 hover:bg-primary-700"

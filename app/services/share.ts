@@ -10,15 +10,29 @@ export const generateShareableLink = async (
   invitationData: any
 ): Promise<string> => {
   const uniqueId = generateUniqueId();
-  
+
   // Ma'lumotlarni saqlash
   saveInvitationToStorage(uniqueId, type, templateId, invitationData);
-  
+
   // Ma'lumotlarni serverga saqlash
   await saveInvitationToServer(uniqueId, type, templateId, invitationData);
+
+  // To'liq URL manzilini yaratish
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://taklifnoma.uz';
   
-  const shareableLink = `/invitation/${type}/${templateId}/${uniqueId}`;
-  return shareableLink;
+  // URL parametrlarini xavfsiz kodlash
+  const urlParts = [
+    'invitation',
+    encodeURIComponent(type),
+    encodeURIComponent(templateId),
+    encodeURIComponent(uniqueId)
+  ];
+  
+  // URL manzilini to'g'ri formatda yaratish
+  const path = urlParts.join('/');
+  const fullUrl = new URL(path, baseUrl);
+  
+  return fullUrl.toString();
 };
 
 /**
@@ -86,10 +100,10 @@ const saveInvitationToServer = async (
   invitationData: any
 ): Promise<void> => {
   try {
-    const response = await fetch('/api/save-invitation', {
-      method: 'POST',
+    const response = await fetch("/api/save-invitation", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         uniqueId,
@@ -101,10 +115,10 @@ const saveInvitationToServer = async (
     });
 
     if (!response.ok) {
-      throw new Error('Serverga ma\'lumotlarni saqlashda xatolik');
+      throw new Error("Serverga ma'lumotlarni saqlashda xatolik");
     }
   } catch (error) {
-    console.error('Serverga ma\'lumotlarni saqlashda xatolik:', error);
+    console.error("Serverga ma'lumotlarni saqlashda xatolik:", error);
     // Xatolik bo'lsa ham davom etamiz, chunki localStorage backup sifatida ishlaydi
   }
 };
@@ -130,7 +144,9 @@ export const getInvitationDataFromLink = (queryParams: string): any => {
 /**
  * Unique ID bo'yicha taklifnomani olish
  */
-export const getInvitationByUniqueId = async (uniqueId: string): Promise<any> => {
+export const getInvitationByUniqueId = async (
+  uniqueId: string
+): Promise<any> => {
   try {
     // 1. Avval sessionStorage-dan tekshirish
     if (typeof window !== "undefined") {
@@ -161,41 +177,38 @@ export const getInvitationByUniqueId = async (uniqueId: string): Promise<any> =>
  */
 const fetchInvitationFromServer = async (uniqueId: string): Promise<any> => {
   try {
-    // Fetch bilan bog'liq muammolarni hal qilish uchun try/catch blokini ishlatamiz
     try {
       const response = await fetch(`/api/get-invitation?uniqueId=${uniqueId}`, {
-        method: 'GET',
+        method: "GET",
         headers: {
-          'Cache-Control': 'no-cache',
-          'Pragma': 'no-cache',
+          "Cache-Control": "no-cache",
+          Pragma: "no-cache",
         },
       });
-      
+
       if (!response.ok) {
         console.log(`Server javob kodi: ${response.status}`);
-        // 404 xatoligi bo'lsa, ma'lumotlar yo'qligini bildiradi
         if (response.status === 404) {
           return null;
         }
-        // Server xatoligi bo'lsa ham null qaytarish kerak
         return null;
       }
-      
+
       const data = await response.json();
       // Serverdan kelgan ma'lumotlarni tekshirish
       if (!data || !data.invitationData) {
-        console.warn('Server tomonidan ma\'lumotlar topilmadi:', data);
+        console.warn("Server tomonidan ma'lumotlar topilmadi:", data);
         return null;
       }
-      
+
       return data.invitationData;
     } catch (fetchError) {
-      console.error('Fetch so\'rovida xatolik yuz berdi:', fetchError);
+      console.error("Fetch so'rovida xatolik yuz berdi:", fetchError);
       // API ga so'rov qilishda xatolik bo'lgan holda ham null qaytaramiz
       return null;
     }
   } catch (error) {
-    console.error('Serverdan ma\'lumotlarni olishda xatolik:', error);
+    console.error("Serverdan ma'lumotlarni olishda xatolik:", error);
     return null;
   }
 };
@@ -206,7 +219,7 @@ const fetchInvitationFromServer = async (uniqueId: string): Promise<any> => {
 export const getInvitationsByUser = async (userId?: string): Promise<any[]> => {
   try {
     const invitations: any[] = [];
-    
+
     // 1. Avval sessionStorage-dan olish
     if (typeof window !== "undefined") {
       // SessionStorage-dagi taklifnomalarni olish
@@ -215,7 +228,7 @@ export const getInvitationsByUser = async (userId?: string): Promise<any[]> => {
         if (key && key.startsWith("invitation_")) {
           const uniqueId = key.replace("invitation_", "");
           const sessionData = sessionStorage.getItem(key);
-          
+
           if (sessionData) {
             const invitation = JSON.parse(sessionData);
             invitations.push({
@@ -228,15 +241,15 @@ export const getInvitationsByUser = async (userId?: string): Promise<any[]> => {
           }
         }
       }
-      
+
       // 2. LocalStorage-dan olish
       const storedInvitations = localStorage.getItem("invitations");
       if (storedInvitations) {
         const parsedInvitations = JSON.parse(storedInvitations);
-        
-        Object.keys(parsedInvitations).forEach(uniqueId => {
+
+        Object.keys(parsedInvitations).forEach((uniqueId) => {
           // Agar bu taklifnoma allaqachon qo'shilmagan bo'lsa
-          if (!invitations.some(inv => inv.uniqueId === uniqueId)) {
+          if (!invitations.some((inv) => inv.uniqueId === uniqueId)) {
             const invitation = parsedInvitations[uniqueId];
             invitations.push({
               uniqueId,
@@ -249,7 +262,7 @@ export const getInvitationsByUser = async (userId?: string): Promise<any[]> => {
         });
       }
     }
-    
+
     // 3. Agar foydalanuvchi ID berilgan bo'lsa, serverdan ham olish (kelajakda qo'shiladigan funksional)
     if (userId) {
       try {
@@ -260,22 +273,28 @@ export const getInvitationsByUser = async (userId?: string): Promise<any[]> => {
             // Serverdan kelgan taklifnomalarni qo'shish
             data.invitations.forEach((serverInvitation: any) => {
               // Agar bu taklifnoma allaqachon qo'shilmagan bo'lsa
-              if (!invitations.some(inv => inv.uniqueId === serverInvitation.uniqueId)) {
+              if (
+                !invitations.some(
+                  (inv) => inv.uniqueId === serverInvitation.uniqueId
+                )
+              ) {
                 invitations.push(serverInvitation);
               }
             });
           }
         }
       } catch (serverError) {
-        console.error("Serverdan taklifnomalarni olishda xatolik:", serverError);
+        console.error(
+          "Serverdan taklifnomalarni olishda xatolik:",
+          serverError
+        );
       }
     }
-    
+
     // Tartiblash - eng yangi taklifnomalar yuqorida
     return invitations.sort((a, b) => {
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     });
-    
   } catch (error) {
     console.error("Taklifnomalarni olishda xatolik:", error);
     return [];

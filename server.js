@@ -25,7 +25,7 @@ const auth = getAuth(firebaseApp);
 // Ro'yxatdan o'tish API
 app.post('/api/register', async (req, res) => {
   const { name, email, password } = req.body;
-  
+
   if (!email || !password || !name) {
     return res.status(400).json({ error: "Barcha maydonlarni to'ldiring" });
   }
@@ -34,7 +34,7 @@ app.post('/api/register', async (req, res) => {
     // Firebase orqali foydalanuvchini ro'yxatdan o'tkazish
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
-    
+
     // Foydalanuvchi ma'lumotlarini qaytarish (token va boshqa ma'lumotlar)
     res.status(201).json({
       success: true,
@@ -48,13 +48,13 @@ app.post('/api/register', async (req, res) => {
   } catch (error) {
     console.error('Ro\'yxatdan o\'tishda xatolik:', error);
     let errorMessage = "Ro'yxatdan o'tishda xatolik yuz berdi";
-    
+
     if (error.code === 'auth/email-already-in-use') {
       errorMessage = "Bu email allaqachon ro'yxatdan o'tgan";
     } else if (error.code === 'auth/weak-password') {
       errorMessage = "Parol juda oddiy";
     }
-    
+
     res.status(400).json({ error: errorMessage });
   }
 });
@@ -62,17 +62,14 @@ app.post('/api/register', async (req, res) => {
 // Kirish API
 app.post('/api/login', async (req, res) => {
   const { email, password } = req.body;
-  
+
   if (!email || !password) {
     return res.status(400).json({ error: "Email va parolni kiriting" });
   }
 
   try {
-    // Firebase orqali foydalanuvchini tekshirish
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
-    
-    // Foydalanuvchi ma'lumotlarini qaytarish
     res.status(200).json({
       success: true,
       user: {
@@ -84,11 +81,11 @@ app.post('/api/login', async (req, res) => {
   } catch (error) {
     console.error('Kirishda xatolik:', error);
     let errorMessage = "Kirish vaqtida xatolik yuz berdi";
-    
+
     if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
       errorMessage = "Email yoki parol noto'g'ri";
     }
-    
+
     res.status(400).json({ error: errorMessage });
   }
 });
@@ -99,7 +96,7 @@ app.post('/api/login/google', async (req, res) => {
     const provider = new GoogleAuthProvider();
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
-    
+
     res.status(200).json({
       success: true,
       user: {
@@ -121,7 +118,7 @@ app.post('/api/login/facebook', async (req, res) => {
     const provider = new FacebookAuthProvider();
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
-    
+
     res.status(200).json({
       success: true,
       user: {
