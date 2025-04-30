@@ -39,8 +39,6 @@ export function ShareModal({ isOpen, onClose, url, title }: ShareModalProps) {
       window.open(url, "_blank");
     }
   };
-
-  // Share on WhatsApp
   const shareOnWhatsApp = () => {
     safeWindowOpen(
       `https://api.whatsapp.com/send?text=${encodeURIComponent(

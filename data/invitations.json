@@ -190,5 +190,21 @@
       "uploadedImage": null
     },
     "createdAt": "2025-04-30T13:45:29.800Z"
+  },
+  "mbt805kjyzq5n81axcl41c": {
+    "type": "birthday",
+    "templateId": "kids",
+    "invitationData": {
+      "firstName": "Zahro",
+      "secondName": "",
+      "date": "2026-04-02",
+      "time": "07:15",
+      "location": "Asr To'yxonasi",
+      "additionalInfo": "",
+      "age": "90",
+      "parents": "",
+      "uploadedImage": null
+    },
+    "createdAt": "2025-04-30T14:20:24.188Z"
   }
 }
