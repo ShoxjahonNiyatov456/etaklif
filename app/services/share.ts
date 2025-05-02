@@ -17,18 +17,26 @@ export const generateShareableLink = async (
   invitationData: any
 ): Promise<string> => {
   const uniqueId = generateUniqueId();
-  saveInvitationToFirebase(uniqueId, type, templateId, invitationData);
-  await saveInvitationToServer(uniqueId, type, templateId, invitationData);
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://taklifnoma.uz";
-  const urlParts = [
-    "invitation",
-    encodeURIComponent(type),
-    encodeURIComponent(templateId),
-    encodeURIComponent(uniqueId),
-  ];
-  const path = urlParts.join("/");
-  const fullUrl = new URL(path, baseUrl);
-  return fullUrl.toString();
+  await saveInvitationToFirebase(uniqueId, type, templateId, invitationData);
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+  if (!baseUrl) {
+    console.error(
+      "NEXT_PUBLIC_API_URL is not defined. Please check your environment variables."
+    );
+    return "#error-base-url-not-set";
+  }
+
+  const path = `/invitation/${encodeURIComponent(type)}/${encodeURIComponent(
+    templateId
+  )}/${encodeURIComponent(uniqueId)}`;
+  try {
+    const cleanBaseUrl = baseUrl.endsWith("/") ? baseUrl.slice(0, -1) : baseUrl;
+    const fullUrl = `${cleanBaseUrl}${path}`;
+    return fullUrl;
+  } catch (error) {
+    console.error("Error constructing URL:", error);
+    return "#error-url-construction-failed";
+  }
 };
 
 /**
@@ -145,7 +153,6 @@ export const getInvitationByUniqueId = async (
   uniqueId: string
 ): Promise<any> => {
   try {
-    // Birinchi Firebase'dan qidiramiz
     const firebaseData = await getInvitationFromFirebase(uniqueId);
     if (firebaseData) {
       return firebaseData;
@@ -153,46 +160,6 @@ export const getInvitationByUniqueId = async (
     return null;
   } catch (error) {
     console.error("Taklifnomani olishda xatolik:", error);
-    return null;
-  }
-};
-
-/**
- * Taklifnomani serverdan olish (hozircha ishlatilmaydi)
- */
-const fetchInvitationFromServer = async (uniqueId: string): Promise<any> => {
-  try {
-    try {
-      const baseUrl =
-        process.env.NEXT_PUBLIC_BASE_URL || "https://taklifnoma.uz";
-      const response = await fetch(
-        `${baseUrl}/api/get-invitation?uniqueId=${uniqueId}`,
-        {
-          method: "GET",
-          headers: {
-            "Cache-Control": "no-cache",
-            Pragma: "no-cache",
-          },
-        }
-      );
-      if (!response.ok) {
-        console.log(`Server javob kodi: ${response.status}`);
-        if (response.status === 404) {
-          return null;
-        }
-      }
-      const data = await response.json();
-      if (!data || !data.invitationData) {
-        console.warn("Server tomonidan ma'lumotlar topilmadi:", data);
-        return null;
-      }
-      return data.invitationData;
-    } catch (fetchError) {
-      console.error("Fetch so'rovida xatolik yuz berdi:", fetchError);
-      return null;
-    }
-  } catch (error) {
-    console.error("Serverdan ma'lumotlarni olishda xatolik:", error);
     return null;
   }
 };

@@ -79,12 +79,6 @@ export default function Header() {
                         </p>
                       </div>
                       <Link
-                        href="/profile"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      >
-                        Profil
-                      </Link>
-                      <Link
                         href="/my-proposals"
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                       >
@@ -157,15 +151,6 @@ export default function Header() {
                       <p className="text-sm font-medium">{currentUser.email}</p>
                     </div>
                   </div>
-
-                  <Link
-                    href="/profile"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <button className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors rounded-md">
-                      Profil
-                    </button>
-                  </Link>
 
                   <Link
                     href="/my-proposals"

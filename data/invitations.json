@@ -286,5 +286,39 @@
       "uploadedImage": null
     },
     "createdAt": "2025-05-02T12:34:56.131Z"
+  },
+  "jxk2jewd99nb1u3n2a5f6j": {
+    "type": "wedding",
+    "templateId": "floral-gold",
+    "invitationData": {
+      "userId": "uoSrau37sbbDwNe1OZx8Sknecq83",
+      "firstName": "Zahro",
+      "secondName": "Tohir",
+      "date": "2026-02-02",
+      "time": "01:15",
+      "location": "Asr To'yxonasi",
+      "additionalInfo": "yoshlarimiz baxtli bo'lsin",
+      "age": "",
+      "parents": "",
+      "uploadedImage": null
+    },
+    "createdAt": "2025-05-02T14:12:02.847Z"
+  },
+  "z010zq215hlrvmbum0e1q": {
+    "type": "wedding",
+    "templateId": "blue-floral",
+    "invitationData": {
+      "userId": "uoSrau37sbbDwNe1OZx8Sknecq83",
+      "firstName": "Zahro",
+      "secondName": "Tohir",
+      "date": "2026-04-04",
+      "time": "02:15",
+      "location": "Asr To'yxonasi",
+      "additionalInfo": "yoshlarimiz baxtli bo'lsin",
+      "age": "",
+      "parents": "",
+      "uploadedImage": null
+    },
+    "createdAt": "2025-05-02T14:14:16.276Z"
   }
 }

@@ -3,7 +3,6 @@ import { Inter, Dancing_Script, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import ClientWrapper from "@/components/client-wrapper";
 
-// Configure the fonts
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
@@ -25,7 +24,7 @@ export const metadata = {
   title: "Taklifnoma - Zamonaviy taklifnomalar platformasi",
   description: "Chiroyli va zamonaviy taklifnomalarni yarating",
   generator: "v0.dev",
-  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'https://taklifnoma.uz'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_API_URL || 'https://taklifnoma.uz'),
   openGraph: {
     title: "Taklifnoma - Zamonaviy taklifnomalar platformasi",
     description: "Chiroyli va zamonaviy taklifnomalarni yarating",
@@ -50,14 +49,12 @@ export const metadata = {
     images: ["/twitter-image.png"],
   },
   other: {
-    // Telegram Meta tags
     "telegram:card": "summary_large_image",
     "telegram:site": "@taklifnoma_uz",
     "telegram:title": "Taklifnoma - Zamonaviy taklifnomalar platformasi",
     "telegram:description": "Chiroyli va zamonaviy taklifnomalarni yarating",
     "telegram:image": "/opengraph-image.png",
     "telegram:creator": "@taklifnoma_uz",
-    // Facebook mata tags
     "og:url": "https://taklifnoma.uz",
     "og:title": "Taklifnoma - Zamonaviy taklifnomalar platformasi",
     "og:description": "Chiroyli va zamonaviy taklifnomalarni yarating",

@@ -28,7 +28,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
+import { getCurrentUser } from "@/app/services/auth";
 export default function CreatePage() {
   const params = useParams();
   const router = useRouter();
@@ -597,6 +597,15 @@ export default function CreatePage() {
   const [paymentProcessing, setPaymentProcessing] = useState(false);
 
   const handlePayment = async () => {
+    const currentUser = getCurrentUser(); // Get current user
+
+    // Check if user is authenticated before proceeding
+    if (!currentUser) {
+      alert("Avval ro'yxatdan o'ting yoki tizimga kiring."); // Show warning in Uzbek
+      setPaymentProcessing(false); // Reset processing state if needed
+      return; // Stop the process if not authenticated
+    }
+
     try {
       setPaymentProcessing(true);
       await new Promise((resolve) => setTimeout(resolve, 1500));
@@ -604,6 +613,7 @@ export default function CreatePage() {
       setPaymentCompleted(true);
 
       const invitationData = {
+        userId: currentUser.uid, // Use the actual user ID from Firebase Auth
         firstName: formData.firstName,
         secondName: formData.secondName,
         date: formData.date,
