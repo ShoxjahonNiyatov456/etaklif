@@ -223,7 +223,6 @@ export default async function Image({ params }) {
       }
     )
   } catch (error) {
-    // Xatolik bo'lsa standart rasm qaytarish
     return new ImageResponse(
       (
         <div
