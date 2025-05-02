@@ -11,9 +11,8 @@ export const size = {
 
 export default async function Image({ params }) {
   try {
-    // Taklifnoma ma'lumotlarini olish
     const invitationData = await getInvitationByUniqueId(params.uniqueId)
-    
+
     if (!invitationData) {
       return new ImageResponse(
         (
@@ -33,9 +32,9 @@ export default async function Image({ params }) {
             }}
           >
             <div style={{ marginBottom: '20px' }}>Taklifnoma topilmadi</div>
-            <div style={{ 
-              fontSize: 24, 
-              opacity: 0.7 
+            <div style={{
+              fontSize: 24,
+              opacity: 0.7
             }}>
               taklifnoma.uz
             </div>
@@ -107,7 +106,7 @@ export default async function Image({ params }) {
 
     // Rasm mavjudligini tekshirish
     const hasImage = invitationData.uploadedImage && invitationData.uploadedImage.length > 0
-    
+
     return new ImageResponse(
       (
         <div
@@ -125,9 +124,9 @@ export default async function Image({ params }) {
         >
           {/* Background with overlay */}
           {hasImage ? (
-            <div style={{ 
-              position: 'absolute', 
-              inset: 0, 
+            <div style={{
+              position: 'absolute',
+              inset: 0,
               display: 'flex',
               backgroundImage: `url(${invitationData.uploadedImage})`,
               backgroundSize: 'cover',
@@ -135,15 +134,15 @@ export default async function Image({ params }) {
               filter: 'brightness(0.7)',
             }} />
           ) : (
-            <div style={{ 
-              position: 'absolute', 
+            <div style={{
+              position: 'absolute',
               inset: 0,
               background: 'linear-gradient(to bottom right, #f0f9ff, #e6f7ff, #ccecff)',
             }} />
           )}
-          
+
           {/* Content overlay */}
-          <div style={{ 
+          <div style={{
             position: 'absolute',
             inset: 0,
             background: hasImage ? 'rgba(0, 0, 0, 0.5)' : 'rgba(0, 0, 0, 0.1)',
@@ -155,57 +154,57 @@ export default async function Image({ params }) {
             textAlign: 'center',
             color: hasImage ? 'white' : '#333',
           }}>
-            <div style={{ 
-              fontSize: 48, 
-              fontWeight: 'bold', 
+            <div style={{
+              fontSize: 48,
+              fontWeight: 'bold',
               marginBottom: 20,
               textShadow: hasImage ? '0 2px 4px rgba(0,0,0,0.5)' : 'none',
             }}>
               {title}
             </div>
-            
-            <div style={{ 
-              fontSize: 40, 
-              marginBottom: 30, 
+
+            <div style={{
+              fontSize: 40,
+              marginBottom: 30,
               maxWidth: '80%',
               textShadow: hasImage ? '0 2px 4px rgba(0,0,0,0.5)' : 'none',
             }}>
               {description}
             </div>
-            
-            <div style={{ 
-              display: 'flex', 
+
+            <div style={{
+              display: 'flex',
               flexDirection: 'column',
-              gap: '10px', 
+              gap: '10px',
               marginBottom: 20,
               background: 'rgba(255,255,255,0.2)',
               padding: '20px',
               borderRadius: '10px',
               backdropFilter: 'blur(5px)',
             }}>
-              <div style={{ 
+              <div style={{
                 fontSize: 28,
                 textShadow: hasImage ? '0 1px 2px rgba(0,0,0,0.5)' : 'none',
               }}>
                 Sana: {formattedDate}
               </div>
-              <div style={{ 
+              <div style={{
                 fontSize: 28,
                 textShadow: hasImage ? '0 1px 2px rgba(0,0,0,0.5)' : 'none',
               }}>
                 Vaqt: {time}
               </div>
-              <div style={{ 
+              <div style={{
                 fontSize: 28,
                 textShadow: hasImage ? '0 1px 2px rgba(0,0,0,0.5)' : 'none',
               }}>
                 Manzil: {location}
               </div>
             </div>
-            
-            <div style={{ 
-              position: 'absolute', 
-              bottom: 20, 
+
+            <div style={{
+              position: 'absolute',
+              bottom: 20,
               fontSize: 20,
               opacity: 0.8,
               display: 'flex',
@@ -243,9 +242,9 @@ export default async function Image({ params }) {
           }}
         >
           <div style={{ marginBottom: '20px' }}>Taklifnoma</div>
-          <div style={{ 
-            fontSize: 24, 
-            opacity: 0.7 
+          <div style={{
+            fontSize: 24,
+            opacity: 0.7
           }}>
             taklifnoma.uz
           </div>

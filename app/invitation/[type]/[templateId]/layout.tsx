@@ -10,8 +10,9 @@ interface LayoutProps {
 }
 
 export async function generateMetadata({ params }: LayoutProps): Promise<Metadata> {
-  const invitationData = await getInvitationByUniqueId(params.templateId);
-  
+  const { type, templateId } = params;
+  const invitationData = await getInvitationByUniqueId(templateId);
+
   if (!invitationData) {
     return {
       title: 'Taklifnoma topilmadi',
@@ -22,7 +23,7 @@ export async function generateMetadata({ params }: LayoutProps): Promise<Metadat
   const title = invitationData.title || 'Taklifnoma';
   const description = invitationData.description || 'Rasuljon va Oytovuqlarning nikoh tuyiga taklifnoma. Vaqt va manzil.';
   const imageUrl = invitationData.imageUrl || `${process.env.NEXT_PUBLIC_BASE_URL}/images/default-invitation.jpg`;
-  const url = `${process.env.NEXT_PUBLIC_BASE_URL}/invitation/${params.type}/${params.templateId}`;
+  const url = `${process.env.NEXT_PUBLIC_BASE_URL}/invitation/${type}/${templateId}`;
 
   return {
     title,

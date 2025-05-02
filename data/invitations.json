@@ -206,5 +206,21 @@
       "uploadedImage": null
     },
     "createdAt": "2025-04-30T14:20:24.188Z"
+  },
+  "pnm1q0mpwh96zugazmxk3r": {
+    "type": "wedding",
+    "templateId": "floral-gold",
+    "invitationData": {
+      "firstName": "Zahro",
+      "secondName": "Tohir",
+      "date": "2026-04-02",
+      "time": "03:15",
+      "location": "Asr To'yxonasi",
+      "additionalInfo": "Yoshlarimiz Baxtli bo'lsin",
+      "age": "",
+      "parents": "",
+      "uploadedImage": null
+    },
+    "createdAt": "2025-05-02T09:48:37.480Z"
   }
 }

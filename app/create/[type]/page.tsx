@@ -1049,6 +1049,7 @@ export default function CreatePage() {
                 <div className="p-4 border-t z-10">
                   {formCompleted ? (
                     <Button
+                      type="button"
                       onClick={() => {
                         setActiveTab("templates");
                       }}
@@ -1156,6 +1157,7 @@ export default function CreatePage() {
               <div className="p-4 border-t z-10 ">
                 {selectedTemplate ? (
                   <Button
+                    type="button"
                     onClick={() => {
                       setActiveTab("preview");
                     }}
