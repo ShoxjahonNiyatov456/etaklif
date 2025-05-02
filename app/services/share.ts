@@ -1,4 +1,5 @@
-// Taklifnoma ulashish uchun servis
+import { collection, doc, setDoc, serverTimestamp } from "firebase/firestore";
+import { db } from "./database";
 
 /**
  * Taklifnoma uchun unikal havola yaratish
@@ -10,28 +11,17 @@ export const generateShareableLink = async (
   invitationData: any
 ): Promise<string> => {
   const uniqueId = generateUniqueId();
-
-  // Ma'lumotlarni saqlash
-  saveInvitationToStorage(uniqueId, type, templateId, invitationData);
-
-  // Ma'lumotlarni serverga saqlash
+  saveInvitationToFirebase(uniqueId, type, templateId, invitationData);
   await saveInvitationToServer(uniqueId, type, templateId, invitationData);
-
-  // To'liq URL manzilini yaratish
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://taklifnoma.uz';
-  
-  // URL parametrlarini xavfsiz kodlash
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://taklifnoma.uz";
   const urlParts = [
-    'invitation',
+    "invitation",
     encodeURIComponent(type),
     encodeURIComponent(templateId),
-    encodeURIComponent(uniqueId)
+    encodeURIComponent(uniqueId),
   ];
-  
-  // URL manzilini to'g'ri formatda yaratish
-  const path = urlParts.join('/');
+  const path = urlParts.join("/");
   const fullUrl = new URL(path, baseUrl);
-  
   return fullUrl.toString();
 };
 
@@ -46,47 +36,31 @@ const generateUniqueId = (): string => {
 };
 
 /**
- * Taklifnoma ma'lumotlarini sessionStorage-ga saqlash (localStorage o'rniga faqat joriy sessiya uchun)
+ * Taklifnoma ma'lumotlarini Firebase-ga saqlash
  */
-const saveInvitationToStorage = (
+const saveInvitationToFirebase = async (
   uniqueId: string,
   type: string,
   templateId: string,
   invitationData: any
-): void => {
+): Promise<void> => {
   try {
-    // Browser muhitida ekanligini tekshirish
-    if (typeof window === "undefined") {
-      return;
-    }
+    const invitationsCollection = collection(db, "invitations");
+    const invitationRef = doc(invitationsCollection, uniqueId);
 
-    // Taklifnomani joriy sessiya uchun saqlash (boshqa qurilmalarda ko'rinmasligi uchun localStorage emas, sessionStorage ishlatiladi)
-    sessionStorage.setItem(
-      `invitation_${uniqueId}`,
-      JSON.stringify({
-        type,
-        templateId,
-        invitationData,
-        createdAt: new Date().toISOString(),
-      })
-    );
-
-    // Backward compatibility: localStorage-da ham saqlash
-    const storedInvitations = localStorage.getItem("invitations") || "{}";
-    const invitations = JSON.parse(storedInvitations);
-
-    // Yangi taklifnomani qo'shish
-    invitations[uniqueId] = {
+    await setDoc(invitationRef, {
+      uniqueId,
       type,
       templateId,
       invitationData,
-      createdAt: new Date().toISOString(),
-    };
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    });
 
-    // Saqlash
-    localStorage.setItem("invitations", JSON.stringify(invitations));
+    await saveInvitationToServer(uniqueId, type, templateId, invitationData);
   } catch (error) {
     console.error("Taklifnomani saqlashda xatolik:", error);
+    throw error;
   }
 };
 
@@ -119,7 +93,6 @@ const saveInvitationToServer = async (
     }
   } catch (error) {
     console.error("Serverga ma'lumotlarni saqlashda xatolik:", error);
-    // Xatolik bo'lsa ham davom etamiz, chunki localStorage backup sifatida ishlaydi
   }
 };
 
@@ -128,12 +101,10 @@ const saveInvitationToServer = async (
  */
 export const getInvitationDataFromLink = (queryParams: string): any => {
   try {
-    // Eski usul - URL parametrlaridan ma'lumotlarni olish (agar mavjud bo'lsa)
     const data = new URLSearchParams(queryParams).get("data");
     if (data) {
       return JSON.parse(decodeURIComponent(data));
     }
-
     return null;
   } catch (error) {
     console.error("Taklifnoma ma'lumotlarini o'qishda xatolik:", error);
@@ -148,23 +119,6 @@ export const getInvitationByUniqueId = async (
   uniqueId: string
 ): Promise<any> => {
   try {
-    // 1. Avval sessionStorage-dan tekshirish
-    if (typeof window !== "undefined") {
-      const sessionData = sessionStorage.getItem(`invitation_${uniqueId}`);
-      if (sessionData) {
-        const parsedData = JSON.parse(sessionData);
-        return parsedData.invitationData || null;
-      }
-
-      // 2. localStorage-dan tekshirish (eskirgan usul)
-      const storedInvitations = localStorage.getItem("invitations") || "{}";
-      const invitations = JSON.parse(storedInvitations);
-      if (invitations[uniqueId]?.invitationData) {
-        return invitations[uniqueId].invitationData;
-      }
-    }
-
-    // 3. Serverdan ma'lumotlarni olish
     return await fetchInvitationFromServer(uniqueId);
   } catch (error) {
     console.error("Taklifnomani olishda xatolik:", error);
@@ -178,33 +132,32 @@ export const getInvitationByUniqueId = async (
 const fetchInvitationFromServer = async (uniqueId: string): Promise<any> => {
   try {
     try {
-      const response = await fetch(`/api/get-invitation?uniqueId=${uniqueId}`, {
-        method: "GET",
-        headers: {
-          "Cache-Control": "no-cache",
-          Pragma: "no-cache",
-        },
-      });
-
+      const baseUrl =
+        process.env.NEXT_PUBLIC_BASE_URL || "https://taklifnoma.uz";
+      const response = await fetch(
+        `${baseUrl}/api/get-invitation?uniqueId=${uniqueId}`,
+        {
+          method: "GET",
+          headers: {
+            "Cache-Control": "no-cache",
+            Pragma: "no-cache",
+          },
+        }
+      );
       if (!response.ok) {
         console.log(`Server javob kodi: ${response.status}`);
         if (response.status === 404) {
           return null;
         }
-        return null;
       }
-
       const data = await response.json();
-      // Serverdan kelgan ma'lumotlarni tekshirish
       if (!data || !data.invitationData) {
         console.warn("Server tomonidan ma'lumotlar topilmadi:", data);
         return null;
       }
-
       return data.invitationData;
     } catch (fetchError) {
       console.error("Fetch so'rovida xatolik yuz berdi:", fetchError);
-      // API ga so'rov qilishda xatolik bo'lgan holda ham null qaytaramiz
       return null;
     }
   } catch (error) {
@@ -218,81 +171,17 @@ const fetchInvitationFromServer = async (uniqueId: string): Promise<any> => {
  */
 export const getInvitationsByUser = async (userId?: string): Promise<any[]> => {
   try {
-    const invitations: any[] = [];
-
-    // 1. Avval sessionStorage-dan olish
-    if (typeof window !== "undefined") {
-      // SessionStorage-dagi taklifnomalarni olish
-      for (let i = 0; i < sessionStorage.length; i++) {
-        const key = sessionStorage.key(i);
-        if (key && key.startsWith("invitation_")) {
-          const uniqueId = key.replace("invitation_", "");
-          const sessionData = sessionStorage.getItem(key);
-
-          if (sessionData) {
-            const invitation = JSON.parse(sessionData);
-            invitations.push({
-              uniqueId,
-              type: invitation.type,
-              templateId: invitation.templateId,
-              invitationData: invitation.invitationData,
-              createdAt: invitation.createdAt,
-            });
-          }
-        }
-      }
-
-      // 2. LocalStorage-dan olish
-      const storedInvitations = localStorage.getItem("invitations");
-      if (storedInvitations) {
-        const parsedInvitations = JSON.parse(storedInvitations);
-
-        Object.keys(parsedInvitations).forEach((uniqueId) => {
-          // Agar bu taklifnoma allaqachon qo'shilmagan bo'lsa
-          if (!invitations.some((inv) => inv.uniqueId === uniqueId)) {
-            const invitation = parsedInvitations[uniqueId];
-            invitations.push({
-              uniqueId,
-              type: invitation.type,
-              templateId: invitation.templateId,
-              invitationData: invitation.invitationData,
-              createdAt: invitation.createdAt,
-            });
-          }
-        });
-      }
+    const response = await fetch(
+      `/api/user-invitations${userId ? `?userId=${userId}` : ""}`
+    );
+    if (!response.ok) {
+      throw new Error("Serverdan ma'lumotlarni olishda xatolik");
     }
-
-    // 3. Agar foydalanuvchi ID berilgan bo'lsa, serverdan ham olish (kelajakda qo'shiladigan funksional)
-    if (userId) {
-      try {
-        const response = await fetch(`/api/user-invitations?userId=${userId}`);
-        if (response.ok) {
-          const data = await response.json();
-          if (data && Array.isArray(data.invitations)) {
-            // Serverdan kelgan taklifnomalarni qo'shish
-            data.invitations.forEach((serverInvitation: any) => {
-              // Agar bu taklifnoma allaqachon qo'shilmagan bo'lsa
-              if (
-                !invitations.some(
-                  (inv) => inv.uniqueId === serverInvitation.uniqueId
-                )
-              ) {
-                invitations.push(serverInvitation);
-              }
-            });
-          }
-        }
-      } catch (serverError) {
-        console.error(
-          "Serverdan taklifnomalarni olishda xatolik:",
-          serverError
-        );
-      }
+    const data = await response.json();
+    if (!data || !Array.isArray(data.invitations)) {
+      return [];
     }
-
-    // Tartiblash - eng yangi taklifnomalar yuqorida
-    return invitations.sort((a, b) => {
+    return data.invitations.sort((a: any, b: any) => {
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     });
   } catch (error) {

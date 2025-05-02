@@ -36,7 +36,7 @@ export default function InvitationPage() {
         setLoading(true);
         setError(null);
         try {
-          const dataFromUrl = getInvitationDataFromLink(
+          const dataFromUrl = await getInvitationDataFromLink(
             searchParams.toString()
           );
           if (dataFromUrl) {

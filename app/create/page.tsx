@@ -23,16 +23,38 @@ export default function CreatePage() {
   useEffect(() => {
     setSelectedTemplate(null);
   }, [selectedType]);
-
   useEffect(() => {
-    const savedFormData = localStorage.getItem('formData');
-    if (savedFormData) {
-      setFormData(JSON.parse(savedFormData));
-    }
+    const loadFormData = async () => {
+      try {
+        const response = await fetch('/api/form-data');
+        if (response.ok) {
+          const data = await response.json();
+          if (data) {
+            setFormData(data);
+          }
+        }
+      } catch (error) {
+        console.error('Form ma\'lumotlarini yuklashda xatolik:', error);
+      }
+    };
+    loadFormData();
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('formData', JSON.stringify(formData));
+    const saveFormData = async () => {
+      try {
+        await fetch('/api/form-data', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        });
+      } catch (error) {
+        console.error('Form ma\'lumotlarini saqlashda xatolik:', error);
+      }
+    };
+    saveFormData();
   }, [formData]);
 
   const handleInputChange = (

@@ -11,9 +11,6 @@ import {
   query,
   where,
   orderBy,
-  limit,
-  DocumentData,
-  QueryDocumentSnapshot,
   serverTimestamp,
   Timestamp,
 } from "firebase/firestore";
@@ -21,7 +18,6 @@ import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { EventType, EventTypeFormData } from "../models/eventTypes";
 import { Template, TemplateFormData } from "../models/templates";
 
-// Firebase konfiguratsiyasi
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
@@ -31,14 +27,10 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-// Firebase-ni ishga tushirish
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const storage = getStorage(app);
-
-// Event turlari uchun xizmat
 export const eventTypesService = {
-  // Barcha event turlarini olish
   async getAllEventTypes(): Promise<EventType[]> {
     const eventTypesCollection = collection(db, "eventTypes");
     const q = query(eventTypesCollection, orderBy("createdAt", "desc"));
@@ -161,7 +153,6 @@ export const eventTypesService = {
 
 // Shablonlar uchun xizmat
 export const templatesService = {
-  // Barcha shablonlarni olish
   async getAllTemplates(): Promise<Template[]> {
     const templatesCollection = collection(db, "templates");
     const q = query(templatesCollection, orderBy("createdAt", "desc"));
@@ -319,10 +310,10 @@ export const templatesService = {
 
 // Fayl yuklash uchun xizmat
 export const storageService = {
-  // Rasm yuklash
   async uploadImage(file: File, path: string): Promise<string> {
     const storageRef = ref(storage, `${path}/${Date.now()}_${file.name}`);
     await uploadBytes(storageRef, file);
     return await getDownloadURL(storageRef);
   },
 };
+export { db };

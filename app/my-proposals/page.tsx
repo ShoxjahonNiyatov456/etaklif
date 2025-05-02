@@ -45,15 +45,20 @@ export default function MyProposalsPage() {
     loadInvitations();
   }, []);
 
-  const deleteInvitation = (uniqueId: string) => {
-    const storedInvitations = localStorage.getItem("invitations");
-    if (storedInvitations) {
-      const parsedInvitations = JSON.parse(storedInvitations);
-      delete parsedInvitations[uniqueId];
-      localStorage.setItem("invitations", JSON.stringify(parsedInvitations));
+  const deleteInvitation = async (uniqueId: string) => {
+    try {
+      const response = await fetch(`/api/delete-invitation?uniqueId=${uniqueId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Taklifnomani o\'chirishda xatolik');
+      }
+
+      setInvitations(prevInvitations => prevInvitations.filter(inv => inv.uniqueId !== uniqueId));
+    } catch (error) {
+      console.error('Taklifnomani o\'chirishda xatolik:', error);
     }
-    sessionStorage.removeItem(`invitation_${uniqueId}`);
-    setInvitations(prevInvitations => prevInvitations.filter(inv => inv.uniqueId !== uniqueId));
   };
 
   const getInvitationTypeName = (type: string) => {
@@ -193,4 +198,4 @@ export default function MyProposalsPage() {
       </div>
     </div>
   );
-} 
+}
