@@ -1,4 +1,10 @@
-import { collection, doc, setDoc, serverTimestamp } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  setDoc,
+  serverTimestamp,
+  getDoc,
+} from "firebase/firestore";
 import { db } from "./database";
 
 /**
@@ -113,13 +119,38 @@ export const getInvitationDataFromLink = (queryParams: string): any => {
 };
 
 /**
+ * Unique ID bo'yicha taklifnomani Firebase'dan olish
+ */
+const getInvitationFromFirebase = async (uniqueId: string): Promise<any> => {
+  try {
+    const invitationsCollection = collection(db, "invitations");
+    const invitationRef = doc(invitationsCollection, uniqueId);
+    const docSnap = await getDoc(invitationRef);
+
+    if (docSnap.exists()) {
+      return docSnap.data().invitationData;
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.error("Firebase'dan ma'lumot olishda xatolik:", error);
+    return null;
+  }
+};
+
+/**
  * Unique ID bo'yicha taklifnomani olish
  */
 export const getInvitationByUniqueId = async (
   uniqueId: string
 ): Promise<any> => {
   try {
-    return await fetchInvitationFromServer(uniqueId);
+    // Birinchi Firebase'dan qidiramiz
+    const firebaseData = await getInvitationFromFirebase(uniqueId);
+    if (firebaseData) {
+      return firebaseData;
+    }
+    return null;
   } catch (error) {
     console.error("Taklifnomani olishda xatolik:", error);
     return null;
@@ -127,7 +158,7 @@ export const getInvitationByUniqueId = async (
 };
 
 /**
- * Taklifnomani serverdan olish
+ * Taklifnomani serverdan olish (hozircha ishlatilmaydi)
  */
 const fetchInvitationFromServer = async (uniqueId: string): Promise<any> => {
   try {
