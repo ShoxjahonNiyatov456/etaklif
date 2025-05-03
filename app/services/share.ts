@@ -59,6 +59,21 @@ const saveInvitationToFirebase = async (
   invitationData: any
 ): Promise<void> => {
   try {
+    // Foydalanuvchi identifikatorini cookie'dan olish
+    let userId = "anonymous";
+    try {
+      const cookies = document.cookie.split(';');
+      for (const cookie of cookies) {
+        const [name, value] = cookie.trim().split('=');
+        if (name === 'userId') {
+          userId = value;
+          break;
+        }
+      }
+    } catch (error) {
+      console.error("Cookie'dan userId ni olishda xatolik:", error);
+    }
+
     const invitationsCollection = collection(db, "invitations");
     const invitationRef = doc(invitationsCollection, uniqueId);
 
@@ -67,6 +82,7 @@ const saveInvitationToFirebase = async (
       type,
       templateId,
       invitationData,
+      userId,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     });
@@ -88,6 +104,21 @@ const saveInvitationToServer = async (
   invitationData: any
 ): Promise<void> => {
   try {
+    // Foydalanuvchi identifikatorini cookie'dan olish
+    let userId = "anonymous";
+    try {
+      const cookies = document.cookie.split(';');
+      for (const cookie of cookies) {
+        const [name, value] = cookie.trim().split('=');
+        if (name === 'userId') {
+          userId = value;
+          break;
+        }
+      }
+    } catch (error) {
+      console.error("Cookie'dan userId ni olishda xatolik:", error);
+    }
+
     const response = await fetch("/api/save-invitation", {
       method: "POST",
       headers: {
@@ -98,6 +129,7 @@ const saveInvitationToServer = async (
         type,
         templateId,
         invitationData,
+        userId,
         createdAt: new Date().toISOString(),
       }),
     });

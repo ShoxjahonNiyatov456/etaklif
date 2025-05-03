@@ -118,7 +118,7 @@ export function ShareModal({ isOpen, onClose, url, title }: ShareModalProps) {
                 <div className="flex mb-2">
                   <input
                     type="text"
-                    value={url.replace(/localhost:\d+/, '').replace(/^https?:\/\/https?:\/\//, 'https://')}
+                    value={url.replace(/localhost:\d+/, '')}
                     readOnly
                     className="w-full px-3 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-1 focus:ring-primary-500 text-sm"
                   />

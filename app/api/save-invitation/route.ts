@@ -58,6 +58,7 @@ export async function POST(request: Request) {
       type,
       templateId,
       invitationData,
+      userId: body.userId || "anonymous",
       createdAt: createdAt || new Date().toISOString(),
     };
 
