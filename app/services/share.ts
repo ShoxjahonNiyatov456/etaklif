@@ -30,8 +30,8 @@ export const generateShareableLink = async (
     templateId
   )}/${encodeURIComponent(uniqueId)}`;
   try {
-    const cleanBaseUrl = baseUrl.endsWith("/") ? baseUrl.slice(0, -1) : baseUrl;
-    const fullUrl = `${cleanBaseUrl}${path}`;
+    const urlObject = new URL(path, baseUrl);
+    const fullUrl = urlObject.href;
     return fullUrl;
   } catch (error) {
     console.error("Error constructing URL:", error);
@@ -62,10 +62,10 @@ const saveInvitationToFirebase = async (
     // Foydalanuvchi identifikatorini cookie'dan olish
     let userId = "anonymous";
     try {
-      const cookies = document.cookie.split(';');
+      const cookies = document.cookie.split(";");
       for (const cookie of cookies) {
-        const [name, value] = cookie.trim().split('=');
-        if (name === 'userId') {
+        const [name, value] = cookie.trim().split("=");
+        if (name === "userId") {
           userId = value;
           break;
         }
@@ -107,10 +107,10 @@ const saveInvitationToServer = async (
     // Foydalanuvchi identifikatorini cookie'dan olish
     let userId = "anonymous";
     try {
-      const cookies = document.cookie.split(';');
+      const cookies = document.cookie.split(";");
       for (const cookie of cookies) {
-        const [name, value] = cookie.trim().split('=');
-        if (name === 'userId') {
+        const [name, value] = cookie.trim().split("=");
+        if (name === "userId") {
           userId = value;
           break;
         }
