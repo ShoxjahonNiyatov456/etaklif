@@ -18,7 +18,7 @@ export const generateShareableLink = async (
 ): Promise<string> => {
   const uniqueId = generateUniqueId();
   await saveInvitationToFirebase(uniqueId, type, templateId, invitationData);
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+  let baseUrl = process.env.NEXT_PUBLIC_API_URL;
   if (!baseUrl) {
     console.error(
       "NEXT_PUBLIC_API_URL is not defined. Please check your environment variables."
@@ -26,12 +26,24 @@ export const generateShareableLink = async (
     return "#error-base-url-not-set";
   }
 
+  // Clean up potential extra http:/// after the domain in Vercel URL
+  baseUrl = baseUrl.replace(/(\.vercel\.app)http:\/\//i, "$1");
+
   const path = `/invitation/${encodeURIComponent(type)}/${encodeURIComponent(
     templateId
   )}/${encodeURIComponent(uniqueId)}`;
   try {
-    const urlObject = new URL(path, baseUrl);
-    const fullUrl = urlObject.href;
+    // Ensure baseUrl doesn't end with a slash if path starts with one
+    const cleanBaseUrl =
+      baseUrl.endsWith("/") && path.startsWith("/")
+        ? baseUrl.slice(0, -1)
+        : baseUrl;
+    const urlObject = new URL(path, cleanBaseUrl);
+    let fullUrl = urlObject.href;
+
+    // Double check and clean the final URL just in case
+    fullUrl = fullUrl.replace(/(\.vercel\.app)http:\/\//i, "$1");
+
     return fullUrl;
   } catch (error) {
     console.error("Error constructing URL:", error);

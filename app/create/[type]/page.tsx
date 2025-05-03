@@ -141,40 +141,48 @@ export default function CreatePage() {
 
   const checkFormCompletion = () => {
     let isComplete = false;
+    const isDateSelected = !!day && !!month;
+    const isTimeSelected = !!hours && !!minutes;
+
     if (type === "wedding") {
       isComplete = !!formData.firstName &&
         !!formData.secondName &&
-        !!formData.date &&
-        !!formData.time &&
+        isDateSelected &&
+        isTimeSelected &&
         !!formData.location;
     } else if (type === "birthday") {
       isComplete = !!formData.firstName &&
         !!formData.age &&
-        !!formData.date &&
-        !!formData.time &&
+        isDateSelected &&
+        isTimeSelected &&
         !!formData.location;
     } else if (type === "funeral") {
       isComplete = !!formData.firstName &&
-        !!formData.date &&
-        !!formData.time &&
+        isDateSelected &&
+        isTimeSelected &&
         !!formData.location;
     } else if (type === "jubilee") {
       isComplete = !!formData.firstName &&
         !!formData.age &&
-        !!formData.date &&
-        !!formData.time &&
+        isDateSelected &&
+        isTimeSelected &&
         !!formData.location;
     } else if (type === "engagement") {
       isComplete = !!formData.firstName &&
         !!formData.parents &&
-        !!formData.date &&
-        !!formData.time &&
+        isDateSelected &&
+        isTimeSelected &&
         !!formData.location;
     }
+
+    // Qo'shimcha ma'lumotlar va manzil maydonlari uchun umumiy tekshiruv
+    // Bu qatorni olib tashladim, chunki har bir 'if' bloki ichida manzil tekshirilmoqda:
+    // isComplete = isComplete && !!formData.location;
 
     if (dateError && isComplete) {
       isComplete = false;
     }
+    // Faqat haqiqiy o'zgarish bo'lganda state yangilanadi
     if (isComplete !== formCompleted) {
       setFormCompleted(isComplete);
     }
@@ -1057,7 +1065,7 @@ export default function CreatePage() {
                   <span className="text-red-500">*</span> Majburiy to'ldiriladigan maydonlar
                 </div>
                 <div className="p-4 border-t z-10">
-                  {formCompleted ? (
+                  {formCompleted && day && month && hours && minutes ? (
                     <Button
                       type="button"
                       onClick={() => {

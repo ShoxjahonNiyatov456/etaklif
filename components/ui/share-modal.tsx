@@ -72,16 +72,14 @@ export function ShareModal({ isOpen, onClose, url, title }: ShareModalProps) {
     );
   };
 
-  // Share on Instagram
   const shareOnInstagram = () => {
     safeWindowOpen("https://www.instagram.com/");
   };
 
-  // Safe clipboard write function
   const safeCopyToClipboard = () => {
     if (isBrowser) {
       try {
-        const cleanUrl = url.replace(/localhost:\d+/, '').replace(/^https?:\/\/https?:\/\//, 'https://');
+        const cleanUrl = url.replace(/localhost:\d+/, '');
         navigator.clipboard.writeText(cleanUrl);
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);

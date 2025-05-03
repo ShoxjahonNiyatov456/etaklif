@@ -88,16 +88,10 @@ export default function LoginPage() {
                       />
                     </div>
                   </div>
-
                   <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <label htmlFor="password" className="text-sm font-medium">
-                        Parol
-                      </label>
-                      <Link href="/forgot-password" className="text-sm text-purple-600 hover:underline">
-                        Parolni unutdingizmi?
-                      </Link>
-                    </div>
+                    <label htmlFor="password" className="text-sm font-medium">
+                      Parol
+                    </label>
                     <div className="relative">
                       <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                       <input

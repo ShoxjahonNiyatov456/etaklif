@@ -16,7 +16,6 @@ export default function RegisterPage() {
     name: "",
     email: "",
     password: "",
-    agreeTerms: false,
   })
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -24,9 +23,7 @@ export default function RegisterPage() {
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
-  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData((prev) => ({ ...prev, agreeTerms: e.target.checked }))
-  }
+
 
   const [error, setError] = useState<string>("");
   const router = useRouter();
@@ -136,25 +133,6 @@ export default function RegisterPage() {
                       </button>
                     </div>
                   </div>
-
-                  <div className="flex items-center space-x-2">
-                    <input
-                      type="checkbox"
-                      id="agreeTerms"
-                      checked={formData.agreeTerms}
-                      onChange={handleCheckboxChange}
-                      required
-                      className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
-                    />
-                    <label htmlFor="agreeTerms" className="text-sm font-medium leading-none">
-                      Men{" "}
-                      <Link href="/terms" className="text-purple-600 hover:underline">
-                        foydalanish shartlari
-                      </Link>{" "}
-                      bilan tanishdim va roziman
-                    </label>
-                  </div>
-
                   {error && (
                     <div className="p-3 bg-red-50 border border-red-200 text-red-600 rounded-md text-sm">
                       {error}
@@ -163,9 +141,9 @@ export default function RegisterPage() {
 
                   <button
                     type="submit"
-                    className={`w-full px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors ${isLoading || !formData.agreeTerms ? "opacity-50 cursor-not-allowed" : ""
+                    className={`w-full px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors ${isLoading ? "opacity-50 cursor-not-allowed" : ""
                       }`}
-                    disabled={isLoading || !formData.agreeTerms}
+                    disabled={isLoading}
                   >
                     {isLoading ? (
                       <>

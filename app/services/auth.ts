@@ -47,9 +47,15 @@ export const registerUser = async (
       user,
     };
   } catch (error: any) {
+    let errorMessage = "Ro'yxatdan o'tishda xatolik yuz berdi";
+    if (error.code === 'auth/email-already-in-use') {
+      errorMessage = "Bu email manzili bilan allaqachon ro'yxatdan o'tilgan.";
+    }
+    // Boshqa xatolik kodlarini ham shu yerda tekshirish mumkin
+    
     return {
       success: false,
-      error: "Ro'yxatdan o'tishda xatolik yuz berdi",
+      error: errorMessage,
     };
   }
 };
