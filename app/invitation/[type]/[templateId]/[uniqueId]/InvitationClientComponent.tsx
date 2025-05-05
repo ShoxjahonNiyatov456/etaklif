@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Home } from "lucide-react";
@@ -16,23 +16,12 @@ interface InvitationClientComponentProps {
     type: string;
     templateId: string;
     uniqueId: string;
-    searchParamsString: string;
+    searchParams: { [key: string]: string | string[] | undefined };
 }
 export default function InvitationClientComponent({
-    type,
-    templateId,
     uniqueId,
-    searchParamsString,
 }: InvitationClientComponentProps) {
-    const searchParams = new URLSearchParams(searchParamsString);
-
-    useEffect(() => {
-        document.body.style.backgroundColor = "white";
-        return () => {
-            document.body.style.backgroundColor = "";
-        };
-    }, []);
-
+    const searchParams = useSearchParams();
     const [invitationData, setInvitationData] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -75,8 +64,6 @@ export default function InvitationClientComponent({
                         );
                     }
                 }
-
-                // If neither method works, set error
                 setError("Taklifnoma ma'lumotlari topilmadi");
                 setLoading(false);
             } catch (error) {
@@ -85,9 +72,8 @@ export default function InvitationClientComponent({
                 setLoading(false);
             }
         };
-
         fetchData();
-    }, [uniqueId, searchParamsString]); // Depend on uniqueId and searchParamsString
+    }, [uniqueId, searchParams]);
 
     if (loading) {
         return (
@@ -124,19 +110,24 @@ export default function InvitationClientComponent({
     }
 
     const renderTemplate = () => {
-        switch (type) {
+        const templateType = invitationData?.type;
+        const currentTemplateId = invitationData?.templateId;
+        if (!templateType || !currentTemplateId) {
+            return <p>Taklifnoma turi yoki shablon ID topilmadi.</p>;
+        }
+        switch (templateType) {
             case "wedding":
-                return <WeddingTemplate {...invitationData} templateId={templateId as string} uniqueId={uniqueId as string} />;
+                return <WeddingTemplate {...invitationData} style={currentTemplateId as string} />;
             case "birthday":
-                return <BirthdayTemplate {...invitationData} templateId={templateId as string} uniqueId={uniqueId as string} />;
+                return <BirthdayTemplate {...invitationData} style={currentTemplateId as string} />;
             case "funeral":
-                return <FuneralTemplate {...invitationData} templateId={templateId as string} uniqueId={uniqueId as string} />;
+                return <FuneralTemplate {...invitationData} style={currentTemplateId as string} />;
             case "jubilee":
-                return <JubileeTemplate {...invitationData} templateId={templateId as string} uniqueId={uniqueId as string} />;
+                return <JubileeTemplate {...invitationData} style={currentTemplateId as string} />;
             case "engagement":
-                return <EngagementTemplate {...invitationData} templateId={templateId as string} uniqueId={uniqueId as string} />;
+                return <EngagementTemplate {...invitationData} style={currentTemplateId as string} />;
             default:
-                return <p>Noto'g'ri taklifnoma turi.</p>;
+                return <p>Noto'g'ri taklifnoma turi: {templateType}</p>;
         }
     };
 

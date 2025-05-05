@@ -333,15 +333,11 @@ export default function WeddingTemplate({
               </p>
 
               <p className="text-sm text-gray-700 mb-1">
-                Soat: {time || "half past five o'clock"}
+                Soat: {time || "5:30"}
               </p>
               <p className="text-sm text-gray-700 uppercase mb-1">
-                {location || "SUNRISES PARADISE RESORT"}
+                {location || "Asr To'yxonasi"}
               </p>
-              <p className="text-sm text-gray-700 mb-6">
-                {location ? "" : "cancun, mexico"}
-              </p>
-
               {formattedAdditionalInfo && (
                 <p className="text-xs text-gray-600 italic mt-4 invitation-text">
                   {formattedAdditionalInfo}

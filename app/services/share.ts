@@ -26,24 +26,18 @@ export const generateShareableLink = async (
     return "#error-base-url-not-set";
   }
 
-  // Clean up potential extra http:/// after the domain in Vercel URL
   baseUrl = baseUrl.replace(/(\.vercel\.app)http:\/\//i, "$1");
-
   const path = `/invitation/${encodeURIComponent(type)}/${encodeURIComponent(
     templateId
   )}/${encodeURIComponent(uniqueId)}`;
   try {
-    // Ensure baseUrl doesn't end with a slash if path starts with one
     const cleanBaseUrl =
       baseUrl.endsWith("/") && path.startsWith("/")
         ? baseUrl.slice(0, -1)
         : baseUrl;
     const urlObject = new URL(path, cleanBaseUrl);
     let fullUrl = urlObject.href;
-
-    // Double check and clean the final URL just in case
     fullUrl = fullUrl.replace(/(\.vercel\.app)http:\/\//i, "$1");
-
     return fullUrl;
   } catch (error) {
     console.error("Error constructing URL:", error);
@@ -71,7 +65,6 @@ const saveInvitationToFirebase = async (
   invitationData: any
 ): Promise<void> => {
   try {
-    // Foydalanuvchi identifikatorini cookie'dan olish
     let userId = "anonymous";
     try {
       const cookies = document.cookie.split(";");
@@ -116,7 +109,6 @@ const saveInvitationToServer = async (
   invitationData: any
 ): Promise<void> => {
   try {
-    // Foydalanuvchi identifikatorini cookie'dan olish
     let userId = "anonymous";
     try {
       const cookies = document.cookie.split(";");
@@ -178,9 +170,8 @@ const getInvitationFromFirebase = async (uniqueId: string): Promise<any> => {
     const invitationsCollection = collection(db, "invitations");
     const invitationRef = doc(invitationsCollection, uniqueId);
     const docSnap = await getDoc(invitationRef);
-
     if (docSnap.exists()) {
-      return docSnap.data().invitationData;
+      return docSnap.data();
     } else {
       return null;
     }

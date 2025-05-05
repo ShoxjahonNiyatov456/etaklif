@@ -21,7 +21,7 @@ export function ShareModal({ isOpen, onClose, url, title }: ShareModalProps) {
   useEffect(() => {
     if (isBrowser && isOpen) {
       try {
-        const cleanUrl = url.replace(/localhost:\d+/, '').replace(/^https?:\/\/https?:\/\//, 'https://');
+        const cleanUrl = url.replace(/localhost:\d+/, '');
         navigator.clipboard.writeText(cleanUrl);
         setCopied(true);
         const timer = setTimeout(() => {
