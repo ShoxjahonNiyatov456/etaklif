@@ -106,9 +106,34 @@ export const loginWithGoogle = async (): Promise<{
       user,
     };
   } catch (error: any) {
+    console.error("Google Login Error:", error); // Log the detailed error
+
+    let errorMessage = "Google orqali kirishda noma'lum xatolik.";
+    // Firebase Authentication xato kodlarini tekshirish
+    if (error.code) {
+      switch (error.code) {
+        case 'auth/popup-closed-by-user':
+          errorMessage = "Kirish oynasi yopildi.";
+          break;
+        case 'auth/cancelled-popup-request':
+          errorMessage = "Bir nechta kirish oynasi ochilgan. Faqat bittasini qoldiring.";
+          break;
+        case 'auth/popup-blocked':
+          errorMessage = "Kirish oynasi brauzer tomonidan bloklandi. Popup blokerni o'chirib qo'ying.";
+          break;
+        case 'auth/operation-not-allowed':
+           errorMessage = "Google orqali kirish Firebase loyihasida yoqilmagan.";
+           break;
+        // Boshqa kerakli xato kodlarini shu yerga qo'shishingiz mumkin
+        // https://firebase.google.com/docs/reference/js/auth_package.md#authprovider_error_codes
+        default:
+          errorMessage = `Google orqali kirishda xatolik: ${error.message || error.code}`;
+      }
+    }
+
     return {
       success: false,
-      error: "Kirishda xatolik yuz berdi",
+      error: errorMessage,
     };
   }
 };

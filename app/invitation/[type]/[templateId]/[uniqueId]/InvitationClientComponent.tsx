@@ -112,20 +112,22 @@ export default function InvitationClientComponent({
     const renderTemplate = () => {
         const templateType = invitationData?.type;
         const currentTemplateId = invitationData?.templateId;
-        if (!templateType || !currentTemplateId) {
-            return <p>Taklifnoma turi yoki shablon ID topilmadi.</p>;
+        const actualInvitationData = invitationData?.invitationData;
+        if (!templateType || !currentTemplateId || !actualInvitationData) {
+            return <p>Taklifnoma turi, shablon ID yoki asosiy ma'lumotlar topilmadi.</p>;
         }
+        const propsToPass = { ...actualInvitationData, style: currentTemplateId as string };
         switch (templateType) {
             case "wedding":
-                return <WeddingTemplate {...invitationData} style={currentTemplateId as string} />;
+                return <WeddingTemplate {...propsToPass} />;
             case "birthday":
-                return <BirthdayTemplate {...invitationData} style={currentTemplateId as string} />;
+                return <BirthdayTemplate {...propsToPass} />;
             case "funeral":
-                return <FuneralTemplate {...invitationData} style={currentTemplateId as string} />;
+                return <FuneralTemplate {...propsToPass} />;
             case "jubilee":
-                return <JubileeTemplate {...invitationData} style={currentTemplateId as string} />;
+                return <JubileeTemplate {...propsToPass} />;
             case "engagement":
-                return <EngagementTemplate {...invitationData} style={currentTemplateId as string} />;
+                return <EngagementTemplate {...propsToPass} />;
             default:
                 return <p>Noto'g'ri taklifnoma turi: {templateType}</p>;
         }
