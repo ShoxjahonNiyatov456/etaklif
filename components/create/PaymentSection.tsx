@@ -5,6 +5,15 @@ import { Share2, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ShareModal } from "@/components/ui/share-modal";
 import { getCurrentUser } from "@/app/services/auth";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 interface PaymentSectionProps {
     type: string;
@@ -32,6 +41,7 @@ export default function PaymentSection({
     const [shareableLink, setShareableLink] = useState("");
     const [isShareModalOpen, setIsShareModalOpen] = useState(false);
     const [paymentProcessing, setPaymentProcessing] = useState(false);
+    const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
 
     const handlePayment = async () => {
         const currentUser = getCurrentUser();
@@ -88,22 +98,35 @@ export default function PaymentSection({
     return (
         <div className="space-y-4">
             {!paymentCompleted ? (
-                <Button
-                    onClick={handlePayment}
-                    disabled={paymentProcessing}
-                    className="w-full"
-                >
-                    {paymentProcessing ? (
-                        "To'lov amalga oshirilmoqda..."
-                    ) : (
-                        <>To'lovni amalga oshirish</>
-                    )}
-                </Button>
+                <>
+                    <Button
+                        onClick={() => setIsConfirmDialogOpen(true)}
+                        disabled={paymentProcessing}
+                        className="w-full"
+                    >
+                        {paymentProcessing ? (
+                            "Yakunlash amalga oshirilmoqda..."
+                        ) : (
+                            <>Yakunlash uchun bosing!</>
+                        )}
+                    </Button>
+                    <AlertDialog open={isConfirmDialogOpen} onOpenChange={setIsConfirmDialogOpen}>
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>Rostan ham tugallashni xoxlaysizmi?</AlertDialogTitle>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <AlertDialogCancel>Bekor qilish</AlertDialogCancel>
+                                <AlertDialogAction onClick={handlePayment}>Yakunlash</AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
+                </>
             ) : (
                 <div className="space-y-4">
                     <div className="flex items-center justify-center space-x-2 text-green-600">
                         <Check className="h-5 w-5" />
-                        <span>To'lov muvaffaqiyatli amalga oshirildi</span>
+                        <span>Taklifnoma muvoffaqiyatli yakunlandi!</span>
                     </div>
                     <Button
                         onClick={handleShareInvitation}

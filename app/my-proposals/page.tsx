@@ -30,6 +30,7 @@ export default function MyProposalsPage() {
   const [loading, setLoading] = useState(true)
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
   const [invitationToDelete, setInvitationToDelete] = useState<string | null>(null)
+  const [isDeleting, setIsDeleting] = useState(false)
 
   useEffect(() => {
     const loadInvitations = async () => {
@@ -63,6 +64,7 @@ export default function MyProposalsPage() {
     if (!invitationToDelete) return
 
     try {
+      setIsDeleting(true)
       const response = await fetch(`/api/delete-invitation?uniqueId=${invitationToDelete}`, {
         method: "DELETE",
       })
@@ -75,6 +77,8 @@ export default function MyProposalsPage() {
       closeDeleteModal()
     } catch (error) {
       console.error("Taklifnomani o'chirishda xatolik:", error)
+    } finally {
+      setIsDeleting(false)
     }
   }
 
@@ -270,8 +274,16 @@ export default function MyProposalsPage() {
                       variant="destructive"
                       className="flex-1 py-2.5 bg-red-500 hover:bg-red-600"
                       onClick={deleteInvitation}
+                      disabled={isDeleting}
                     >
-                      O'chirish
+                      {isDeleting ? (
+                        <div className="flex items-center gap-2">
+                          <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                          O'chirilmoqda...
+                        </div>
+                      ) : (
+                        "O'chirish"
+                      )}
                     </Button>
                   </div>
                 </div>
