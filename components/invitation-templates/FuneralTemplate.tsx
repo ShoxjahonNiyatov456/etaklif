@@ -5,7 +5,7 @@ interface FuneralTemplateProps {
   time: string
   location: string
   additionalInfo?: string
-  uploadedImage?: string
+  uploadedImage?: string | null
 }
 
 export default function FuneralTemplate({
@@ -101,13 +101,13 @@ export default function FuneralTemplate({
             EL OSHI
           </div>
           <div className="text-center relative z-10 mt-16">
-            <h2 className="text-2xl font-serif text-gray-700 mb-4">Marhum xotirasiga bag'ishlanadi</h2>
+            <h2 className="text-2xl font-serif text-gray-700 mb-4">El Oshi</h2>
             <div className="flex justify-center mb-6">
               {uploadedImage ? (
                 <div className="w-36 h-36 rounded-full border-4 border-white shadow-lg overflow-hidden">
                   <img
                     src={uploadedImage}
-                    alt="Marhum rasmi"
+                    alt="El oshi egasi rasmi"
                     className="w-full h-full object-cover"
                   />
                 </div>
@@ -147,7 +147,7 @@ export default function FuneralTemplate({
                 <div className="w-40 h-40 rounded-full overflow-hidden shadow-lg">
                   <img
                     src={uploadedImage}
-                    alt="Marhum"
+                    alt="El oshi egasi rasmi"
                     className="w-full h-full object-cover"
                   />
                 </div>

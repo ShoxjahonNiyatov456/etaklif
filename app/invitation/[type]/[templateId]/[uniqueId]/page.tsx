@@ -23,28 +23,26 @@ export async function generateMetadata(
       firstName = invitationData.firstName || '';
       secondName = invitationData.secondName || '';
       const namePart = secondName ? `${firstName} va ${secondName}ning` : `${firstName}ning`;
-
       switch (type) {
         case 'wedding':
-          title = `${namePart} to'yiga taklifnoma`;
-          description = `${namePart} visol oqshomiga marhamat!`;
+          title = `To'y taklifnomasi`;
+          description = `Visol oqshomiga marhamat!`;
           break;
         case 'birthday':
-          const agePart = invitationData.age ? ` ${invitationData.age} yosh` : '';
-          title = `${firstName}ning${agePart} tug'ilgan kuniga taklifnoma`;
-          description = `${firstName}ning tavallud ayyomiga xush kelibsiz!`;
+          title = `Tug'ilgan kuni taklifnomasi`;
+          description = `Tug'ulgan kunga xush kelibsiz!`;
           break;
         case 'funeral':
           title = `El oshi marosimiga taklifnoma`;
-          description = `${firstName}ning ehson dasturxoniga marhamat.`;
+          description = `El oshi dasturxoniga marhamat.`;
           break;
         case 'jubilee':
-          title = `${firstName}ning yubileyiga taklifnoma`;
-          description = `${firstName}ning yubiley tantanasiga taklif etamiz.`;
+          title = `Yubileyga taklifnoma`;
+          description = `Yubiley tantanasiga taklif etamiz.`;
           break;
         case 'engagement':
-          title = `${firstName}ning qiz uzatish marosimiga taklifnoma`;
-          description = `${firstName}ning qiz uzatish to'yiga marhamat.`;
+          title = `Qiz uzatish marosimiga taklifnoma`;
+          description = `Qiz uzatish to'yiga marhamat.`;
           break;
         default:
           title = `${namePart} marosimiga taklifnoma`;

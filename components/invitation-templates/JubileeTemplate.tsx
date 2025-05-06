@@ -10,7 +10,7 @@ interface JubileeTemplateProps {
   time: string;
   location: string;
   additionalInfo?: string;
-  uploadedImage?: string;
+  uploadedImage?: string | null;
 }
 
 const JubileeTemplate: React.FC<JubileeTemplateProps> = ({

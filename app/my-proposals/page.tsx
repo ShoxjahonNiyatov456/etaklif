@@ -1,100 +1,127 @@
-"use client";
+"use client"
 
-import { useState, useEffect } from "react";
-import Link from "next/link";
-import { motion } from "framer-motion";
-import { Calendar, Clock, MapPin, Eye, Trash, ChevronRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { getInvitationsByUser } from "@/app/services/share";
+import { useState, useEffect } from "react"
+import Link from "next/link"
+import { motion, AnimatePresence } from "framer-motion"
+import { Calendar, Clock, MapPin, Eye, Trash, ChevronRight, AlertTriangle, X } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { getInvitationsByUser } from "@/app/services/share"
 
 type Invitation = {
-  uniqueId: string;
-  type: string;
-  templateId: string;
+  uniqueId: string
+  type: string
+  templateId: string
   invitationData: {
-    firstName: string;
-    secondName?: string;
-    date: string;
-    time: string;
-    location: string;
-    additionalInfo?: string;
-    age?: string;
-    parents?: string;
-    uploadedImage?: string;
-  };
-  createdAt: string;
-};
+    firstName: string
+    secondName?: string
+    date: string
+    time: string
+    location: string
+    additionalInfo?: string
+    age?: string
+    parents?: string
+    uploadedImage?: string
+  }
+  createdAt: string
+}
 
 export default function MyProposalsPage() {
-  const [invitations, setInvitations] = useState<Invitation[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [invitations, setInvitations] = useState<Invitation[]>([])
+  const [loading, setLoading] = useState(true)
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false)
+  const [invitationToDelete, setInvitationToDelete] = useState<string | null>(null)
 
   useEffect(() => {
     const loadInvitations = async () => {
       try {
-        setLoading(true);
-        const myInvitations = await getInvitationsByUser();
-        setInvitations(myInvitations);
+        setLoading(true)
+        const myInvitations = await getInvitationsByUser()
+        setInvitations(myInvitations)
       } catch (error) {
-        console.error("Taklifnomalarni yuklashda xatolik:", error);
+        console.error("Taklifnomalarni yuklashda xatolik:", error)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
+    }
 
-    loadInvitations();
-  }, []);
+    loadInvitations()
+  }, [])
 
-  const deleteInvitation = async (uniqueId: string) => {
+  const openDeleteModal = (uniqueId: string) => {
+    setInvitationToDelete(uniqueId)
+    setDeleteModalOpen(true)
+  }
+
+  const closeDeleteModal = () => {
+    setDeleteModalOpen(false)
+    setTimeout(() => {
+      setInvitationToDelete(null)
+    }, 300) // Wait for animation to complete
+  }
+
+  const deleteInvitation = async () => {
+    if (!invitationToDelete) return
+
     try {
-      const response = await fetch(`/api/delete-invitation?uniqueId=${uniqueId}`, {
-        method: 'DELETE',
-      });
+      const response = await fetch(`/api/delete-invitation?uniqueId=${invitationToDelete}`, {
+        method: "DELETE",
+      })
 
       if (!response.ok) {
-        throw new Error('Taklifnomani o\'chirishda xatolik');
+        throw new Error("Taklifnomani o'chirishda xatolik")
       }
 
-      setInvitations(prevInvitations => prevInvitations.filter(inv => inv.uniqueId !== uniqueId));
+      setInvitations((prevInvitations) => prevInvitations.filter((inv) => inv.uniqueId !== invitationToDelete))
+      closeDeleteModal()
     } catch (error) {
-      console.error('Taklifnomani o\'chirishda xatolik:', error);
+      console.error("Taklifnomani o'chirishda xatolik:", error)
     }
-  };
+  }
 
   const getInvitationTypeName = (type: string) => {
     switch (type) {
       case "wedding":
-        return "To'y";
+        return "To'y"
       case "birthday":
-        return "Tug'ilgan kun";
+        return "Tug'ilgan kun"
       case "funeral":
-        return "El oshi";
+        return "El oshi"
       case "jubilee":
-        return "Yubiley";
+        return "Yubiley"
       case "engagement":
-        return "Qiz uzatish";
+        return "Qiz uzatish"
       default:
-        return "Taklifnoma";
+        return "Taklifnoma"
     }
-  };
+  }
 
   const formatDate = (dateString: string) => {
-    if (!dateString) return "";
+    if (!dateString) return ""
 
     try {
       const months = [
-        "Yanvar", "Fevral", "Mart", "Aprel", "May", "Iyun",
-        "Iyul", "Avgust", "Sentyabr", "Oktyabr", "Noyabr", "Dekabr"
-      ];
+        "Yanvar",
+        "Fevral",
+        "Mart",
+        "Aprel",
+        "May",
+        "Iyun",
+        "Iyul",
+        "Avgust",
+        "Sentyabr",
+        "Oktyabr",
+        "Noyabr",
+        "Dekabr",
+      ]
 
-      const date = new Date(dateString);
-      const day = date.getDate();
-      const month = months[date.getMonth()];
-      return `${day} ${month}`;
+      const date = new Date(dateString)
+      const day = date.getDate()
+      const month = months[date.getMonth()]
+      return `${day} ${month}`
     } catch (error) {
-      return dateString;
+      return dateString
     }
-  };
+  }
 
   return (
     <div className="pt-16 pb-24">
@@ -138,8 +165,9 @@ export default function MyProposalsPage() {
                       </h3>
                     </div>
                     <button
-                      onClick={() => deleteInvitation(invitation.uniqueId)}
-                      className="text-gray-400 hover:text-red-500 p-1"
+                      onClick={() => openDeleteModal(invitation.uniqueId)}
+                      type="button"
+                      className="text-gray-400 hover:text-red-500 p-1 transition-colors duration-200"
                       title="O'chirish"
                     >
                       <Trash className="h-5 w-5" />
@@ -196,6 +224,62 @@ export default function MyProposalsPage() {
           </div>
         )}
       </div>
+      <AnimatePresence>
+        {deleteModalOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50"
+              onClick={closeDeleteModal}
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="fixed flex items-center justify-center z-50 w-full px-4 sm:px-0 top-72"
+              style={{ margin: 0 }}
+            >
+              <div className="bg-white rounded-xl shadow-2xl overflow-hidden">
+                <div className="relative p-6">
+                  <button
+                    onClick={closeDeleteModal}
+                    className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
+                  >
+                    <X className="h-5 w-5" />
+                  </button>
+
+                  <div className="flex flex-col items-center text-center mb-6">
+                    <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4">
+                      <AlertTriangle className="h-8 w-8 text-red-500" />
+                    </div>
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">Taklifnomani o'chirish</h3>
+                    <p className="text-gray-600">
+                      Ushbu taklifnomani o'chirishni xohlaysizmi? Bu amalni qaytarib bo'lmaydi.
+                    </p>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                    <Button variant="outline" className="flex-1 py-2.5" onClick={closeDeleteModal}>
+                      Bekor qilish
+                    </Button>
+                    <Button
+                      variant="destructive"
+                      className="flex-1 py-2.5 bg-red-500 hover:bg-red-600"
+                      onClick={deleteInvitation}
+                    >
+                      O'chirish
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </div>
-  );
+  )
 }

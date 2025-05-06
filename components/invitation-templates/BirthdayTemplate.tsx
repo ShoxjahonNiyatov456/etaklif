@@ -6,7 +6,7 @@ interface BirthdayTemplateProps {
   time: string
   location: string
   additionalInfo?: string
-  uploadedImage?: string
+  uploadedImage?: string | null
 }
 
 export default function BirthdayTemplate({
