@@ -21,8 +21,7 @@ export function ShareModal({ isOpen, onClose, url, title }: ShareModalProps) {
   useEffect(() => {
     if (isBrowser && isOpen) {
       try {
-        const cleanUrl = url.replace(/localhost:\d+/, '');
-        navigator.clipboard.writeText(cleanUrl);
+        navigator.clipboard.writeText(url);
         setCopied(true);
         const timer = setTimeout(() => {
           setCopied(false);
@@ -79,8 +78,7 @@ export function ShareModal({ isOpen, onClose, url, title }: ShareModalProps) {
   const safeCopyToClipboard = () => {
     if (isBrowser) {
       try {
-        const cleanUrl = url.replace(/localhost:\d+/, '');
-        navigator.clipboard.writeText(cleanUrl);
+        navigator.clipboard.writeText(url); // Removed .replace(/localhost:\d+/, '')
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
       } catch (error) {
@@ -116,7 +114,7 @@ export function ShareModal({ isOpen, onClose, url, title }: ShareModalProps) {
                 <div className="flex mb-2">
                   <input
                     type="text"
-                    value={url.replace(/localhost:\d+/, '')}
+                    value={url} // Removed .replace(/localhost:\d+/, '')
                     readOnly
                     className="w-full px-3 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-1 focus:ring-primary-500 text-sm"
                   />

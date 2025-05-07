@@ -25,19 +25,18 @@ export const generateShareableLink = async (
     );
     return "#error-base-url-not-set";
   }
-
-  baseUrl = baseUrl.replace(/(\.vercel\.app)http:\/\//i, "$1");
+  baseUrl = baseUrl.trim();
+  if (!baseUrl.startsWith("http://") && !baseUrl.startsWith("https://")) {
+    baseUrl = `https://${baseUrl}`;
+  }
+  while (baseUrl.endsWith("/")) {
+    baseUrl = baseUrl.slice(0, -1);
+  }
   const path = `/invitation/${encodeURIComponent(type)}/${encodeURIComponent(
     templateId
   )}/${encodeURIComponent(uniqueId)}`;
   try {
-    const cleanBaseUrl =
-      baseUrl.endsWith("/") && path.startsWith("/")
-        ? baseUrl.slice(0, -1)
-        : baseUrl;
-    const urlObject = new URL(path, cleanBaseUrl);
-    let fullUrl = urlObject.href;
-    fullUrl = fullUrl.replace(/(\.vercel\.app)http:\/\//i, "$1");
+    const fullUrl = `${baseUrl}${path}`;
     return fullUrl;
   } catch (error) {
     console.error("Error constructing URL:", error);
