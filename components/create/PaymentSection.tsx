@@ -13,6 +13,7 @@ import {
     AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
+    AlertDialogDescription,
 } from "@/components/ui/alert-dialog";
 
 interface PaymentSectionProps {
@@ -114,6 +115,9 @@ export default function PaymentSection({
                         <AlertDialogContent>
                             <AlertDialogHeader>
                                 <AlertDialogTitle>Rostan ham tugallashni xoxlaysizmi?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                    Bu amal taklifnomangizni yakunlaydi va ulashish uchun havola yaratadi. Davom etishni xohlaysizmi?
+                                </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter>
                                 <AlertDialogCancel>Bekor qilish</AlertDialogCancel>
