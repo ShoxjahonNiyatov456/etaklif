@@ -7,11 +7,10 @@ interface InvitationPageProps {
   params: { type: string; templateId: string; uniqueId: string };
   searchParams: { [key: string]: string | string[] | undefined };
 }
-
 export async function generateMetadata(
   { params }: InvitationPageProps
 ): Promise<Metadata> {
-  const { uniqueId, type, templateId } = await params;
+  const { uniqueId, type, templateId } = params; // Removed await as params is not a promise
   let ogTitle = "Taklifnoma";
   let ogDescription = "Sizni marosimimizga taklif qilamiz.";
   let imageUrl = `${process.env.NEXT_PUBLIC_API_URL}/images/default-invitation.jpg`;
@@ -48,7 +47,11 @@ export async function generateMetadata(
         hostNames = `${firstName}ning`;
       }
 
-      ogDescription = `${hostNames} ${dynamicEventTitle.toLowerCase()}ga taklifnomasi.`;
+      if (hostNames) {
+        ogDescription = `${hostNames} ${dynamicEventTitle.toLowerCase()}ga taklifnomasi.`;
+      } else {
+        ogDescription = `Sizni ${dynamicEventTitle.toLowerCase()} marosimiga taklif etamiz.`;
+      }
       if (date) ogDescription += ` Sana: ${date}.`;
       if (time) ogDescription += ` Vaqt: ${time}.`;
       if (location) ogDescription += ` Manzil: ${location}.`;
@@ -56,13 +59,17 @@ export async function generateMetadata(
         if (invitationData.uploadedImage.startsWith('http')) {
           imageUrl = invitationData.uploadedImage;
         } else if (siteUrl) {
-          imageUrl = `${siteUrl}${invitationData.uploadedImage.startsWith('/') ? '' : '/'}${invitationData.uploadedImage}`;
+          const cleanedSiteUrl = siteUrl.replace(/\/$/, '');
+          const cleanedImagePath = invitationData.uploadedImage.replace(/^\//, '');
+          imageUrl = `${cleanedSiteUrl}/${cleanedImagePath}`;
         }
       } else if (invitationData.templatePreviewImage) {
         if (invitationData.templatePreviewImage.startsWith('http')) {
           imageUrl = invitationData.templatePreviewImage;
         } else if (siteUrl) {
-          imageUrl = `${siteUrl}${invitationData.templatePreviewImage.startsWith('/') ? '' : '/'}${invitationData.templatePreviewImage}`;
+          const cleanedSiteUrl = siteUrl.replace(/\/$/, '');
+          const cleanedImagePath = invitationData.templatePreviewImage.replace(/^\//, '');
+          imageUrl = `${cleanedSiteUrl}/${cleanedImagePath}`;
         }
       }
     }

@@ -217,20 +217,16 @@ export default function CreatePage() {
           variants={fadeIn}
           className="space-y-6"
         >
-          <div className="flex items-center justify-between mt-16">
-            <button
-              onClick={() => router.back()}
-              className="flex items-center text-gray-600 hover:text-gray-900"
-            >
-              <ArrowLeft className="h-5 w-5 mr-1" />
-              Orqaga
-            </button>
-            <h1 className="text-2xl font-semibold text-center">
-              {getInvitationTypeName()} taklifnomasi
-            </h1>
-            <div className="w-[72px]"></div>
-          </div>
-
+          <h1 className="text-2xl font-semibold text-center mt-16">
+            {getInvitationTypeName()} taklifnomasi
+          </h1>
+          <button
+            onClick={() => router.back()}
+            className="flex items-center text-gray-600 hover:text-gray-900"
+          >
+            <ArrowLeft className="h-5 w-5 mr-1" />
+            Orqaga
+          </button>
           <Tabs value={activeTab} onValueChange={setActiveTab}>
             <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="form">Ma'lumotlar</TabsTrigger>
