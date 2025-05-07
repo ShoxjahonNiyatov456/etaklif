@@ -11,58 +11,99 @@ interface InvitationPageProps {
 export async function generateMetadata(
   { params }: InvitationPageProps
 ): Promise<Metadata> {
-  const { uniqueId, type } = await params;
-  let title = "Taklifnoma";
-  let description = "Sizni marosimimizga taklif qilamiz.";
-  let firstName = '';
-  let secondName = '';
+  const { uniqueId, type, templateId } = await params;
+  let ogTitle = "Taklifnoma";
+  let ogDescription = "Sizni marosimimizga taklif qilamiz.";
+  let imageUrl = `${process.env.NEXT_PUBLIC_API_URL}/images/default-invitation.jpg`;
+  const siteUrl = process.env.NEXT_PUBLIC_API_URL || "";
 
   try {
     const invitationData = await getInvitationByUniqueId(uniqueId);
     if (invitationData) {
-      firstName = invitationData.firstName || '';
-      secondName = invitationData.secondName || '';
-      const namePart = secondName ? `${firstName} va ${secondName}ning` : `${firstName}ning`;
-      switch (type) {
-        case 'wedding':
-          title = `To'y taklifnomasi`;
-          description = `Visol oqshomiga marhamat!`;
-          break;
-        case 'birthday':
-          title = `Tug'ilgan kuni taklifnomasi`;
-          description = `Tug'ulgan kunga xush kelibsiz!`;
-          break;
-        case 'funeral':
-          title = `El oshi marosimiga taklifnoma`;
-          description = `El oshi dasturxoniga marhamat.`;
-          break;
-        case 'jubilee':
-          title = `Yubileyga taklifnoma`;
-          description = `Yubiley tantanasiga taklif etamiz.`;
-          break;
-        case 'engagement':
-          title = `Qiz uzatish marosimiga taklifnoma`;
-          description = `Qiz uzatish to'yiga marhamat.`;
-          break;
-        default:
-          title = `${namePart} marosimiga taklifnoma`;
+      const firstName = invitationData.firstName || '';
+      const secondName = invitationData.secondName || '';
+      const age = invitationData.age;
+      const date = invitationData.date || '';
+      const time = invitationData.time || '';
+      const location = invitationData.location || '';
+      const eventName = invitationData.eventName || '';
+      let dynamicEventTitle = '';
+      if (eventName) {
+        dynamicEventTitle = eventName;
+      } else {
+        switch (type) {
+          case 'wedding': dynamicEventTitle = "Nikoh to'yi"; break;
+          case 'birthday': dynamicEventTitle = "Tug'ilgan kun"; break;
+          case 'funeral': dynamicEventTitle = "Ma'raka"; break;
+          case 'jubilee': dynamicEventTitle = "Yubiley"; break;
+          case 'engagement': dynamicEventTitle = "Unashtiruv"; break;
+          default: dynamicEventTitle = "Marosim";
+        }
+      }
+      ogTitle = `${dynamicEventTitle} taklifnomasi`;
+      let hostNames = '';
+      if (firstName && secondName) {
+        hostNames = `${firstName} va ${secondName}ning`;
+      } else if (firstName) {
+        hostNames = `${firstName}ning`;
+      }
+
+      ogDescription = `${hostNames} ${dynamicEventTitle.toLowerCase()}ga taklifnomasi.`;
+      if (date) ogDescription += ` Sana: ${date}.`;
+      if (time) ogDescription += ` Vaqt: ${time}.`;
+      if (location) ogDescription += ` Manzil: ${location}.`;
+      if (invitationData.uploadedImage) {
+        if (invitationData.uploadedImage.startsWith('http')) {
+          imageUrl = invitationData.uploadedImage;
+        } else if (siteUrl) {
+          imageUrl = `${siteUrl}${invitationData.uploadedImage.startsWith('/') ? '' : '/'}${invitationData.uploadedImage}`;
+        }
+      } else if (invitationData.templatePreviewImage) {
+        if (invitationData.templatePreviewImage.startsWith('http')) {
+          imageUrl = invitationData.templatePreviewImage;
+        } else if (siteUrl) {
+          imageUrl = `${siteUrl}${invitationData.templatePreviewImage.startsWith('/') ? '' : '/'}${invitationData.templatePreviewImage}`;
+        }
       }
     }
   } catch (error) {
     console.error("Metadata uchun ma'lumot olishda xatolik:", error);
+    ogTitle = 'Taklifnoma';
+    ogDescription = 'Taklifnoma.uz - Onlayn taklifnomalar platformasi.';
+    imageUrl = `${siteUrl}/images/default-invitation.jpg`;
   }
 
+  const fullUrl = `${siteUrl}/invitation/${type}/${templateId}/${uniqueId}`;
+
   return {
-    title: title,
-    description: description,
+    metadataBase: new URL(siteUrl),
+    title: ogTitle,
+    description: ogDescription,
     openGraph: {
-      title: title,
-      description: description,
+      title: ogTitle,
+      description: ogDescription,
+      url: fullUrl,
+      siteName: 'Taklifnoma.uz',
+      images: [
+        {
+          url: imageUrl,
+          width: 1200,
+          height: 630,
+          alt: ogTitle,
+        },
+      ],
+      locale: 'uz_UZ',
+      type: 'website',
     },
     twitter: {
       card: 'summary_large_image',
-      title: title,
-      description: description,
+      title: ogTitle,
+      description: ogDescription,
+      images: [imageUrl],
+      creator: '@taklifnomauz',
+    },
+    alternates: {
+      canonical: fullUrl,
     },
   };
 }
