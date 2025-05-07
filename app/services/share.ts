@@ -19,6 +19,7 @@ export const generateShareableLink = async (
   const uniqueId = generateUniqueId();
   await saveInvitationToFirebase(uniqueId, type, templateId, invitationData);
   let baseUrl = process.env.NEXT_PUBLIC_API_URL;
+  console.log('NEXT_PUBLIC_API_URL in generateShareableLink:', baseUrl); // Qo'shilgan qator
   if (!baseUrl) {
     console.error(
       "NEXT_PUBLIC_API_URL is not defined. Please check your environment variables."
