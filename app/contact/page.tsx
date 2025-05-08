@@ -149,7 +149,7 @@ export default function ContactPage() {
                     <Mail className="h-5 w-5 text-primary-600 mr-3 mt-0.5" />
                     <div>
                       <h3 className="font-medium">Email</h3>
-                      <p className="text-gray-600">info@taklifnoma.uz</p>
+                      <p className="text-gray-600">info@etaklif.vercel.app</p>
                     </div>
                   </div>
 

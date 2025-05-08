@@ -205,9 +205,7 @@ export default function PaymentSection({
                         </svg>
                     </div>
                     <h3 className="text-xl font-semibold text-green-600">To'lov muvaffaqiyatli yakunlandi!</h3>
-                    <p className="text-gray-600 text-center mx-6">
-                        Siz ushbu taklifnomadan muhim voqealaringizni tahrirlash va baham ko'rish imkoniyatiga ega bo'ldingiz.
-                    </p>
+                   
                     <button
                         onClick={shareableLink ? () => setIsShareModalOpen(true) : handleShareInvitation}
                         disabled={isGeneratingLink}
@@ -229,7 +227,7 @@ export default function PaymentSection({
                     isOpen={isShareModalOpen}
                     onClose={() => setIsShareModalOpen(false)}
                     url={shareableLink}
-                    title={`${formData?.groom?.name || "To'y"} taklif qiladi!`}
+                    title=""
                 />
             )}
         </div>

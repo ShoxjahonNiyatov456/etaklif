@@ -51,7 +51,7 @@ export default function AboutPage() {
 
             <ul className="list-none pl-0 mb-6">
               <li className="mb-2">Telefon: +998 95 557 13 02</li>
-              <li className="mb-2">Email: info@taklifnoma.uz</li>
+              <li className="mb-2">Email: info@etaklif.vercel.app</li>
               <li className="mb-2">Telegram: @taklifnoma</li>
             </ul>
           </div>

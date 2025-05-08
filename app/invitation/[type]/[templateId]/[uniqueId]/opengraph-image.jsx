@@ -122,7 +122,7 @@ export default async function Image({ params }) {
         break;
       default:
         title = "Taklifnoma";
-        subtitle = firstName ? firstName : "Taklifnoma.uz";
+        subtitle = firstName ? firstName : "etaklif.vercel.app";
     }
 
     // Get the appropriate background image

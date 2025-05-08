@@ -22,12 +22,12 @@ export async function generateMetadata({ params }: LayoutProps): Promise<Metadat
         url: `${process.env.NEXT_PUBLIC_API_URL}/images/default-og.jpg`, // Generic OG image
         width: 1200,
         height: 630,
-        alt: 'Taklifnoma.uz'
+        alt: 'etaklif.vercel.app'
       }],
       url: `${process.env.NEXT_PUBLIC_API_URL}/invitation/${type}/${templateId}`,
       type: 'website',
       locale: 'uz_UZ',
-      siteName: 'Taklifnoma.uz',
+      siteName: 'etaklif.vercel.app',
     },
     twitter: {
       card: 'summary_large_image',
