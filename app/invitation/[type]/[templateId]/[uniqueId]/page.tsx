@@ -11,17 +11,12 @@ export async function generateMetadata(
   { params }: InvitationPageProps
 ): Promise<Metadata> {
   const { uniqueId, type, templateId } = params;
-  console.log('[generateMetadata] Params:', params);
   let ogTitle = "Taklifnoma";
   let ogDescription = "Sizni marosimimizga taklif qilamiz.";
   let imageUrl = `${process.env.NEXT_PUBLIC_API_URL}/invitation/${type}/${templateId}/${uniqueId}/opengraph-image`;
   const siteUrl = process.env.NEXT_PUBLIC_API_URL || "";
-  console.log('[generateMetadata] Initial siteUrl:', siteUrl);
-  console.log('[generateMetadata] Initial imageUrl:', imageUrl);
-
   try {
     const invitationData = await getInvitationByUniqueId(uniqueId);
-    console.log('[generateMetadata] Invitation Data:', invitationData);
     if (invitationData) {
       const firstName = invitationData.firstName || '';
       const secondName = invitationData.secondName || '';
@@ -59,7 +54,6 @@ export async function generateMetadata(
       if (date) ogDescription += ` Sana: ${date}.`;
       if (time) ogDescription += ` Vaqt: ${time}.`;
       if (location) ogDescription += ` Manzil: ${location}.`;
-      console.log('[generateMetadata] OG Description after details:', ogDescription);
     }
   } catch (error) {
     console.error("[generateMetadata] Metadata uchun ma'lumot olishda xatolik:", error);
@@ -69,11 +63,6 @@ export async function generateMetadata(
   }
 
   const fullUrl = `${siteUrl}/invitation/${type}/${templateId}/${uniqueId}`;
-  console.log('[generateMetadata] Full URL:', fullUrl);
-  console.log('[generateMetadata] Final OG Title:', ogTitle);
-  console.log('[generateMetadata] Final OG Description:', ogDescription);
-  console.log('[generateMetadata] Final Image URL:', imageUrl);
-
   return {
     metadataBase: new URL(siteUrl),
     title: ogTitle,
