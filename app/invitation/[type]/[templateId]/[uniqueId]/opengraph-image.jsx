@@ -10,11 +10,20 @@ export const size = {
 }
 export const route = '/invitation/[type]/[templateId]/[uniqueId]/opengraph-image.png'
 
+// Default rasmlar
+const DEFAULT_IMAGES = {
+  wedding: 'https://res.cloudinary.com/ds7uywpld/image/upload/v1744642148/invitations/av26tkcvws1d50tqfclc.webp',
+  birthday: 'https://res.cloudinary.com/ds7uywpld/image/upload/v1743767337/invitations/dckjuhjwvbcmtqz2ceqj.jpg',
+  funeral: 'https://res.cloudinary.com/ds7uywpld/image/upload/v1744628821/invitations/rbafrj2m2fdqiavxqcnr.jpg',
+  jubilee: 'https://res.cloudinary.com/ds7uywpld/image/upload/v1744631369/invitations/yb19akzuhis3jsqrqyxs.jpg',
+  engagement: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.photobookcanada.com%2Fideas%2Feverything-you-need-to-know-engagement-party-faqs%2F&psig=AOvVaw3Ppe4PvzVYKMljFySS44Wz&ust=1746805832638000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCIDUlP6clI0DFQAAAAAdAAAAABAE'
+}
+
 export default async function Image({ params }) {
   try {
     const data = await getInvitationByUniqueId(params.uniqueId)
     const invitationData = data?.invitationData || data
-    
+
     if (!invitationData) {
       return new ImageResponse(
         (
@@ -75,15 +84,18 @@ export default async function Image({ params }) {
 
     // Taklifnoma turini aniqlash
     const { type, templateId } = params
-    
+
     // Shablonga asoslangan background va style yaratish
     let backgroundStyle = {}
-    let titleColor = '#1e293b'
-    let textColor = '#334155'
-    let accentColor = '#3b82f6'
-    
+    let titleColor = '#ffffff'
+    let textColor = '#ffffff'
+    let accentColor = '#ffffff'
+
+    // Rasm manzili
+    const backgroundImage = invitationData.uploadedImage || DEFAULT_IMAGES[type] || DEFAULT_IMAGES.wedding
+
     // Taklifnoma turiga qarab background va ranglarni o'zgartirish
-    switch(templateId) {
+    switch (templateId) {
       case 'golden-ornament':
         backgroundStyle = {
           background: 'linear-gradient(135deg, #f6e9c4 0%, #e7c982 100%)',
@@ -121,11 +133,11 @@ export default async function Image({ params }) {
           border: '2px solid #e5e7eb'
         }
     }
-    
+
     // Taklifnoma turiga qarab titularni o'zgartirish
     let title = 'Taklifnoma'
     let subtitle = ''
-    
+
     switch (type) {
       case 'wedding':
         title = 'Nikoh to\'yi'
@@ -148,10 +160,7 @@ export default async function Image({ params }) {
         subtitle = `${firstName} va ${secondName}`
         break
     }
-    
-    // Rasm mavjudligini tekshirish
-    const hasImage = invitationData.uploadedImage && invitationData.uploadedImage.length > 0
-    
+
     // Taklifnoma dizaynining shablonga asoslangan OpenGraph tasviri
     return new ImageResponse(
       (
@@ -163,143 +172,100 @@ export default async function Image({ params }) {
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            background: 'white',
-            padding: '40px',
-            fontSize: 32,
-            color: textColor
+            position: 'relative',
+            overflow: 'hidden'
           }}
         >
-          {/* Asosiy taklifnoma konteyner */}
+          {/* Background image */}
           <div style={{
-            width: '90%',
-            height: '90%',
-            borderRadius: '20px',
-            overflow: 'hidden',
-            padding: '2rem',
+            position: 'absolute',
+            inset: 0,
+            backgroundImage: `url(${backgroundImage})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            filter: 'brightness(0.7)'
+          }} />
+
+          {/* Content overlay */}
+          <div style={{
             position: 'relative',
+            zIndex: 1,
+            width: '100%',
+            height: '100%',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            ...backgroundStyle
+            padding: '40px',
+            background: 'rgba(0, 0, 0, 0.5)',
+            color: '#ffffff'
           }}>
-            {/* Background image if available */}
-            {hasImage && (
-              <div style={{
-                position: 'absolute',
-                inset: 0,
-                backgroundImage: `url(${invitationData.uploadedImage})`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                opacity: 0.3
-              }} />
-            )}
-            
+            {/* Taklifnoma sarlavhasi */}
             <div style={{
+              fontSize: 72,
+              fontWeight: 'bold',
+              marginBottom: '1rem',
               textAlign: 'center',
-              zIndex: 1,
-              width: '100%',
+              textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)'
             }}>
-              {/* Taklifnoma sarlavhasi */}
-              <div style={{
-                fontSize: 60,
-                fontWeight: 'bold',
-                marginBottom: '0.5rem',
-                color: titleColor
-              }}>
-                {title}
-              </div>
-              
-              {/* Qo'shimcha ma'lumot (ismlar) */}
-              <div style={{
-                fontSize: 50,
-                marginBottom: '2rem',
-                color: titleColor
-              }}>
-                {subtitle}
-              </div>
-              
-              {/* Taklifnoma ma'lumotlari */}
-              <div style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '14px',
-                background: 'rgba(255, 255, 255, 0.7)',
-                borderRadius: '16px',
-                padding: '24px',
-                backdropFilter: 'blur(10px)',
-                border: `1px solid rgba(255, 255, 255, 0.3)`,
-                marginBottom: '20px'
-              }}>
-                {/* Sana */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <div style={{ 
-                    width: '40px', 
-                    height: '40px', 
-                    borderRadius: '8px', 
-                    background: accentColor,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'white',
-                    fontSize: '22px'
-                  }}>
-                    📅
-                  </div>
-                  <div style={{ fontSize: '26px' }}>
-                    <span style={{ fontWeight: 'bold' }}>Sana:</span> {formattedDate}
-                  </div>
-                </div>
-                
-                {/* Vaqt */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <div style={{ 
-                    width: '40px', 
-                    height: '40px', 
-                    borderRadius: '8px', 
-                    background: accentColor,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'white',
-                    fontSize: '22px'
-                  }}>
-                    🕒
-                  </div>
-                  <div style={{ fontSize: '26px' }}>
-                    <span style={{ fontWeight: 'bold' }}>Vaqt:</span> {time}
-                  </div>
-                </div>
-                
-                {/* Manzil */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <div style={{ 
-                    width: '40px', 
-                    height: '40px', 
-                    borderRadius: '8px', 
-                    background: accentColor,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'white',
-                    fontSize: '22px'
-                  }}>
-                    📍
-                  </div>
-                  <div style={{ fontSize: '26px' }}>
-                    <span style={{ fontWeight: 'bold' }}>Manzil:</span> {location}
-                  </div>
+              {title}
+            </div>
+
+            {/* Qo'shimcha ma'lumot (ismlar) */}
+            <div style={{
+              fontSize: 56,
+              marginBottom: '2rem',
+              textAlign: 'center',
+              textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)'
+            }}>
+              {subtitle}
+            </div>
+
+            {/* Taklifnoma ma'lumotlari */}
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '20px',
+              background: 'rgba(0, 0, 0, 0.6)',
+              borderRadius: '16px',
+              padding: '24px',
+              backdropFilter: 'blur(10px)',
+              border: '1px solid rgba(255, 255, 255, 0.2)',
+              width: '80%'
+            }}>
+              {/* Sana */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                <div style={{ fontSize: '32px' }}>📅</div>
+                <div style={{ fontSize: '32px' }}>
+                  {formattedDate}
                 </div>
               </div>
-              
-              {/* Taklifnoma brendi */}
-              <div style={{
-                fontSize: '20px',
-                opacity: 0.7,
-                marginTop: '12px'
-              }}>
-                taklifnoma.uz
+
+              {/* Vaqt */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                <div style={{ fontSize: '32px' }}>🕒</div>
+                <div style={{ fontSize: '32px' }}>
+                  {time}
+                </div>
               </div>
+
+              {/* Manzil */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                <div style={{ fontSize: '32px' }}>📍</div>
+                <div style={{ fontSize: '32px' }}>
+                  {location}
+                </div>
+              </div>
+            </div>
+
+            {/* Taklifnoma brendi */}
+            <div style={{
+              position: 'absolute',
+              bottom: '20px',
+              fontSize: '24px',
+              opacity: 0.8
+            }}>
+              taklifnoma.uz
             </div>
           </div>
         </div>
