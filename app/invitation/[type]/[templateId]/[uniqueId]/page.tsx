@@ -7,14 +7,16 @@ interface InvitationPageProps {
   params: { type: string; templateId: string; uniqueId: string };
   searchParams: { [key: string]: string | string[] | undefined };
 }
+
 export async function generateMetadata(
   { params }: InvitationPageProps
 ): Promise<Metadata> {
   const { uniqueId, type, templateId } = params;
   let ogTitle = "Taklifnoma";
   let ogDescription = "Sizni marosimimizga taklif qilamiz.";
-  let imageUrl = `${process.env.NEXT_PUBLIC_API_URL}/invitation/${type}/${templateId}/${uniqueId}/opengraph-image.png`;
   const siteUrl = process.env.NEXT_PUBLIC_API_URL || "https://etaklif.vercel.app";
+  const imageUrl = `${siteUrl}/invitation/${type}/${templateId}/${uniqueId}/opengraph-image.png`;
+  
   try {
     const invitationData = await getInvitationByUniqueId(uniqueId);
     if (invitationData) {
@@ -25,6 +27,8 @@ export async function generateMetadata(
       const time = invitationData.time || '';
       const location = invitationData.location || '';
       const eventName = invitationData.eventName || '';
+      
+      // Tadbir turini aniqlash
       let dynamicEventTitle = '';
       if (eventName) {
         dynamicEventTitle = eventName;
@@ -38,7 +42,11 @@ export async function generateMetadata(
           default: dynamicEventTitle = "Marosim";
         }
       }
+      
+      // Sarlavha
       ogTitle = `${dynamicEventTitle} taklifnomasi`;
+      
+      // Mezbonlar ismlarini shakllantirish
       let hostNames = '';
       if (firstName && secondName) {
         hostNames = `${firstName} va ${secondName}ning`;
@@ -46,6 +54,7 @@ export async function generateMetadata(
         hostNames = `${firstName}ning`;
       }
 
+      // Tadbir nomini shakllantirish
       let tadbir = '';
       if (hostNames) {
         tadbir = `${hostNames} ${dynamicEventTitle.toLowerCase()}`;
@@ -53,22 +62,32 @@ export async function generateMetadata(
         tadbir = dynamicEventTitle.toLowerCase();
       }
       
-      ogDescription = `📌 ${tadbir.toUpperCase()}GA TAKLIFNOMA ��\n\n`;
+      // Taklifnoma tavsifini yangilab shakllantirish
+      ogDescription = `📌 ${tadbir.toUpperCase()}GA TAKLIFNOMA 📌\n\n`;
       
-      if (date) ogDescription += `📅 Sana: ${date}\n`;
-      if (time) ogDescription += `🕒 Vaqt: ${time}\n`;
-      if (location) ogDescription += `📍 Manzil: ${location}\n`;
+      // Manzil katta harf bilan, ko'zga ko'rinarli qilib ko'rsatish
+      if (location) {
+        ogDescription += `📍 MANZIL: ${location}\n\n`;
+      }
       
-      ogDescription += `\nSizni ushbu tantanali tadbirga taklif qilamiz. Taklifnoma.uz - Zamonaviy taklifnomalar platformasi.`;
+      if (date) {
+        ogDescription += `📅 Sana: ${date}\n`;
+      }
+      
+      if (time) {
+        ogDescription += `⏰ Vaqt: ${time}\n`;
+      }
+      
+      ogDescription += `\nSizni ushbu tantanali tadbirga taklif qilamiz.\nTaklifnoma.uz - Zamonaviy taklifnomalar platformasi`;
     }
   } catch (error) {
     console.error("[generateMetadata] Metadata uchun ma'lumot olishda xatolik:", error);
     ogTitle = 'Taklifnoma';
     ogDescription = 'Taklifnoma.uz - Onlayn taklifnomalar platformasi.';
-    console.log('[generateMetadata] Error block');
   }
 
   const fullUrl = `${siteUrl}/invitation/${type}/${templateId}/${uniqueId}`;
+  
   return {
     metadataBase: new URL(siteUrl),
     title: ogTitle,
@@ -99,8 +118,13 @@ export async function generateMetadata(
     alternates: {
       canonical: fullUrl,
     },
+    other: {
+      'telegram:card': 'summary_large_image',
+      'telegram:title': ogTitle,
+      'telegram:description': ogDescription,
+      'telegram:image': imageUrl,
+    },
   };
-
 }
 
 export default async function InvitationPage({ params, searchParams }: InvitationPageProps) {
