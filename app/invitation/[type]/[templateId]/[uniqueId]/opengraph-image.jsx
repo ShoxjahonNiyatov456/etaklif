@@ -10,158 +10,98 @@ export const size = {
 }
 export const route = '/invitation/[type]/[templateId]/[uniqueId]/opengraph-image.png'
 
-// Default rasmlar
+// Default background images for each type
 const DEFAULT_IMAGES = {
   wedding: 'https://res.cloudinary.com/ds7uywpld/image/upload/v1744642148/invitations/av26tkcvws1d50tqfclc.webp',
   birthday: 'https://res.cloudinary.com/ds7uywpld/image/upload/v1743767337/invitations/dckjuhjwvbcmtqz2ceqj.jpg',
   funeral: 'https://res.cloudinary.com/ds7uywpld/image/upload/v1744628821/invitations/rbafrj2m2fdqiavxqcnr.jpg',
   jubilee: 'https://res.cloudinary.com/ds7uywpld/image/upload/v1744631369/invitations/yb19akzuhis3jsqrqyxs.jpg',
-  engagement: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.photobookcanada.com%2Fideas%2Feverything-you-need-to-know-engagement-party-faqs%2F&psig=AOvVaw3Ppe4PvzVYKMljFySS44Wz&ust=1746805832638000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCIDUlP6clI0DFQAAAAAdAAAAABAE'
+  engagement: 'https://res.cloudinary.com/ds7uywpld/image/upload/v1715184490/defaults/engagement-default.jpg'
 }
 
 export default async function Image({ params }) {
   try {
-    const data = await getInvitationByUniqueId(params.uniqueId)
-    const invitationData = data?.invitationData || data
+    const { uniqueId, type, templateId } = params;
+    console.log(`Generating OG image for invitation: ${uniqueId}, type: ${type}, template: ${templateId}`);
+    
+    let invitationData = null;
+    let rawData = null;
 
-    if (!invitationData) {
-      return new ImageResponse(
-        (
-          <div
-            style={{
-              fontSize: 48,
-              background: 'linear-gradient(to bottom right, #f5f5f5, #e0e0e0)',
-              width: '100%',
-              height: '100%',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: '#666',
-              padding: '40px',
-              textAlign: 'center',
-            }}
-          >
-            <div style={{ marginBottom: '20px' }}>Taklifnoma topilmadi</div>
-            <div style={{
-              fontSize: 24,
-              opacity: 0.7
-            }}>
-              taklifnoma.uz
-            </div>
-          </div>
-        ),
-        { width: 1200, height: 630 }
-      )
+    try {
+      rawData = await getInvitationByUniqueId(uniqueId);
+      console.log("Raw data received:", JSON.stringify(rawData).substring(0, 200) + "...");
+      
+      // Try different data structures to make sure we get the data
+      invitationData = rawData?.invitationData || rawData || {};
+      console.log("Parsed invitation data:", JSON.stringify(invitationData).substring(0, 200) + "...");
+    } catch (fetchError) {
+      console.error("Error fetching invitation data:", fetchError);
+      invitationData = {};
     }
 
-    // Ma'lumotlarni olish
-    const location = invitationData.location || 'Manzil ko\'rsatilmagan'
-    const time = invitationData.time || 'Vaqt ko\'rsatilmagan'
-    const firstName = invitationData.firstName || ''
-    const secondName = invitationData.secondName || ''
-    const age = invitationData.age || ''
-    const date = invitationData.date || ''
+    // Extract data with fallbacks for EVERY field
+    const location = invitationData?.location || rawData?.location || 'Manzil ko\'rsatilmagan';
+    const time = invitationData?.time || rawData?.time || 'Vaqt ko\'rsatilmagan';
+    const firstName = invitationData?.firstName || rawData?.firstName || 'Ism ko\'rsatilmagan';
+    const secondName = invitationData?.secondName || rawData?.secondName || '';
+    const age = invitationData?.age || rawData?.age || '';
+    const date = invitationData?.date || rawData?.date || 'Sana ko\'rsatilmagan';
+    const uploadedImage = invitationData?.uploadedImage || rawData?.uploadedImage || null;
 
-    // Sana formati
-    let formattedDate = date
+    // Format date nicely if possible
+    let formattedDate = date;
     try {
       if (date && date.includes("-")) {
-        const dateObj = new Date(date)
+        const dateObj = new Date(date);
         if (!isNaN(dateObj.getTime())) {
-          const day = dateObj.getDate()
+          const day = dateObj.getDate();
           const months = [
             "Yanvar", "Fevral", "Mart", "Aprel", "May", "Iyun",
             "Iyul", "Avgust", "Sentyabr", "Oktyabr", "Noyabr", "Dekabr"
-          ]
-          const month = months[dateObj.getMonth()]
-          formattedDate = `${day} ${month}`
+          ];
+          const month = months[dateObj.getMonth()];
+          formattedDate = `${day} ${month}`;
         }
       }
-    } catch (error) {
-      formattedDate = date
+    } catch (dateError) {
+      console.error("Error formatting date:", dateError);
+      formattedDate = date;
     }
 
-    // Taklifnoma turini aniqlash
-    const { type, templateId } = params
-
-    // Shablonga asoslangan background va style yaratish
-    let backgroundStyle = {}
-    let titleColor = '#ffffff'
-    let textColor = '#ffffff'
-    let accentColor = '#ffffff'
-
-    // Rasm manzili
-    const backgroundImage = invitationData.uploadedImage || DEFAULT_IMAGES[type] || DEFAULT_IMAGES.wedding
-
-    // Taklifnoma turiga qarab background va ranglarni o'zgartirish
-    switch (templateId) {
-      case 'golden-ornament':
-        backgroundStyle = {
-          background: 'linear-gradient(135deg, #f6e9c4 0%, #e7c982 100%)',
-          boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
-          border: '2px solid #e7bf60'
-        }
-        titleColor = '#8e6512'
-        textColor = '#5c4001'
-        accentColor = '#d4a427'
-        break
-      case 'romantic':
-        backgroundStyle = {
-          background: 'linear-gradient(135deg, #ffecec 0%, #ffb6c1 100%)',
-          boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
-          border: '2px solid #ff99aa'
-        }
-        titleColor = '#c02942'
-        textColor = '#4a1218'
-        accentColor = '#ff6b81'
-        break
-      case 'classic':
-        backgroundStyle = {
-          background: 'linear-gradient(135deg, #f0f9ff 0%, #dbeafe 100%)',
-          boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
-          border: '2px solid #bfdbfe'
-        }
-        titleColor = '#1e40af'
-        textColor = '#1e3a8a'
-        accentColor = '#3b82f6'
-        break
-      default:
-        backgroundStyle = {
-          background: 'linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%)',
-          boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
-          border: '2px solid #e5e7eb'
-        }
-    }
-
-    // Taklifnoma turiga qarab titularni o'zgartirish
-    let title = 'Taklifnoma'
-    let subtitle = ''
+    // Determine invitation titles and subtitles based on type
+    let title = 'Taklifnoma';
+    let subtitle = '';
 
     switch (type) {
       case 'wedding':
-        title = 'Nikoh to\'yi'
-        subtitle = `${firstName} va ${secondName}`
-        break
+        title = 'Nikoh to\'yi';
+        subtitle = `${firstName} va ${secondName}`;
+        break;
       case 'birthday':
-        title = 'Tug\'ilgan kun'
-        subtitle = `${firstName}${age ? ` ${age}-yosh` : ''}`
-        break
+        title = 'Tug\'ilgan kun';
+        subtitle = `${firstName}${age ? ` ${age}-yosh` : ''}`;
+        break;
       case 'funeral':
-        title = 'El oshi'
-        subtitle = `${firstName}`
-        break
+        title = 'Ma\'raka';
+        subtitle = `${firstName}`;
+        break;
       case 'jubilee':
-        title = 'Yubiley'
-        subtitle = `${firstName}${age ? ` ${age}-yillik` : ''}`
-        break
+        title = 'Yubiley';
+        subtitle = `${firstName}${age ? ` ${age}-yillik` : ''}`;
+        break;
       case 'engagement':
-        title = 'Unashtiruv'
-        subtitle = `${firstName} va ${secondName}`
-        break
+        title = 'Unashtiruv';
+        subtitle = `${firstName} va ${secondName}`;
+        break;
+      default:
+        title = 'Taklifnoma';
+        subtitle = firstName ? firstName : 'Taklifnoma.uz';
     }
 
-    // Taklifnoma dizaynining shablonga asoslangan OpenGraph tasviri
+    // Get the appropriate background image
+    const backgroundImage = uploadedImage || DEFAULT_IMAGES[type] || DEFAULT_IMAGES.wedding;
+    
+    // Create the OpenGraph image with dark overlay to ensure text visibility
     return new ImageResponse(
       (
         <div
@@ -183,7 +123,14 @@ export default async function Image({ params }) {
             backgroundImage: `url(${backgroundImage})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
-            filter: 'brightness(0.7)'
+            filter: 'brightness(0.6)'
+          }} />
+
+          {/* Dark overlay to ensure text readability */}
+          <div style={{
+            position: 'absolute',
+            inset: 0,
+            background: 'rgba(0, 0, 0, 0.5)',
           }} />
 
           {/* Content overlay */}
@@ -197,7 +144,6 @@ export default async function Image({ params }) {
             alignItems: 'center',
             justifyContent: 'center',
             padding: '40px',
-            background: 'rgba(0, 0, 0, 0.5)',
             color: '#ffffff'
           }}>
             {/* Taklifnoma sarlavhasi */}
@@ -206,7 +152,7 @@ export default async function Image({ params }) {
               fontWeight: 'bold',
               marginBottom: '1rem',
               textAlign: 'center',
-              textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)'
+              textShadow: '2px 2px 4px rgba(0, 0, 0, 0.8)'
             }}>
               {title}
             </div>
@@ -216,7 +162,7 @@ export default async function Image({ params }) {
               fontSize: 56,
               marginBottom: '2rem',
               textAlign: 'center',
-              textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)'
+              textShadow: '2px 2px 4px rgba(0, 0, 0, 0.8)'
             }}>
               {subtitle}
             </div>
@@ -277,28 +223,39 @@ export default async function Image({ params }) {
       }
     )
   } catch (error) {
-    console.error('Opengraph image generation error:', error)
+    console.error('OpenGraph image generation error:', error);
+    
+    // Return a default error image
     return new ImageResponse(
       (
         <div
           style={{
             fontSize: 48,
-            background: 'linear-gradient(to bottom right, #f5f5f5, #e0e0e0)',
+            background: 'linear-gradient(to bottom, #1e3a8a, #3b82f6)',
             width: '100%',
             height: '100%',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            color: '#666',
+            color: 'white',
             padding: '40px',
             textAlign: 'center',
           }}
         >
           <div style={{ marginBottom: '20px' }}>Taklifnoma</div>
           <div style={{
+            fontSize: 28,
+            opacity: 0.8,
+            maxWidth: '80%'
+          }}>
+            Batafsil ma'lumot uchun havolani bosing
+          </div>
+          <div style={{
             fontSize: 24,
-            opacity: 0.7
+            opacity: 0.7,
+            position: 'absolute',
+            bottom: '30px'
           }}>
             taklifnoma.uz
           </div>

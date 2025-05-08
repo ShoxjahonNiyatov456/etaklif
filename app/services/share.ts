@@ -81,21 +81,54 @@ const saveInvitationToFirebase = async (
     const invitationsCollection = collection(db, "invitations");
     const invitationRef = doc(invitationsCollection, uniqueId);
 
+    // Ma'lumotlarni tozalash va strukturani to'g'rilash
+    const cleanedInvitationData = cleanInvitationData(invitationData);
+
     await setDoc(invitationRef, {
       uniqueId,
       type,
       templateId,
-      invitationData,
+      invitationData: cleanedInvitationData,
       userId,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     });
 
-    await saveInvitationToServer(uniqueId, type, templateId, invitationData);
+    await saveInvitationToServer(uniqueId, type, templateId, cleanedInvitationData);
   } catch (error) {
     console.error("Taklifnomani saqlashda xatolik:", error);
     throw error;
   }
+};
+
+/**
+ * Taklifnoma ma'lumotlarini tozalash va Firestore uchun moslashtirish
+ * Bu funksiya ichki (nested) obyektlarni tekshirib, ularni Firestore uchun mos formatga o'tkazadi
+ */
+const cleanInvitationData = (data: any): any => {
+  if (!data) return {};
+  
+  // Agar data o'zi invitationData ichida bo'lsa, uni olish
+  if (data.invitationData) {
+    return cleanInvitationData(data.invitationData);
+  }
+  
+  // Ma'lumotlarni tozalash
+  const cleanData: any = {};
+  
+  // Faqat kerakli ma'lumotlarni olish
+  const allowedFields = [
+    'firstName', 'secondName', 'age', 'date', 'time', 'location', 'eventName', 
+    'uploadedImage', 'description', 'address', 'phone', 'email'
+  ];
+  
+  for (const field of allowedFields) {
+    if (data[field] !== undefined) {
+      cleanData[field] = data[field];
+    }
+  }
+  
+  return cleanData;
 };
 
 /**
@@ -189,7 +222,15 @@ export const getInvitationByUniqueId = async (
   try {
     const firebaseData = await getInvitationFromFirebase(uniqueId);
     if (firebaseData) {
-      return firebaseData;
+      // Ma'lumotlarni qaytarishda ham strukturasini tekshirish
+      const { invitationData, type, templateId, ...rest } = firebaseData;
+      return {
+        ...rest,
+        type,
+        templateId,
+        // Agar invitationData mavjud bo'lsa uni qaytarish, aks holda asosiy ma'lumotlarni qaytarish
+        ...invitationData
+      };
     }
     return null;
   } catch (error) {
