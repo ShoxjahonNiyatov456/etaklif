@@ -65,9 +65,17 @@ export async function generateMetadata(
       // Taklifnoma tavsifini yangilab shakllantirish
       ogDescription = `📌 ${tadbir.toUpperCase()}GA TAKLIFNOMA 📌\n\n`;
       
-      // Faqat manzilni ko'rsatish (boshqa ma'lumotlarni o'chirish)
+      // Manzil, sana va vaqt ma'lumotlarini ko'rsatish
       if (location) {
-        ogDescription += `📍 MANZIL: ${location}`;
+        ogDescription += `📍 MANZIL: ${location}\n`;
+      }
+      
+      if (date) {
+        ogDescription += `📅 SANA: ${date}\n`;
+      }
+      
+      if (time) {
+        ogDescription += `⏰ VAQT: ${time}`;
       }
     }
   } catch (error) {

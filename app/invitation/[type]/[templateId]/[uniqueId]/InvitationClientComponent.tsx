@@ -61,6 +61,8 @@ export default function InvitationClientComponent({
                 const firstName = data.firstName || data.invitationData?.firstName || '';
                 const secondName = data.secondName || data.invitationData?.secondName || '';
                 const location = data.location || data.invitationData?.location || '';
+                const date = data.date || data.invitationData?.date || '';
+                const time = data.time || data.invitationData?.time || '';
 
                 // Tadbir turini aniqlash
                 let dynamicEventTitle = '';
@@ -88,9 +90,17 @@ export default function InvitationClientComponent({
 
                 let desc = `📌 ${tadbir.toUpperCase()}GA TAKLIFNOMA 📌\n\n`;
                 
-                // Faqat manzilni ko'rsatish
+                // Manzil, sana va vaqt ma'lumotlarini qo'shish
                 if (location) {
-                  desc += `📍 MANZIL: ${location}`;
+                  desc += `📍 MANZIL: ${location}\n`;
+                }
+                
+                if (date) {
+                  desc += `📅 SANA: ${date}\n`;
+                }
+                
+                if (time) {
+                  desc += `⏰ VAQT: ${time}`;
                 }
                 
                 setOgDescription(desc);
