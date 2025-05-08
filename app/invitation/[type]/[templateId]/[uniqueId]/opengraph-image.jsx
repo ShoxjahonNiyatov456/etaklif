@@ -11,7 +11,8 @@ export const size = {
 
 export default async function Image({ params }) {
   try {
-    const invitationData = await getInvitationByUniqueId(params.uniqueId)
+    const data = await getInvitationByUniqueId(params.uniqueId)
+    const invitationData = data?.invitationData || null
 
     if (!invitationData) {
       return new ImageResponse(
@@ -255,4 +256,4 @@ export default async function Image({ params }) {
       }
     )
   }
-} 
+}

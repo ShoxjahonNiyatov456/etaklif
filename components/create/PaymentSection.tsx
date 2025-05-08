@@ -97,7 +97,7 @@ export default function PaymentSection({
     };
 
     return (
-        <div className="space-y-4">
+        <div className="">
             {!paymentCompleted ? (
                 <>
                     <Button

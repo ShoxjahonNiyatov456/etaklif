@@ -78,7 +78,7 @@ export function ShareModal({ isOpen, onClose, url, title }: ShareModalProps) {
   const safeCopyToClipboard = () => {
     if (isBrowser) {
       try {
-        navigator.clipboard.writeText(url); // Removed .replace(/localhost:\d+/, '')
+        navigator.clipboard.writeText(url);
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
       } catch (error) {
@@ -94,7 +94,7 @@ export function ShareModal({ isOpen, onClose, url, title }: ShareModalProps) {
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="fixed bottom-0 inset-0 z-50  top-0 flex items-center justify-center bg-black bg-opacity-50">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -107,14 +107,13 @@ export function ShareModal({ isOpen, onClose, url, title }: ShareModalProps) {
             >
               <X size={20} />
             </button>
-
             <div className="mb-4">
               <h3 className="text-lg font-medium mb-2">Ulashish</h3>
               <div className="flex flex-col">
                 <div className="flex mb-2">
                   <input
                     type="text"
-                    value={url} // Removed .replace(/localhost:\d+/, '')
+                    value={url}
                     readOnly
                     className="w-full px-3 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-1 focus:ring-primary-500 text-sm"
                   />
@@ -132,7 +131,6 @@ export function ShareModal({ isOpen, onClose, url, title }: ShareModalProps) {
                 )}
               </div>
             </div>
-
             <div className="grid grid-cols-5 gap-4 justify-center">
               <button
                 onClick={shareOnWhatsApp}
