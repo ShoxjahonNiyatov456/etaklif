@@ -41,32 +41,10 @@ export default async function Image({ params }) {
 
     // Extract data with fallbacks for EVERY field
     const location = invitationData?.location || rawData?.location || 'Manzil ko\'rsatilmagan';
-    const time = invitationData?.time || rawData?.time || 'Vaqt ko\'rsatilmagan';
     const firstName = invitationData?.firstName || rawData?.firstName || 'Ism ko\'rsatilmagan';
     const secondName = invitationData?.secondName || rawData?.secondName || '';
     const age = invitationData?.age || rawData?.age || '';
-    const date = invitationData?.date || rawData?.date || 'Sana ko\'rsatilmagan';
     const uploadedImage = invitationData?.uploadedImage || rawData?.uploadedImage || null;
-
-    // Format date nicely if possible
-    let formattedDate = date;
-    try {
-      if (date && date.includes("-")) {
-        const dateObj = new Date(date);
-        if (!isNaN(dateObj.getTime())) {
-          const day = dateObj.getDate();
-          const months = [
-            "Yanvar", "Fevral", "Mart", "Aprel", "May", "Iyun",
-            "Iyul", "Avgust", "Sentyabr", "Oktyabr", "Noyabr", "Dekabr"
-          ];
-          const month = months[dateObj.getMonth()];
-          formattedDate = `${day} ${month}`;
-        }
-      }
-    } catch (dateError) {
-      console.error("Error formatting date:", dateError);
-      formattedDate = date;
-    }
 
     // Determine invitation titles and subtitles based on type
     let title = 'Taklifnoma';
@@ -167,11 +145,10 @@ export default async function Image({ params }) {
               {subtitle}
             </div>
 
-            {/* Taklifnoma ma'lumotlari */}
+            {/* Taklifnoma manzili - faqat manzil ko'rsatilsin */}
             <div style={{
               display: 'flex',
               flexDirection: 'column',
-              gap: '20px',
               background: 'rgba(0, 0, 0, 0.6)',
               borderRadius: '16px',
               padding: '24px',
@@ -179,26 +156,10 @@ export default async function Image({ params }) {
               border: '1px solid rgba(255, 255, 255, 0.2)',
               width: '80%'
             }}>
-              {/* Sana */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                <div style={{ fontSize: '32px' }}>📅</div>
-                <div style={{ fontSize: '32px' }}>
-                  {formattedDate}
-                </div>
-              </div>
-
-              {/* Vaqt */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                <div style={{ fontSize: '32px' }}>🕒</div>
-                <div style={{ fontSize: '32px' }}>
-                  {time}
-                </div>
-              </div>
-
               {/* Manzil */}
               <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
                 <div style={{ fontSize: '32px' }}>📍</div>
-                <div style={{ fontSize: '32px' }}>
+                <div style={{ fontSize: '32px', fontWeight: 'bold' }}>
                   {location}
                 </div>
               </div>

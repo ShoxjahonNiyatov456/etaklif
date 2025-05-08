@@ -30,7 +30,7 @@ export default function InvitationClientComponent({
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [ogTitle, setOgTitle] = useState<string>("Taklifnoma");
-    const [ogDescription, setOgDescription] = useState<string>("Taklifnoma.uz - Zamonaviy taklifnomalar platformasi");
+    const [ogDescription, setOgDescription] = useState<string>("Taklifnoma.uz");
     const siteUrl = process.env.NEXT_PUBLIC_API_URL || "https://etaklif.vercel.app";
 
     useEffect(() => {
@@ -61,8 +61,6 @@ export default function InvitationClientComponent({
                 const firstName = data.firstName || data.invitationData?.firstName || '';
                 const secondName = data.secondName || data.invitationData?.secondName || '';
                 const location = data.location || data.invitationData?.location || '';
-                const time = data.time || data.invitationData?.time || '';
-                const date = data.date || data.invitationData?.date || '';
 
                 // Tadbir turini aniqlash
                 let dynamicEventTitle = '';
@@ -90,20 +88,10 @@ export default function InvitationClientComponent({
 
                 let desc = `📌 ${tadbir.toUpperCase()}GA TAKLIFNOMA 📌\n\n`;
                 
-                // Manzil katta harf bilan, ko'zga ko'rinarli qilib ko'rsatish
+                // Faqat manzilni ko'rsatish
                 if (location) {
-                  desc += `📍 MANZIL: ${location}\n\n`;
+                  desc += `📍 MANZIL: ${location}`;
                 }
-                
-                if (date) {
-                  desc += `📅 Sana: ${date}\n`;
-                }
-                
-                if (time) {
-                  desc += `⏰ Vaqt: ${time}\n`;
-                }
-                
-                desc += `\nSizni ushbu tantanali tadbirga taklif qilamiz.\nTaklifnoma.uz - Zamonaviy taklifnomalar platformasi`;
                 
                 setOgDescription(desc);
             } catch (error: any) {

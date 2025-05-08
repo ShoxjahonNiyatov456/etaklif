@@ -13,7 +13,7 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const { uniqueId, type, templateId } = params;
   let ogTitle = "Taklifnoma";
-  let ogDescription = "Sizni marosimimizga taklif qilamiz.";
+  let ogDescription = "Taklifnoma.uz";
   const siteUrl = process.env.NEXT_PUBLIC_API_URL || "https://etaklif.vercel.app";
   const imageUrl = `${siteUrl}/invitation/${type}/${templateId}/${uniqueId}/opengraph-image.png`;
   
@@ -65,25 +65,15 @@ export async function generateMetadata(
       // Taklifnoma tavsifini yangilab shakllantirish
       ogDescription = `📌 ${tadbir.toUpperCase()}GA TAKLIFNOMA 📌\n\n`;
       
-      // Manzil katta harf bilan, ko'zga ko'rinarli qilib ko'rsatish
+      // Faqat manzilni ko'rsatish (boshqa ma'lumotlarni o'chirish)
       if (location) {
-        ogDescription += `📍 MANZIL: ${location}\n\n`;
+        ogDescription += `📍 MANZIL: ${location}`;
       }
-      
-      if (date) {
-        ogDescription += `📅 Sana: ${date}\n`;
-      }
-      
-      if (time) {
-        ogDescription += `⏰ Vaqt: ${time}\n`;
-      }
-      
-      ogDescription += `\nSizni ushbu tantanali tadbirga taklif qilamiz.\nTaklifnoma.uz - Zamonaviy taklifnomalar platformasi`;
     }
   } catch (error) {
     console.error("[generateMetadata] Metadata uchun ma'lumot olishda xatolik:", error);
     ogTitle = 'Taklifnoma';
-    ogDescription = 'Taklifnoma.uz - Onlayn taklifnomalar platformasi.';
+    ogDescription = 'Taklifnoma.uz';
   }
 
   const fullUrl = `${siteUrl}/invitation/${type}/${templateId}/${uniqueId}`;
