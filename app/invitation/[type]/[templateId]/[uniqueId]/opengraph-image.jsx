@@ -14,6 +14,7 @@ export default async function Image({ params }) {
   try {
     const data = await getInvitationByUniqueId(params.uniqueId)
     const invitationData = data?.invitationData || data
+    
     if (!invitationData) {
       return new ImageResponse(
         (
@@ -45,172 +46,260 @@ export default async function Image({ params }) {
       )
     }
 
-    // Sana formati
-    let formattedDate = ''
-    try {
-      if (invitationData.date) {
-        if (invitationData.date.includes("-")) {
-          const dateObj = new Date(invitationData.date)
-          if (!isNaN(dateObj.getTime())) {
-            const day = dateObj.getDate()
-            const months = [
-              "Yanvar", "Fevral", "Mart", "Aprel", "May", "Iyun",
-              "Iyul", "Avgust", "Sentyabr", "Oktyabr", "Noyabr", "Dekabr"
-            ]
-            const month = months[dateObj.getMonth()]
-            formattedDate = `${day} ${month}`
-          } else {
-            formattedDate = invitationData.date
-          }
-        } else {
-          formattedDate = invitationData.date
-        }
-      }
-    } catch (error) {
-      formattedDate = invitationData.date || ''
-    }
-    let title = ''
-    let description = ''
+    // Ma'lumotlarni olish
     const location = invitationData.location || 'Manzil ko\'rsatilmagan'
     const time = invitationData.time || 'Vaqt ko\'rsatilmagan'
     const firstName = invitationData.firstName || ''
     const secondName = invitationData.secondName || ''
     const age = invitationData.age || ''
+    const date = invitationData.date || ''
 
-    switch (params.type) {
-      case 'wedding':
-        title = 'To\'y taklifnomasi'
-        description = `${firstName} va ${secondName} nikoh to'yi`
-        break
-      case 'birthday':
-        title = 'Tug\'ilgan kun taklifnomasi'
-        description = `${firstName} ${age}-yoshga to'lishi munosabati bilan`
-        break
-      case 'funeral':
-        title = 'El oshi taklifnomasi'
-        description = `${firstName} xotirasiga bag'ishlangan tadbir`
-        break
-      case 'jubilee':
-        title = 'Yubiley taklifnomasi'
-        description = `${firstName} ${age}-yillik yubileyi`
-        break
-      case 'engagement':
-        title = 'Fotiha to\'yi taklifnomasi'
-        description = `${firstName} fotiha to'yi`
-        break
-      default:
-        title = 'Taklifnoma'
-        description = `${firstName} taklifnomasi`
+    // Sana formati
+    let formattedDate = date
+    try {
+      if (date && date.includes("-")) {
+        const dateObj = new Date(date)
+        if (!isNaN(dateObj.getTime())) {
+          const day = dateObj.getDate()
+          const months = [
+            "Yanvar", "Fevral", "Mart", "Aprel", "May", "Iyun",
+            "Iyul", "Avgust", "Sentyabr", "Oktyabr", "Noyabr", "Dekabr"
+          ]
+          const month = months[dateObj.getMonth()]
+          formattedDate = `${day} ${month}`
+        }
+      }
+    } catch (error) {
+      formattedDate = date
     }
 
+    // Taklifnoma turini aniqlash
+    const { type, templateId } = params
+    
+    // Shablonga asoslangan background va style yaratish
+    let backgroundStyle = {}
+    let titleColor = '#1e293b'
+    let textColor = '#334155'
+    let accentColor = '#3b82f6'
+    
+    // Taklifnoma turiga qarab background va ranglarni o'zgartirish
+    switch(templateId) {
+      case 'golden-ornament':
+        backgroundStyle = {
+          background: 'linear-gradient(135deg, #f6e9c4 0%, #e7c982 100%)',
+          boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
+          border: '2px solid #e7bf60'
+        }
+        titleColor = '#8e6512'
+        textColor = '#5c4001'
+        accentColor = '#d4a427'
+        break
+      case 'romantic':
+        backgroundStyle = {
+          background: 'linear-gradient(135deg, #ffecec 0%, #ffb6c1 100%)',
+          boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
+          border: '2px solid #ff99aa'
+        }
+        titleColor = '#c02942'
+        textColor = '#4a1218'
+        accentColor = '#ff6b81'
+        break
+      case 'classic':
+        backgroundStyle = {
+          background: 'linear-gradient(135deg, #f0f9ff 0%, #dbeafe 100%)',
+          boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
+          border: '2px solid #bfdbfe'
+        }
+        titleColor = '#1e40af'
+        textColor = '#1e3a8a'
+        accentColor = '#3b82f6'
+        break
+      default:
+        backgroundStyle = {
+          background: 'linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%)',
+          boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
+          border: '2px solid #e5e7eb'
+        }
+    }
+    
+    // Taklifnoma turiga qarab titularni o'zgartirish
+    let title = 'Taklifnoma'
+    let subtitle = ''
+    
+    switch (type) {
+      case 'wedding':
+        title = 'Nikoh to\'yi'
+        subtitle = `${firstName} va ${secondName}`
+        break
+      case 'birthday':
+        title = 'Tug\'ilgan kun'
+        subtitle = `${firstName}${age ? ` ${age}-yosh` : ''}`
+        break
+      case 'funeral':
+        title = 'El oshi'
+        subtitle = `${firstName}`
+        break
+      case 'jubilee':
+        title = 'Yubiley'
+        subtitle = `${firstName}${age ? ` ${age}-yillik` : ''}`
+        break
+      case 'engagement':
+        title = 'Unashtiruv'
+        subtitle = `${firstName} va ${secondName}`
+        break
+    }
+    
     // Rasm mavjudligini tekshirish
     const hasImage = invitationData.uploadedImage && invitationData.uploadedImage.length > 0
-
+    
+    // Taklifnoma dizaynining shablonga asoslangan OpenGraph tasviri
     return new ImageResponse(
       (
         <div
           style={{
-            fontSize: 32,
-            background: 'white',
             width: '100%',
             height: '100%',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            position: 'relative',
+            background: 'white',
+            padding: '40px',
+            fontSize: 32,
+            color: textColor
           }}
         >
-          {/* Background with overlay */}
-          {hasImage ? (
-            <div style={{
-              position: 'absolute',
-              inset: 0,
-              display: 'flex',
-              backgroundImage: `url(${invitationData.uploadedImage})`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              filter: 'brightness(0.7)',
-            }} />
-          ) : (
-            <div style={{
-              position: 'absolute',
-              inset: 0,
-              background: 'linear-gradient(to bottom right, #f0f9ff, #e6f7ff, #ccecff)',
-            }} />
-          )}
-
-          {/* Content overlay */}
+          {/* Asosiy taklifnoma konteyner */}
           <div style={{
-            position: 'absolute',
-            inset: 0,
-            background: hasImage ? 'rgba(0, 0, 0, 0.5)' : 'rgba(0, 0, 0, 0.1)',
+            width: '90%',
+            height: '90%',
+            borderRadius: '20px',
+            overflow: 'hidden',
+            padding: '2rem',
+            position: 'relative',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            padding: '40px',
-            textAlign: 'center',
-            color: hasImage ? 'white' : '#333',
+            ...backgroundStyle
           }}>
-            <div style={{
-              fontSize: 48,
-              fontWeight: 'bold',
-              marginBottom: 20,
-              textShadow: hasImage ? '0 2px 4px rgba(0,0,0,0.5)' : 'none',
-            }}>
-              {title}
-            </div>
-
-            <div style={{
-              fontSize: 40,
-              marginBottom: 30,
-              maxWidth: '80%',
-              textShadow: hasImage ? '0 2px 4px rgba(0,0,0,0.5)' : 'none',
-            }}>
-              {description}
-            </div>
-
-            <div style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '10px',
-              marginBottom: 20,
-              background: 'rgba(255,255,255,0.2)',
-              padding: '20px',
-              borderRadius: '10px',
-              backdropFilter: 'blur(5px)',
-            }}>
+            {/* Background image if available */}
+            {hasImage && (
               <div style={{
-                fontSize: 28,
-                textShadow: hasImage ? '0 1px 2px rgba(0,0,0,0.5)' : 'none',
-              }}>
-                Sana: {formattedDate}
-              </div>
-              <div style={{
-                fontSize: 28,
-                textShadow: hasImage ? '0 1px 2px rgba(0,0,0,0.5)' : 'none',
-              }}>
-                Vaqt: {time}
-              </div>
-              <div style={{
-                fontSize: 28,
-                textShadow: hasImage ? '0 1px 2px rgba(0,0,0,0.5)' : 'none',
-              }}>
-                Manzil: {location}
-              </div>
-            </div>
-
+                position: 'absolute',
+                inset: 0,
+                backgroundImage: `url(${invitationData.uploadedImage})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                opacity: 0.3
+              }} />
+            )}
+            
             <div style={{
-              position: 'absolute',
-              bottom: 20,
-              fontSize: 20,
-              opacity: 0.8,
-              display: 'flex',
-              alignItems: 'center',
-              gap: '10px',
+              textAlign: 'center',
+              zIndex: 1,
+              width: '100%',
             }}>
-              taklifnoma.uz
+              {/* Taklifnoma sarlavhasi */}
+              <div style={{
+                fontSize: 60,
+                fontWeight: 'bold',
+                marginBottom: '0.5rem',
+                color: titleColor
+              }}>
+                {title}
+              </div>
+              
+              {/* Qo'shimcha ma'lumot (ismlar) */}
+              <div style={{
+                fontSize: 50,
+                marginBottom: '2rem',
+                color: titleColor
+              }}>
+                {subtitle}
+              </div>
+              
+              {/* Taklifnoma ma'lumotlari */}
+              <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '14px',
+                background: 'rgba(255, 255, 255, 0.7)',
+                borderRadius: '16px',
+                padding: '24px',
+                backdropFilter: 'blur(10px)',
+                border: `1px solid rgba(255, 255, 255, 0.3)`,
+                marginBottom: '20px'
+              }}>
+                {/* Sana */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <div style={{ 
+                    width: '40px', 
+                    height: '40px', 
+                    borderRadius: '8px', 
+                    background: accentColor,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'white',
+                    fontSize: '22px'
+                  }}>
+                    📅
+                  </div>
+                  <div style={{ fontSize: '26px' }}>
+                    <span style={{ fontWeight: 'bold' }}>Sana:</span> {formattedDate}
+                  </div>
+                </div>
+                
+                {/* Vaqt */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <div style={{ 
+                    width: '40px', 
+                    height: '40px', 
+                    borderRadius: '8px', 
+                    background: accentColor,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'white',
+                    fontSize: '22px'
+                  }}>
+                    🕒
+                  </div>
+                  <div style={{ fontSize: '26px' }}>
+                    <span style={{ fontWeight: 'bold' }}>Vaqt:</span> {time}
+                  </div>
+                </div>
+                
+                {/* Manzil */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <div style={{ 
+                    width: '40px', 
+                    height: '40px', 
+                    borderRadius: '8px', 
+                    background: accentColor,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'white',
+                    fontSize: '22px'
+                  }}>
+                    📍
+                  </div>
+                  <div style={{ fontSize: '26px' }}>
+                    <span style={{ fontWeight: 'bold' }}>Manzil:</span> {location}
+                  </div>
+                </div>
+              </div>
+              
+              {/* Taklifnoma brendi */}
+              <div style={{
+                fontSize: '20px',
+                opacity: 0.7,
+                marginTop: '12px'
+              }}>
+                taklifnoma.uz
+              </div>
             </div>
           </div>
         </div>
@@ -218,10 +307,11 @@ export default async function Image({ params }) {
       {
         width: 1200,
         height: 630,
-        emoji: 'noto',
+        emoji: 'twemoji',
       }
     )
   } catch (error) {
+    console.error('Opengraph image generation error:', error)
     return new ImageResponse(
       (
         <div
