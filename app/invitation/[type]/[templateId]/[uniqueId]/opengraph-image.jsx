@@ -14,9 +14,8 @@ export default async function Image({ params }) {
     console.log('Taklifnoma parametrlari:', params)
     const data = await getInvitationByUniqueId(params.uniqueId)
     console.log('Taklifnoma ma\'lumotlari:', data)
-    const invitationData = data?.invitationData || data || null
+    const invitationData = data?.invitationData || null
     console.log('Ishlov berilgan taklifnoma ma\'lumotlari:', invitationData)
-
     if (!invitationData) {
       return new ImageResponse(
         (
