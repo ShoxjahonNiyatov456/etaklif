@@ -11,8 +11,11 @@ export const size = {
 
 export default async function Image({ params }) {
   try {
+    console.log('Taklifnoma parametrlari:', params)
     const data = await getInvitationByUniqueId(params.uniqueId)
-    const invitationData = data?.invitationData || null
+    console.log('Taklifnoma ma\'lumotlari:', data)
+    const invitationData = data?.invitationData || data || null
+    console.log('Ishlov berilgan taklifnoma ma\'lumotlari:', invitationData)
 
     if (!invitationData) {
       return new ImageResponse(
