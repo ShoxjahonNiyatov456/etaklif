@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Share2, Check } from "lucide-react";
+import { Share2, Check, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ShareModal } from "@/components/ui/share-modal";
 import { getCurrentUser } from "@/app/services/auth";
@@ -14,7 +14,9 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
     AlertDialogDescription,
+    AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { generateShareableLink } from "@/app/services/share";
 
 interface PaymentSectionProps {
     type: string;
@@ -43,6 +45,7 @@ export default function PaymentSection({
     const [isShareModalOpen, setIsShareModalOpen] = useState(false);
     const [paymentProcessing, setPaymentProcessing] = useState(false);
     const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
+    const [isGeneratingLink, setIsGeneratingLink] = useState(false);
 
     const handlePayment = async () => {
         const currentUser = getCurrentUser();
@@ -90,9 +93,48 @@ export default function PaymentSection({
         }
     };
 
-    const handleShareInvitation = () => {
-        if (typeof window !== "undefined") {
+    const handleShareInvitation = async () => {
+        try {
+            setIsGeneratingLink(true);
+            const link = await generateShareableLink(
+                type as string,
+                selectedTemplate,
+                formData
+            );
+            setShareableLink(link);
             setIsShareModalOpen(true);
+            setIsGeneratingLink(false);
+        } catch (error) {
+            console.error("Error generating link:", error);
+            setIsGeneratingLink(false);
+            // Add error notification if you have a notification system
+        }
+    };
+
+    const handlePaymentProcessing = async () => {
+        try {
+            setPaymentProcessing(true);
+            // Simulate payment processing
+            await new Promise((resolve) => setTimeout(resolve, 2000));
+            
+            // Generate link after successful payment
+            setIsGeneratingLink(true);
+            const link = await generateShareableLink(
+                type as string,
+                selectedTemplate,
+                formData
+            );
+            setShareableLink(link);
+            
+            // Complete payment flow
+            setIsConfirmDialogOpen(false);
+            setPaymentCompleted(true);
+            setPaymentProcessing(false);
+            setIsGeneratingLink(false);
+        } catch (error) {
+            console.error("Error in payment processing:", error);
+            setPaymentProcessing(false);
+            setIsGeneratingLink(false);
         }
     };
 
@@ -106,7 +148,10 @@ export default function PaymentSection({
                         className="w-full"
                     >
                         {paymentProcessing ? (
-                            "Yakunlash amalga oshirilmoqda..."
+                            <div className="flex items-center justify-center">
+                                <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+                                <span>Tayyorlanmoqda...</span>
+                            </div>
                         ) : (
                             <>Yakunlash uchun bosing!</>
                         )}
@@ -121,32 +166,72 @@ export default function PaymentSection({
                             </AlertDialogHeader>
                             <AlertDialogFooter>
                                 <AlertDialogCancel>Bekor qilish</AlertDialogCancel>
-                                <AlertDialogAction onClick={handlePayment}>Yakunlash</AlertDialogAction>
+                                <AlertDialogAction 
+                                    onClick={handlePaymentProcessing} 
+                                    disabled={paymentProcessing}
+                                    className={paymentProcessing ? "opacity-70 cursor-not-allowed" : ""}
+                                >
+                                    {paymentProcessing ? (
+                                        <div className="flex items-center">
+                                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                            To'lov amalga oshirilmoqda...
+                                        </div>
+                                    ) : (
+                                        "Yakunlash"
+                                    )}
+                                </AlertDialogAction>
                             </AlertDialogFooter>
                         </AlertDialogContent>
                     </AlertDialog>
                 </>
             ) : (
-                <div className="space-y-4">
-                    <div className="flex items-center justify-center space-x-2 text-green-600">
-                        <Check className="h-5 w-5" />
-                        <span>Taklifnoma muvoffaqiyatli yakunlandi!</span>
+                <div className="flex flex-col items-center justify-center space-y-6 mt-6">
+                    <div className="flex items-center justify-center w-20 h-20 bg-green-100 rounded-full">
+                        <svg
+                            width="32"
+                            height="32"
+                            viewBox="0 0 32 32"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path
+                                d="M10.6667 16L14.6667 20L21.3333 12"
+                                stroke="#10B981"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            />
+                            <circle cx="16" cy="16" r="12" stroke="#10B981" strokeWidth="2" />
+                        </svg>
                     </div>
-                    <Button
-                        onClick={handleShareInvitation}
-                        className="w-full flex items-center justify-center space-x-2"
+                    <h3 className="text-xl font-semibold text-green-600">To'lov muvaffaqiyatli yakunlandi!</h3>
+                    <p className="text-gray-600 text-center mx-6">
+                        Siz ushbu taklifnomadan muhim voqealaringizni tahrirlash va baham ko'rish imkoniyatiga ega bo'ldingiz.
+                    </p>
+                    <button
+                        onClick={shareableLink ? () => setIsShareModalOpen(true) : handleShareInvitation}
+                        disabled={isGeneratingLink}
+                        className={`px-6 py-3 bg-primary hover:bg-primary-dark text-white font-medium rounded-lg transition-colors flex items-center justify-center ${isGeneratingLink ? 'opacity-70 cursor-not-allowed' : ''}`}
                     >
-                        <Share2 className="h-5 w-5" />
-                        <span>Taklifnomani ulashish</span>
-                    </Button>
+                        {isGeneratingLink ? (
+                            <>
+                                <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+                                <span>Havola tayyorlanmoqda...</span>
+                            </>
+                        ) : (
+                            "Taklifnomani ulashish"
+                        )}
+                    </button>
                 </div>
             )}
-            <ShareModal
-                isOpen={isShareModalOpen}
-                onClose={() => setIsShareModalOpen(false)}
-                url={shareableLink}
-                title="Taklifnomani ulashish" // Added title prop as it's required by ShareModalProps
-            />
+            {shareableLink && (
+                <ShareModal
+                    isOpen={isShareModalOpen}
+                    onClose={() => setIsShareModalOpen(false)}
+                    url={shareableLink}
+                    title={`${formData?.groom?.name || "To'y"} taklif qiladi!`}
+                />
+            )}
         </div>
     );
 }

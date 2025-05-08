@@ -13,7 +13,7 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const { uniqueId, type, templateId } = params;
   let ogTitle = "Taklifnoma";
-  let ogDescription = "Taklifnoma.uz";
+  let ogDescription = "";
   const siteUrl = process.env.NEXT_PUBLIC_API_URL || "https://etaklif.vercel.app";
   const imageUrl = `${siteUrl}/invitation/${type}/${templateId}/${uniqueId}/opengraph-image.png`;
   
@@ -81,7 +81,7 @@ export async function generateMetadata(
   } catch (error) {
     console.error("[generateMetadata] Metadata uchun ma'lumot olishda xatolik:", error);
     ogTitle = 'Taklifnoma';
-    ogDescription = 'Taklifnoma.uz';
+    ogDescription = '';
   }
 
   const fullUrl = `${siteUrl}/invitation/${type}/${templateId}/${uniqueId}`;
@@ -94,7 +94,7 @@ export async function generateMetadata(
       title: ogTitle,
       description: ogDescription,
       url: fullUrl,
-      siteName: 'Taklifnoma.uz',
+      siteName: '',
       images: [
         {
           url: imageUrl,
@@ -111,7 +111,7 @@ export async function generateMetadata(
       title: ogTitle,
       description: ogDescription,
       images: [imageUrl],
-      creator: '@taklifnomauz',
+      creator: '',
     },
     alternates: {
       canonical: fullUrl,

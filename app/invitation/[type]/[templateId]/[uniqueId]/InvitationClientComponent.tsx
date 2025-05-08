@@ -30,7 +30,7 @@ export default function InvitationClientComponent({
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [ogTitle, setOgTitle] = useState<string>("Taklifnoma");
-    const [ogDescription, setOgDescription] = useState<string>("Taklifnoma.uz");
+    const [ogDescription, setOgDescription] = useState<string>("");
     const siteUrl = process.env.NEXT_PUBLIC_API_URL || "https://etaklif.vercel.app";
 
     useEffect(() => {
@@ -164,7 +164,7 @@ export default function InvitationClientComponent({
                 <meta property="og:image" content={imageUrl} />
                 <meta property="og:url" content={`${siteUrl}/invitation/${type}/${templateId}/${uniqueId}`} />
                 <meta property="og:type" content="website" />
-                <meta property="og:site_name" content="Taklifnoma.uz" />
+                <meta property="og:site_name" content="" />
                 
                 {/* Twitter Cards */}
                 <meta name="twitter:card" content="summary_large_image" />

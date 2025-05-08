@@ -146,7 +146,7 @@ export default function FormSection({
             {type === "funeral" && (
                 <div>
                     <label className="form-label">
-                        Marhumning ismi <span className="text-red-500">*</span>
+                        El Oshi egasining ismi <span className="text-red-500">*</span>
                     </label>
                     <input
                         type="text"
@@ -154,7 +154,7 @@ export default function FormSection({
                         value={formData.firstName}
                         onChange={onInputChange}
                         className="w-full border border-slate-300 h-10 px-3 rounded-md"
-                        placeholder="Marhumning ismini kiriting"
+                        placeholder="El Oshi egasining ismini kiriting"
                     />
                 </div>
             )}

@@ -16,31 +16,45 @@ export const generateShareableLink = async (
   templateId: string,
   invitationData: any
 ): Promise<string> => {
-  const uniqueId = generateUniqueId();
-  await saveInvitationToFirebase(uniqueId, type, templateId, invitationData);
-  let baseUrl = process.env.NEXT_PUBLIC_API_URL;
-  if (!baseUrl) {
-    console.error(
-      "NEXT_PUBLIC_API_URL is not defined. Please check your environment variables."
-    );
-    return "#error-base-url-not-set";
-  }
-  baseUrl = baseUrl.trim();
-  if (!baseUrl.startsWith("http://") && !baseUrl.startsWith("https://")) {
-    baseUrl = `https://${baseUrl}`;
-  }
-  while (baseUrl.endsWith("/")) {
-    baseUrl = baseUrl.slice(0, -1);
-  }
-  const path = `/invitation/${encodeURIComponent(type)}/${encodeURIComponent(
-    templateId
-  )}/${encodeURIComponent(uniqueId)}`;
   try {
+    // Generatsiya jarayoni uchun kichik kechikish qo'shamiz
+    // Haddan tashqari tez bo'lsa, foydalanuvchi havola generatsiya bo'lmayapti deb o'ylashi mumkin
+    const uniqueId = generateUniqueId();
+    
+    // Firebase'ga ma'lumotlarni saqlash (bu operatsiya sekin bo'lishi mumkin)
+    const savePromise = saveInvitationToFirebase(uniqueId, type, templateId, invitationData);
+    
+    // URL havola yaratish
+    let baseUrl = process.env.NEXT_PUBLIC_API_URL;
+    if (!baseUrl) {
+      console.error(
+        "NEXT_PUBLIC_API_URL is not defined. Please check your environment variables."
+      );
+      return "#error-base-url-not-set";
+    }
+    baseUrl = baseUrl.trim();
+    if (!baseUrl.startsWith("http://") && !baseUrl.startsWith("https://")) {
+      baseUrl = `https://${baseUrl}`;
+    }
+    while (baseUrl.endsWith("/")) {
+      baseUrl = baseUrl.slice(0, -1);
+    }
+    const path = `/invitation/${encodeURIComponent(type)}/${encodeURIComponent(
+      templateId
+    )}/${encodeURIComponent(uniqueId)}`;
+    
     const fullUrl = `${baseUrl}${path}`;
+    
+    // Firebase'ga saqlash tugashini kutamiz
+    await savePromise;
+    
+    // Minimum 1 sekund kechikish qo'shamiz
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
     return fullUrl;
   } catch (error) {
-    console.error("Error constructing URL:", error);
-    return "#error-url-construction-failed";
+    console.error("Error generating shareable link:", error);
+    throw new Error("Havola yaratishda xatolik yuz berdi. Iltimos, qayta urinib ko'ring.");
   }
 };
 
