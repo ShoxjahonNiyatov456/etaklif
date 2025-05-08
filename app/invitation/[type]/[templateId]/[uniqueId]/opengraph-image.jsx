@@ -8,11 +8,12 @@ export const size = {
   width: 1200,
   height: 630,
 }
+export const route = '/invitation/[type]/[templateId]/[uniqueId]/opengraph-image.png'
 
 export default async function Image({ params }) {
   try {
     const data = await getInvitationByUniqueId(params.uniqueId)
-    const invitationData = data?.invitationData || null
+    const invitationData = data?.invitationData || data
     if (!invitationData) {
       return new ImageResponse(
         (

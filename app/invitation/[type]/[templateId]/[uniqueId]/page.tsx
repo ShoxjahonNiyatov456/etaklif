@@ -13,8 +13,8 @@ export async function generateMetadata(
   const { uniqueId, type, templateId } = params;
   let ogTitle = "Taklifnoma";
   let ogDescription = "Sizni marosimimizga taklif qilamiz.";
-  let imageUrl = `${process.env.NEXT_PUBLIC_API_URL}/invitation/${type}/${templateId}/${uniqueId}/opengraph-image`;
-  const siteUrl = process.env.NEXT_PUBLIC_API_URL || "";
+  let imageUrl = `${process.env.NEXT_PUBLIC_API_URL}/invitation/${type}/${templateId}/${uniqueId}/opengraph-image.png`;
+  const siteUrl = process.env.NEXT_PUBLIC_API_URL || "https://etaklif.vercel.app";
   try {
     const invitationData = await getInvitationByUniqueId(uniqueId);
     if (invitationData) {
@@ -46,14 +46,20 @@ export async function generateMetadata(
         hostNames = `${firstName}ning`;
       }
 
+      let tadbir = '';
       if (hostNames) {
-        ogDescription = `${hostNames} ${dynamicEventTitle.toLowerCase()}ga taklifnomasi.`;
+        tadbir = `${hostNames} ${dynamicEventTitle.toLowerCase()}`;
       } else {
-        ogDescription = `Sizni ${dynamicEventTitle.toLowerCase()} marosimiga taklif etamiz.`;
+        tadbir = dynamicEventTitle.toLowerCase();
       }
-      if (date) ogDescription += ` Sana: ${date}.`;
-      if (time) ogDescription += ` Vaqt: ${time}.`;
-      if (location) ogDescription += ` Manzil: ${location}.`;
+      
+      ogDescription = `📌 ${tadbir.toUpperCase()}GA TAKLIFNOMA ��\n\n`;
+      
+      if (date) ogDescription += `📅 Sana: ${date}\n`;
+      if (time) ogDescription += `🕒 Vaqt: ${time}\n`;
+      if (location) ogDescription += `📍 Manzil: ${location}\n`;
+      
+      ogDescription += `\nSizni ushbu tantanali tadbirga taklif qilamiz. Taklifnoma.uz - Zamonaviy taklifnomalar platformasi.`;
     }
   } catch (error) {
     console.error("[generateMetadata] Metadata uchun ma'lumot olishda xatolik:", error);

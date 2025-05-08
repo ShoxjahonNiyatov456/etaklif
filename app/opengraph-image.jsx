@@ -7,6 +7,7 @@ export const size = {
   width: 1200,
   height: 630,
 }
+export const route = '/opengraph-image.png'
 
 export default async function Image() {
   return new ImageResponse(
