@@ -121,7 +121,6 @@ export default function PaymentSection({ type, selectedTemplate, formData, uploa
             className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-6 shadow-lg mt-6"
         >
             <h3 className="text-xl font-semibold mb-6 text-white">Taklifnomani yakunlash</h3>
-
             {!paymentCompleted ? (
                 <>
                     <Button

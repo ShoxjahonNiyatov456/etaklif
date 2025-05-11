@@ -42,7 +42,7 @@ export default function Header() {
     >
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
-          <Link href="/" className="flex items-center space-x-2">
+          <Link href="/" className="flex items-center -space-x-4">
             <Sparkles className="h-6 w-6 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600" />
             <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
               Taklifnoma
