@@ -1,64 +1,78 @@
-"use client";
+"use client"
 
-import type React from "react";
-
-import { useState } from "react";
-import { Send, Mail, Phone, MapPin } from "lucide-react";
+import type React from "react"
+import { useState } from "react"
+import { motion } from "framer-motion"
+import { Send, Mail, Phone, MapPin, Facebook, Instagram } from "lucide-react"
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     message: "",
-  });
+  })
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isSubmitted, setIsSubmitted] = useState(false)
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target
+    setFormData((prev) => ({ ...prev, [name]: value }))
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
+    e.preventDefault()
+    setIsSubmitting(true)
     setTimeout(() => {
-      setIsSubmitting(false);
-      setIsSubmitted(true);
+      setIsSubmitting(false)
+      setIsSubmitted(true)
       setFormData({
         name: "",
         email: "",
         message: "",
-      });
+      })
       setTimeout(() => {
-        setIsSubmitted(false);
-      }, 5000);
-    }, 1500);
-  };
+        setIsSubmitted(false)
+      }, 5000)
+    }, 1500)
+  }
 
   return (
-    <div className="pt-16">
-      <div className="container mx-auto px-4 py-10">
-        <div className="max-w-4xl mx-auto">
-          <h1 className="text-3xl font-bold mb-6">Biz bilan bog'laning</h1>
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white pt-16">
+      {/* Background Elements */}
+      <div className="absolute inset-0 z-0 opacity-20 pointer-events-none overflow-hidden">
+        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-purple-600 rounded-full filter blur-[100px]"></div>
+        <div className="absolute bottom-1/3 right-1/4 w-72 h-72 bg-blue-600 rounded-full filter blur-[120px]"></div>
+      </div>
+
+      <div className="container mx-auto px-4 py-16 relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="max-w-4xl mx-auto"
+        >
+          <h1 className="text-4xl font-bold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
+            Biz bilan bog'laning
+          </h1>
 
           <div className="grid md:grid-cols-2 gap-8">
-            <div>
-              <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                <h2 className="text-xl font-semibold mb-4">Xabar yuborish</h2>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+            >
+              <div className="bg-gray-800/50 backdrop-blur-sm p-6 rounded-xl border border-gray-700">
+                <h2 className="text-xl font-semibold mb-6 text-white">Xabar yuborish</h2>
 
                 {isSubmitted ? (
-                  <div className="bg-green-50 border border-green-200 text-green-700 rounded-lg p-4">
-                    Xabaringiz muvaffaqiyatli yuborildi! Tez orada siz bilan
-                    bog'lanamiz.
+                  <div className="bg-green-900/30 border border-green-700/30 text-green-400 rounded-lg p-4">
+                    Xabaringiz muvaffaqiyatli yuborildi! Tez orada siz bilan bog'lanamiz.
                   </div>
                 ) : (
-                  <form onSubmit={handleSubmit} className="space-y-4">
+                  <form onSubmit={handleSubmit} className="space-y-5">
                     <div>
-                      <label htmlFor="name" className="form-label">
+                      <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-1">
                         Ismingiz
                       </label>
                       <input
@@ -69,12 +83,12 @@ export default function ContactPage() {
                         onChange={handleChange}
                         required
                         placeholder="Ismingizni kiriting"
-                        className="form-input"
+                        className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none text-white placeholder-gray-500"
                       />
                     </div>
 
                     <div>
-                      <label htmlFor="email" className="form-label">
+                      <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-1">
                         Email
                       </label>
                       <input
@@ -85,12 +99,12 @@ export default function ContactPage() {
                         onChange={handleChange}
                         required
                         placeholder="Email manzilingizni kiriting"
-                        className="form-input"
+                        className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none text-white placeholder-gray-500"
                       />
                     </div>
 
                     <div>
-                      <label htmlFor="message" className="form-label">
+                      <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-1">
                         Xabar
                       </label>
                       <textarea
@@ -101,13 +115,13 @@ export default function ContactPage() {
                         required
                         placeholder="Xabaringizni kiriting"
                         rows={5}
-                        className="form-input"
+                        className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none text-white placeholder-gray-500 resize-none"
                       ></textarea>
                     </div>
 
                     <button
                       type="submit"
-                      className={`btn-primary w-full flex items-center justify-center ${isSubmitting ? "opacity-70 cursor-not-allowed" : ""
+                      className={`w-full px-4 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-medium rounded-lg flex items-center justify-center transition-all duration-300 ${isSubmitting ? "opacity-70 cursor-not-allowed" : ""
                         }`}
                       disabled={isSubmitting}
                     >
@@ -126,125 +140,87 @@ export default function ContactPage() {
                   </form>
                 )}
               </div>
-            </div>
+            </motion.div>
 
             <div>
-              <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 mb-6">
-                <h2 className="text-xl font-semibold mb-4">
-                  Bog'lanish ma'lumotlari
-                </h2>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="bg-gray-800/50 backdrop-blur-sm p-6 rounded-xl border border-gray-700 mb-6"
+              >
+                <h2 className="text-xl font-semibold mb-6 text-white">Bog'lanish ma'lumotlari</h2>
 
-                <div className="space-y-4">
+                <div className="space-y-5">
                   <div className="flex items-start">
-                    <MapPin className="h-5 w-5 text-primary-600 mr-3 mt-0.5" />
+                    <div className="w-10 h-10 rounded-full bg-gray-700/50 flex items-center justify-center mr-4">
+                      <MapPin className="h-5 w-5 text-purple-400" />
+                    </div>
                     <div>
-                      <h3 className="font-medium">Manzil</h3>
-                      <p className="text-gray-600">
-                        Jizzax shahri, Sharof Rashidov tumani
-                      </p>
+                      <h3 className="font-medium text-white mb-1">Manzil</h3>
+                      <p className="text-gray-400">Jizzax shahri, Sharof Rashidov tumani</p>
                     </div>
                   </div>
 
                   <div className="flex items-start">
-                    <Mail className="h-5 w-5 text-primary-600 mr-3 mt-0.5" />
+                    <div className="w-10 h-10 rounded-full bg-gray-700/50 flex items-center justify-center mr-4">
+                      <Mail className="h-5 w-5 text-purple-400" />
+                    </div>
                     <div>
-                      <h3 className="font-medium">Email</h3>
-                      <p className="text-gray-600">info@etaklif.vercel.app</p>
+                      <h3 className="font-medium text-white mb-1">Email</h3>
+                      <p className="text-gray-400">info@etaklif.vercel.app</p>
                     </div>
                   </div>
 
                   <div className="flex items-start">
-                    <Phone className="h-5 w-5 text-primary-600 mr-3 mt-0.5" />
+                    <div className="w-10 h-10 rounded-full bg-gray-700/50 flex items-center justify-center mr-4">
+                      <Phone className="h-5 w-5 text-purple-400" />
+                    </div>
                     <div>
-                      <h3 className="font-medium">Telefon</h3>
-                      <p className="text-gray-600">+998 95 557 13 02</p>
+                      <h3 className="font-medium text-white mb-1">Telefon</h3>
+                      <p className="text-gray-400">+998 95 557 13 02</p>
                     </div>
                   </div>
                 </div>
-              </div>
+              </motion.div>
 
-              <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                <h2 className="text-xl font-semibold mb-4">
-                  Ijtimoiy tarmoqlar
-                </h2>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+                className="bg-gray-800/50 backdrop-blur-sm p-6 rounded-xl border border-gray-700"
+              >
+                <h2 className="text-xl font-semibold mb-6 text-white">Ijtimoiy tarmoqlar</h2>
 
                 <div className="flex space-x-4">
                   <a
                     href="https://t.me/taklifnoma"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 transition-colors"
+                    className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-full flex items-center justify-center hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-lg"
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="h-5 w-5"
-                    >
-                      <path d="M21.5 2l-18.5 9 5 3 3 8 4-10 6-3z"></path>
-                    </svg>
+                    <Send className="h-5 w-5" />
                   </a>
 
                   <a
                     href="#"
-                    className="bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 transition-colors"
+                    className="w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-800 text-white rounded-full flex items-center justify-center hover:from-blue-700 hover:to-blue-900 transition-all duration-300 shadow-lg"
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="h-5 w-5"
-                    >
-                      <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
-                    </svg>
+                    <Facebook className="h-5 w-5" />
                   </a>
 
                   <a
                     href="#"
-                    className="bg-pink-600 text-white p-2 rounded-full hover:bg-pink-700 transition-colors"
+                    className="w-12 h-12 bg-gradient-to-br from-pink-500 to-purple-600 text-white rounded-full flex items-center justify-center hover:from-pink-600 hover:to-purple-700 transition-all duration-300 shadow-lg"
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="h-5 w-5"
-                    >
-                      <rect
-                        width="20"
-                        height="20"
-                        x="2"
-                        y="2"
-                        rx="5"
-                        ry="5"
-                      ></rect>
-                      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                      <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line>
-                    </svg>
+                    <Instagram className="h-5 w-5" />
                   </a>
                 </div>
-              </div>
+              </motion.div>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
-  );
+  )
 }

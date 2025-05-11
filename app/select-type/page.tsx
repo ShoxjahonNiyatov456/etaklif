@@ -62,7 +62,7 @@ export default function SelectTypePage() {
   }
 
   return (
-    <div className="pt-16 min-h-screen">
+    <div className="pt-16 min-h-screen bg-gradient-to-b from-gray-900 to-black text-white">
       <section className="py-20">
         <div className="container mx-auto px-4">
           <motion.div

@@ -1,36 +1,34 @@
-"use client";
+"use client"
 
-import { useState, useEffect } from "react";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
+import type React from "react"
+import { motion } from "framer-motion"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { Label } from "@/components/ui/label"
 
 interface FormSectionProps {
-    type: string;
+    type: string
     formData: {
-        firstName: string;
-        secondName: string;
-        date: string;
-        time: string;
-        location: string;
-        additionalInfo: string;
-        age: string;
-        parents: string;
-    };
-    day: string;
-    month: string;
-    hours: string;
-    minutes: string;
-    dateError: string | null;
-    onInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
-    onDayChange: (value: string) => void;
-    onMonthChange: (value: string) => void;
-    onHoursChange: (value: string) => void;
-    onMinutesChange: (value: string) => void;
+        firstName: string
+        secondName: string
+        date: string
+        time: string
+        location: string
+        additionalInfo: string
+        age: string
+        parents: string
+    }
+    day: string
+    month: string
+    hours: string
+    minutes: string
+    dateError: string | null
+    onInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
+    onDayChange: (value: string) => void
+    onMonthChange: (value: string) => void
+    onHoursChange: (value: string) => void
+    onMinutesChange: (value: string) => void
 }
 
 export default function FormSection({
@@ -60,53 +58,60 @@ export default function FormSection({
         { value: "9", label: "Oktyabr" },
         { value: "10", label: "Noyabr" },
         { value: "11", label: "Dekabr" },
-    ];
+    ]
 
     const days = Array.from({ length: 31 }, (_, i) => ({
         value: String(i + 1),
         label: String(i + 1),
-    }));
+    }))
 
     const hoursOptions = Array.from({ length: 24 }, (_, i) => ({
         value: String(i).padStart(2, "0"),
         label: String(i).padStart(2, "0"),
-    }));
+    }))
 
     const minutesOptions = [
         { value: "00", label: "00" },
         { value: "15", label: "15" },
         { value: "30", label: "30" },
         { value: "45", label: "45" },
-    ];
+    ]
 
     return (
-        <div className="space-y-4">
+        <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-6 shadow-lg space-y-6"
+        >
+            <h3 className="text-xl font-semibold mb-4 text-white">Ma'lumotlarni kiriting</h3>
+
             {type === "wedding" && (
                 <>
-                    <div>
-                        <label className="form-label">
-                            Kuyov ismi <span className="text-red-500">*</span>
-                        </label>
-                        <input
-                            type="text"
+                    <div className="space-y-2">
+                        <Label htmlFor="firstName" className="text-gray-300">
+                            Kuyov ismi <span className="text-red-400">*</span>
+                        </Label>
+                        <Input
+                            id="firstName"
                             name="firstName"
                             value={formData.firstName}
                             onChange={onInputChange}
-                            className="w-full border border-slate-300 h-10 px-3 rounded-md"
                             placeholder="Kuyov ismini kiriting"
+                            className="bg-gray-900/50 border-gray-700 text-white placeholder:text-gray-500 focus:border-purple-500 focus:ring-purple-500"
                         />
                     </div>
-                    <div>
-                        <label className="form-label">
-                            Kelin ismi <span className="text-red-500">*</span>
-                        </label>
-                        <input
-                            type="text"
+                    <div className="space-y-2">
+                        <Label htmlFor="secondName" className="text-gray-300">
+                            Kelin ismi <span className="text-red-400">*</span>
+                        </Label>
+                        <Input
+                            id="secondName"
                             name="secondName"
                             value={formData.secondName}
                             onChange={onInputChange}
-                            className="w-full border border-slate-300 h-10 px-3 rounded-md"
                             placeholder="Kelin ismini kiriting"
+                            className="bg-gray-900/50 border-gray-700 text-white placeholder:text-gray-500 focus:border-purple-500 focus:ring-purple-500"
                         />
                     </div>
                 </>
@@ -114,77 +119,77 @@ export default function FormSection({
 
             {type === "birthday" && (
                 <>
-                    <div>
-                        <label className="form-label">
-                            Ism <span className="text-red-500">*</span>
-                        </label>
-                        <input
-                            type="text"
+                    <div className="space-y-2">
+                        <Label htmlFor="firstName" className="text-gray-300">
+                            Ism <span className="text-red-400">*</span>
+                        </Label>
+                        <Input
+                            id="firstName"
                             name="firstName"
                             value={formData.firstName}
                             onChange={onInputChange}
-                            className="w-full border border-slate-300 h-10 px-3 rounded-md"
                             placeholder="Ismni kiriting"
+                            className="bg-gray-900/50 border-gray-700 text-white placeholder:text-gray-500 focus:border-purple-500 focus:ring-purple-500"
                         />
                     </div>
-                    <div>
-                        <label className="form-label">
-                            Yosh <span className="text-red-500">*</span>
-                        </label>
-                        <input
-                            type="text"
+                    <div className="space-y-2">
+                        <Label htmlFor="age" className="text-gray-300">
+                            Yosh <span className="text-red-400">*</span>
+                        </Label>
+                        <Input
+                            id="age"
                             name="age"
                             value={formData.age}
                             onChange={onInputChange}
-                            className="w-full border border-slate-300 h-10 px-3 rounded-md"
                             placeholder="Yoshni kiriting"
+                            className="bg-gray-900/50 border-gray-700 text-white placeholder:text-gray-500 focus:border-purple-500 focus:ring-purple-500"
                         />
                     </div>
                 </>
             )}
 
             {type === "funeral" && (
-                <div>
-                    <label className="form-label">
-                        El Oshi egasining ismi <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                        type="text"
+                <div className="space-y-2">
+                    <Label htmlFor="firstName" className="text-gray-300">
+                        El Oshi egasining ismi <span className="text-red-400">*</span>
+                    </Label>
+                    <Input
+                        id="firstName"
                         name="firstName"
                         value={formData.firstName}
                         onChange={onInputChange}
-                        className="w-full border border-slate-300 h-10 px-3 rounded-md"
                         placeholder="El Oshi egasining ismini kiriting"
+                        className="bg-gray-900/50 border-gray-700 text-white placeholder:text-gray-500 focus:border-purple-500 focus:ring-purple-500"
                     />
                 </div>
             )}
 
             {type === "jubilee" && (
                 <>
-                    <div>
-                        <label className="form-label">
-                            Ism <span className="text-red-500">*</span>
-                        </label>
-                        <input
-                            type="text"
+                    <div className="space-y-2">
+                        <Label htmlFor="firstName" className="text-gray-300">
+                            Ism <span className="text-red-400">*</span>
+                        </Label>
+                        <Input
+                            id="firstName"
                             name="firstName"
                             value={formData.firstName}
                             onChange={onInputChange}
-                            className="w-full border border-slate-300 h-10 px-3 rounded-md"
                             placeholder="Ismni kiriting"
+                            className="bg-gray-900/50 border-gray-700 text-white placeholder:text-gray-500 focus:border-purple-500 focus:ring-purple-500"
                         />
                     </div>
-                    <div>
-                        <label className="form-label">
-                            Yosh <span className="text-red-500">*</span>
-                        </label>
-                        <input
-                            type="text"
+                    <div className="space-y-2">
+                        <Label htmlFor="age" className="text-gray-300">
+                            Yosh <span className="text-red-400">*</span>
+                        </Label>
+                        <Input
+                            id="age"
                             name="age"
                             value={formData.age}
                             onChange={onInputChange}
-                            className="w-full border border-slate-300 h-10 px-3 rounded-md"
                             placeholder="Yoshni kiriting"
+                            className="bg-gray-900/50 border-gray-700 text-white placeholder:text-gray-500 focus:border-purple-500 focus:ring-purple-500"
                         />
                     </div>
                 </>
@@ -192,47 +197,47 @@ export default function FormSection({
 
             {type === "engagement" && (
                 <>
-                    <div>
-                        <label className="form-label">
-                            Qiz ismi <span className="text-red-500">*</span>
-                        </label>
-                        <input
-                            type="text"
+                    <div className="space-y-2">
+                        <Label htmlFor="firstName" className="text-gray-300">
+                            Qiz ismi <span className="text-red-400">*</span>
+                        </Label>
+                        <Input
+                            id="firstName"
                             name="firstName"
                             value={formData.firstName}
                             onChange={onInputChange}
-                            className="w-full border border-slate-300 h-10 px-3 rounded-md"
                             placeholder="Qiz ismini kiriting"
+                            className="bg-gray-900/50 border-gray-700 text-white placeholder:text-gray-500 focus:border-purple-500 focus:ring-purple-500"
                         />
                     </div>
-                    <div>
-                        <label className="form-label">
-                            Ota-onasi <span className="text-red-500">*</span>
-                        </label>
-                        <input
-                            type="text"
+                    <div className="space-y-2">
+                        <Label htmlFor="parents" className="text-gray-300">
+                            Ota-onasi <span className="text-red-400">*</span>
+                        </Label>
+                        <Input
+                            id="parents"
                             name="parents"
                             value={formData.parents}
                             onChange={onInputChange}
-                            className="w-full border border-slate-300 h-10 px-3 rounded-md"
                             placeholder="Ota-onasining ismini kiriting"
+                            className="bg-gray-900/50 border-gray-700 text-white placeholder:text-gray-500 focus:border-purple-500 focus:ring-purple-500"
                         />
                     </div>
                 </>
             )}
 
-            <div>
-                <label className="form-label">
-                    Sana <span className="text-red-500">*</span>
-                </label>
-                <div className="grid grid-cols-2 gap-2">
+            <div className="space-y-2">
+                <Label className="text-gray-300">
+                    Sana <span className="text-red-400">*</span>
+                </Label>
+                <div className="grid grid-cols-2 gap-3">
                     <Select value={day} onValueChange={onDayChange}>
-                        <SelectTrigger className="w-full border border-slate-300 h-10">
+                        <SelectTrigger className="bg-gray-900/50 border-gray-700 text-white focus:ring-purple-500">
                             <SelectValue placeholder="Kun" />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className="bg-gray-800 border-gray-700 text-white">
                             {days.map((d) => (
-                                <SelectItem key={d.value} value={d.value}>
+                                <SelectItem key={d.value} value={d.value} className="focus:bg-purple-900/50 focus:text-white">
                                     {d.label}
                                 </SelectItem>
                             ))}
@@ -240,33 +245,33 @@ export default function FormSection({
                     </Select>
 
                     <Select value={month} onValueChange={onMonthChange}>
-                        <SelectTrigger className="w-full border border-slate-300 h-10">
+                        <SelectTrigger className="bg-gray-900/50 border-gray-700 text-white focus:ring-purple-500">
                             <SelectValue placeholder="Oy" />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className="bg-gray-800 border-gray-700 text-white">
                             {months.map((m) => (
-                                <SelectItem key={m.value} value={m.value}>
+                                <SelectItem key={m.value} value={m.value} className="focus:bg-purple-900/50 focus:text-white">
                                     {m.label}
                                 </SelectItem>
                             ))}
                         </SelectContent>
                     </Select>
                 </div>
-                {dateError && <div className="text-red-500 text-xs mt-1">{dateError}</div>}
+                {dateError && <p className="text-red-400 text-sm mt-1">{dateError}</p>}
             </div>
 
-            <div>
-                <label className="form-label">
-                    Vaqt <span className="text-red-500">*</span>
-                </label>
-                <div className="grid grid-cols-2 gap-2">
+            <div className="space-y-2">
+                <Label className="text-gray-300">
+                    Vaqt <span className="text-red-400">*</span>
+                </Label>
+                <div className="grid grid-cols-2 gap-3">
                     <Select value={hours} onValueChange={onHoursChange}>
-                        <SelectTrigger className="w-full border border-slate-300 h-10">
+                        <SelectTrigger className="bg-gray-900/50 border-gray-700 text-white focus:ring-purple-500">
                             <SelectValue placeholder="Soat" />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className="bg-gray-800 border-gray-700 text-white">
                             {hoursOptions.map((h) => (
-                                <SelectItem key={h.value} value={h.value}>
+                                <SelectItem key={h.value} value={h.value} className="focus:bg-purple-900/50 focus:text-white">
                                     {h.label}
                                 </SelectItem>
                             ))}
@@ -274,12 +279,12 @@ export default function FormSection({
                     </Select>
 
                     <Select value={minutes} onValueChange={onMinutesChange}>
-                        <SelectTrigger className="w-full border border-slate-300 h-10">
+                        <SelectTrigger className="bg-gray-900/50 border-gray-700 text-white focus:ring-purple-500">
                             <SelectValue placeholder="Daqiqa" />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className="bg-gray-800 border-gray-700 text-white">
                             {minutesOptions.map((m) => (
-                                <SelectItem key={m.value} value={m.value}>
+                                <SelectItem key={m.value} value={m.value} className="focus:bg-purple-900/50 focus:text-white">
                                     {m.label}
                                 </SelectItem>
                             ))}
@@ -288,30 +293,33 @@ export default function FormSection({
                 </div>
             </div>
 
-            <div>
-                <label className="form-label">
-                    Manzil <span className="text-red-500">*</span>
-                </label>
-                <input
-                    type="text"
+            <div className="space-y-2">
+                <Label htmlFor="location" className="text-gray-300">
+                    Manzil <span className="text-red-400">*</span>
+                </Label>
+                <Input
+                    id="location"
                     name="location"
                     value={formData.location}
                     onChange={onInputChange}
-                    className="w-full border border-slate-300 h-10 px-3 rounded-md"
                     placeholder="Manzilni kiriting"
+                    className="bg-gray-900/50 border-gray-700 text-white placeholder:text-gray-500 focus:border-purple-500 focus:ring-purple-500"
                 />
             </div>
 
-            <div>
-                <label className="form-label">Qo'shimcha ma'lumot</label>
-                <textarea
+            <div className="space-y-2">
+                <Label htmlFor="additionalInfo" className="text-gray-300">
+                    Qo'shimcha ma'lumot
+                </Label>
+                <Textarea
+                    id="additionalInfo"
                     name="additionalInfo"
                     value={formData.additionalInfo}
                     onChange={onInputChange}
-                    className="w-full border border-slate-300 h-20 px-3 py-2 rounded-md resize-none"
                     placeholder="Qo'shimcha ma'lumotlarni kiriting"
+                    className="bg-gray-900/50 border-gray-700 text-white placeholder:text-gray-500 focus:border-purple-500 focus:ring-purple-500 resize-none h-24"
                 />
             </div>
-        </div>
-    );
+        </motion.div>
+    )
 }

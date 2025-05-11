@@ -57,7 +57,7 @@ export default function MyProposalsPage() {
     setDeleteModalOpen(false)
     setTimeout(() => {
       setInvitationToDelete(null)
-    }, 300) 
+    }, 300)
   }
 
   const deleteInvitation = async () => {
@@ -128,7 +128,7 @@ export default function MyProposalsPage() {
   }
 
   return (
-    <div className="pt-16 pb-24">
+    <div className="pt-16 pb-24 ">
       <div className="container mx-auto px-4 py-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

@@ -35,7 +35,6 @@ export default function Home() {
     { id: "wedding", name: "To'y" },
     { id: "birthday", name: "Tug'ilgan Kun" },
     { id: "jubilee", name: "Yubiley" },
-    { id: "other", name: "Boshqalar" },
   ]
 
   const templates = [
@@ -51,7 +50,7 @@ export default function Home() {
       id: "birthday-1",
       title: "Modern Tug'ilgan Kun",
       category: "birthday",
-      image: "/birthday-template-1.jpg",
+      image: "/tugulgankun.jpg",
       color: "from-blue-500 to-cyan-400",
       icon: <Calendar className="h-5 w-5" />,
     },
@@ -59,7 +58,7 @@ export default function Home() {
       id: "jubilee-1",
       title: "Premium Yubiley",
       category: "jubilee",
-      image: "/jubilee-template-1.jpg",
+      image: "/yubiley.avif",
       color: "from-amber-500 to-yellow-400",
       icon: <Crown className="h-5 w-5" />,
     },
@@ -67,7 +66,7 @@ export default function Home() {
       id: "wedding-2",
       title: "Zamonaviy To'y",
       category: "wedding",
-      image: "/wedding-template-2.jpg",
+      image: "https://daryo.uz/static/c9fe7123a518b8b6df3ae09bb01c6b84.jpg",
       color: "from-rose-500 to-red-500",
       icon: <Sparkles className="h-5 w-5" />,
     },
@@ -75,7 +74,7 @@ export default function Home() {
       id: "birthday-2",
       title: "Bolalar Tug'ilgan Kuni",
       category: "birthday",
-      image: "/birthday-template-2.jpg",
+      image: "/t.jpg",
       color: "from-green-500 to-emerald-400",
       icon: <Gift className="h-5 w-5" />,
     },
@@ -83,7 +82,7 @@ export default function Home() {
       id: "jubilee-2",
       title: "Classic Yubiley",
       category: "jubilee",
-      image: "/jubilee-template-2.jpg",
+      image: "/y.jpg",
       color: "from-indigo-500 to-violet-400",
       icon: <Crown className="h-5 w-5" />,
     },
@@ -108,7 +107,7 @@ export default function Home() {
         </div>
 
         <div className="container mx-auto px-4 relative z-10">
-          <div className="flex flex-col lg:flex-row items-center gap-16">
+          <div className="flex flex-col lg:flex-row items-center gap-16 mt-16">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -231,7 +230,7 @@ export default function Home() {
                       className={`absolute inset-0 bg-gradient-to-br ${template.color} opacity-20 group-hover:opacity-30 transition-opacity`}
                     ></div>
                     <Image
-                      src="/placeholder.svg?height=300&width=400"
+                      src={template.image}
                       alt={template.title}
                       width={400}
                       height={300}
@@ -258,34 +257,7 @@ export default function Home() {
                 </Card>
               </motion.div>
             ))}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-              whileHover={{ y: -10, transition: { duration: 0.2 } }}
-            >
-              <Card
-                className="bg-gray-900/50 border border-gray-800 border-dashed overflow-hidden rounded-xl hover:border-purple-500/50 transition-all duration-300 h-full flex flex-col justify-center items-center p-8"
-                onClick={() => router.push("/create/custom")}
-              >
-                <div className="w-16 h-16 rounded-full bg-purple-900/30 flex items-center justify-center mb-4">
-                  <Plus className="h-8 w-8 text-purple-400" />
-                </div>
-                <h3 className="font-semibold text-lg text-center mb-2">O'z taklifnomangizni yarating</h3>
-                <p className="text-gray-400 text-center text-sm mb-4">
-                  Noldan boshlab o'zingizning taklifnomangizni yarating
-                </p>
-                <Button
-                  variant="outline"
-                  className="rounded-full border-purple-500 text-purple-400 hover:bg-purple-950/30"
-                >
-                  Boshlash
-                </Button>
-              </Card>
-            </motion.div>
           </div>
-
           <div className="mt-16 text-center">
             <Button
               size="lg"
