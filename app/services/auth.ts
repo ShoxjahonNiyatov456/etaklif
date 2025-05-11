@@ -19,11 +19,9 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-// Firebase-ni ishga tushirish
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-// Ro'yxatdan o'tish funksiyasi
 export const registerUser = async (
   name: string,
   email: string,
@@ -41,18 +39,16 @@ export const registerUser = async (
     );
     const user = userCredential.user;
 
-    // Foydalanuvchi ma'lumotlarini qaytarish
     return {
       success: true,
       user,
     };
   } catch (error: any) {
     let errorMessage = "Ro'yxatdan o'tishda xatolik yuz berdi";
-    if (error.code === 'auth/email-already-in-use') {
+    if (error.code === "auth/email-already-in-use") {
       errorMessage = "Bu email manzili bilan allaqachon ro'yxatdan o'tilgan.";
     }
-    // Boshqa xatolik kodlarini ham shu yerda tekshirish mumkin
-    
+
     return {
       success: false,
       error: errorMessage,
@@ -60,7 +56,6 @@ export const registerUser = async (
   }
 };
 
-// Kirish funksiyasi
 export const loginUser = async (
   email: string,
   password: string
@@ -82,7 +77,6 @@ export const loginUser = async (
       user,
     };
   } catch (error: any) {
-    // Xatolik xabarni qaytarish
     return {
       success: false,
       error: "Noto'g'ri ma'lumotlar kiritildi",
@@ -90,7 +84,6 @@ export const loginUser = async (
   }
 };
 
-// Google orqali kirish
 export const loginWithGoogle = async (): Promise<{
   success: boolean;
   user?: User;
@@ -106,28 +99,29 @@ export const loginWithGoogle = async (): Promise<{
       user,
     };
   } catch (error: any) {
-    console.error("Google Login Error:", error); // Log the detailed error
+    console.error("Google Login Error:", error);
 
     let errorMessage = "Google orqali kirishda noma'lum xatolik.";
-    // Firebase Authentication xato kodlarini tekshirish
     if (error.code) {
       switch (error.code) {
-        case 'auth/popup-closed-by-user':
+        case "auth/popup-closed-by-user":
           errorMessage = "Kirish oynasi yopildi.";
           break;
-        case 'auth/cancelled-popup-request':
-          errorMessage = "Bir nechta kirish oynasi ochilgan. Faqat bittasini qoldiring.";
+        case "auth/cancelled-popup-request":
+          errorMessage =
+            "Bir nechta kirish oynasi ochilgan. Faqat bittasini qoldiring.";
           break;
-        case 'auth/popup-blocked':
-          errorMessage = "Kirish oynasi brauzer tomonidan bloklandi. Popup blokerni o'chirib qo'ying.";
+        case "auth/popup-blocked":
+          errorMessage =
+            "Kirish oynasi brauzer tomonidan bloklandi. Popup blokerni o'chirib qo'ying.";
           break;
-        case 'auth/operation-not-allowed':
-           errorMessage = "Google orqali kirish Firebase loyihasida yoqilmagan.";
-           break;
-        // Boshqa kerakli xato kodlarini shu yerga qo'shishingiz mumkin
-        // https://firebase.google.com/docs/reference/js/auth_package.md#authprovider_error_codes
+        case "auth/operation-not-allowed":
+          errorMessage = "Google orqali kirish Firebase loyihasida yoqilmagan.";
+          break;
         default:
-          errorMessage = `Google orqali kirishda xatolik: ${error.message || error.code}`;
+          errorMessage = `Google orqali kirishda xatolik: ${
+            error.message || error.code
+          }`;
       }
     }
 
@@ -138,7 +132,6 @@ export const loginWithGoogle = async (): Promise<{
   }
 };
 
-// Facebook orqali kirish
 export const loginWithFacebook = async (): Promise<{
   success: boolean;
   user?: User;
@@ -170,7 +163,6 @@ export const logoutUser = async (): Promise<boolean> => {
   }
 };
 
-// Joriy foydalanuvchini olish
 export const getCurrentUser = (): User | null => {
   return auth.currentUser;
 };

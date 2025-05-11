@@ -30,19 +30,14 @@ export default function TemplateStylesDisplay({ templateName, styles }: Template
         location: 'Toshkent shahri, Yunusobod tumani',
         additionalInfo: 'Iltimos, o\'z vaqtida tashrif buyuring'
     };
-
-    // Shablon turini aniqlash
     const templateType = getTemplateType(templateName);
-
     return (
         <div className="bg-white p-6 rounded-lg shadow-md mb-6">
             <h2 className="text-2xl font-semibold text-gray-800 mb-4">{templateName} shablonlari</h2>
-
             <div className="mt-4 mb-6">
                 <h3 className="text-lg font-medium text-gray-700 mb-3">Mavjud shablonlar</h3>
                 <div className="flex flex-wrap gap-2">
                     {styles.map((style, index) => {
-                        // styleNameMap obyektidan foydalanish
                         const styleDisplayName = styleNameMap[style] || style;
                         return (
                             <span key={index} className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">

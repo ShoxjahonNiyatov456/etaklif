@@ -81,7 +81,6 @@ export default function AdminDashboard() {
 
             <div className="grid grid-cols-1 gap-6">
                 {mockPurchaseData.templates.map((template, index) => {
-                    // Shablonlar ma'lumotlarini templates massividan olish
                     const templateData = templates.find(t => t.name === template.name);
                     return (
                         <TemplateStats

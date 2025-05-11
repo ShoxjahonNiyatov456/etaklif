@@ -41,11 +41,9 @@ export async function GET(request: Request) {
       );
     }
 
-    // Ma'lumotlarni olish
     const allData = getDataFromFile();
     const invitationData = allData[uniqueId];
 
-    // Papka/fayl mavjud emasligini tekshirish
     if (!fs.existsSync(DATA_FILE_PATH)) {
       console.warn("Invitations fayli mavjud emas:", DATA_FILE_PATH);
       return NextResponse.json(

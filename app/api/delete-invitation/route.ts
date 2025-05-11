@@ -4,7 +4,6 @@ import { db } from "@/app/services/database";
 
 export async function DELETE(request: NextRequest) {
   try {
-    // URL parametrlaridan uniqueId ni olish
     const { searchParams } = new URL(request.url);
     const uniqueId = searchParams.get("uniqueId");
 
@@ -15,7 +14,6 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    // Firestore'dan taklifnomani o'chirish
     const invitationRef = doc(db, "invitations", uniqueId);
     await deleteDoc(invitationRef);
 

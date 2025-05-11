@@ -44,7 +44,6 @@ export function MobileProposalFlow({
   ]);
   const [isPaid, setIsPaid] = useState(false);
 
-  // Funksiya: tab ma'lumotlarini yangilash
   const updateTabContent = (index: number, content: ReactNode) => {
     setTabs((prevTabs) => {
       const newTabs = [...prevTabs];
@@ -53,7 +52,6 @@ export function MobileProposalFlow({
     });
   };
 
-  // Funksiya: tab tugallanganligini belgilash
   const markTabAsCompleted = (index: number) => {
     setTabs((prevTabs) => {
       const newTabs = [...prevTabs];
@@ -62,7 +60,6 @@ export function MobileProposalFlow({
     });
   };
 
-  // Funksiya: keyingi tabga o'tish
   const goToNextTab = () => {
     if (activeTabIndex < tabs.length - 1) {
       markTabAsCompleted(activeTabIndex);
@@ -70,7 +67,6 @@ export function MobileProposalFlow({
     }
   };
 
-  // Funksiya: ma'lum tabga o'tish
   const goToTab = (index: number) => {
     if (
       tabs[index].isCompleted ||
@@ -81,7 +77,6 @@ export function MobileProposalFlow({
     }
   };
 
-  // Boshlang'ich contentni o'rnatish
   useEffect(() => {
     updateTabContent(0, children);
   }, [children]);

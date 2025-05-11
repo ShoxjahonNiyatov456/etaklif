@@ -10,8 +10,7 @@ interface LayoutProps {
 }
 
 export async function generateMetadata({ params }: LayoutProps): Promise<Metadata> {
-  const { type, templateId } = params; // Removed await as params is not a promise
-  // This metadata is generic for the template type, specific invitation metadata will be in [uniqueId]/page.tsx
+  const { type, templateId } = params;
   return {
     title: 'Taklifnoma',
     description: 'Taklifnomalarni ko\'rish va yaratish platformasi.',
@@ -19,7 +18,7 @@ export async function generateMetadata({ params }: LayoutProps): Promise<Metadat
       title: 'Taklifnoma',
       description: 'Taklifnomalarni ko\'rish va yaratish platformasi.',
       images: [{
-        url: `${process.env.NEXT_PUBLIC_API_URL}/images/default-og.jpg`, // Generic OG image
+        url: `${process.env.NEXT_PUBLIC_API_URL}/images/default-og.jpg`,
         width: 1200,
         height: 630,
         alt: 'etaklif.vercel.app'
@@ -33,7 +32,7 @@ export async function generateMetadata({ params }: LayoutProps): Promise<Metadat
       card: 'summary_large_image',
       title: 'Taklifnoma',
       description: 'Taklifnomalarni ko\'rish va yaratish platformasi.',
-      images: [`${process.env.NEXT_PUBLIC_API_URL}/images/default-og.jpg`], // Generic Twitter image
+      images: [`${process.env.NEXT_PUBLIC_API_URL}/images/default-og.jpg`], 
     },
   };
 }

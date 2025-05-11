@@ -8,7 +8,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Firebase konfiguratsiyasi
 const firebaseConfig = {
   apiKey: process.env.FIREBASE_API_KEY || "YOUR_API_KEY",
   authDomain: process.env.FIREBASE_AUTH_DOMAIN || "YOUR_AUTH_DOMAIN",
@@ -18,11 +17,9 @@ const firebaseConfig = {
   appId: process.env.FIREBASE_APP_ID || "YOUR_APP_ID"
 };
 
-// Firebase-ni ishga tushirish
 const firebaseApp = firebase.initializeApp(firebaseConfig);
 const auth = getAuth(firebaseApp);
 
-// Ro'yxatdan o'tish API
 app.post('/api/register', async (req, res) => {
   const { name, email, password } = req.body;
 
@@ -31,11 +28,8 @@ app.post('/api/register', async (req, res) => {
   }
 
   try {
-    // Firebase orqali foydalanuvchini ro'yxatdan o'tkazish
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
-
-    // Foydalanuvchi ma'lumotlarini qaytarish (token va boshqa ma'lumotlar)
     res.status(201).json({
       success: true,
       user: {
@@ -59,7 +53,6 @@ app.post('/api/register', async (req, res) => {
   }
 });
 
-// Kirish API
 app.post('/api/login', async (req, res) => {
   const { email, password } = req.body;
 
@@ -90,7 +83,6 @@ app.post('/api/login', async (req, res) => {
   }
 });
 
-// Google orqali kirish
 app.post('/api/login/google', async (req, res) => {
   try {
     const provider = new GoogleAuthProvider();
@@ -112,7 +104,6 @@ app.post('/api/login/google', async (req, res) => {
   }
 });
 
-// Facebook orqali kirish
 app.post('/api/login/facebook', async (req, res) => {
   try {
     const provider = new FacebookAuthProvider();
@@ -134,7 +125,6 @@ app.post('/api/login/facebook', async (req, res) => {
   }
 });
 
-// Server portini belgilash
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server ${PORT} portda ishga tushdi`);

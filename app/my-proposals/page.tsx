@@ -57,7 +57,7 @@ export default function MyProposalsPage() {
     setDeleteModalOpen(false)
     setTimeout(() => {
       setInvitationToDelete(null)
-    }, 300) // Wait for animation to complete
+    }, 300) 
   }
 
   const deleteInvitation = async () => {

@@ -11,7 +11,6 @@ export const size = {
 export const route =
   "/invitation/[type]/[templateId]/[uniqueId]/opengraph-image.png";
 
-// Default background images for each type
 const DEFAULT_IMAGES = {
   wedding:
     "https://res.cloudinary.com/ds7uywpld/image/upload/v1744642148/invitations/av26tkcvws1d50tqfclc.webp",
@@ -42,7 +41,6 @@ export default async function Image({ params }) {
         JSON.stringify(rawData).substring(0, 200) + "..."
       );
 
-      // Try different data structures to make sure we get the data
       invitationData = rawData?.invitationData || rawData || {};
       console.log(
         "Parsed invitation data:",
@@ -53,7 +51,6 @@ export default async function Image({ params }) {
       invitationData = {};
     }
 
-    // Extract data with fallbacks for EVERY field
     const location =
       invitationData?.location || rawData?.location || "Manzil ko'rsatilmagan";
     const time = invitationData?.time || rawData?.time || "Vaqt ko'rsatilmagan";
@@ -64,8 +61,6 @@ export default async function Image({ params }) {
     const date = invitationData?.date || rawData?.date || "Sana ko'rsatilmagan";
     const uploadedImage =
       invitationData?.uploadedImage || rawData?.uploadedImage || null;
-
-    // Format date nicely if possible
     let formattedDate = date;
     try {
       if (date && date.includes("-")) {
@@ -94,11 +89,8 @@ export default async function Image({ params }) {
       console.error("Error formatting date:", dateError);
       formattedDate = date;
     }
-
-    // Determine invitation titles and subtitles based on type
     let title = "Taklifnoma";
     let subtitle = "";
-
     switch (type) {
       case "wedding":
         title = "Nikoh to'yi";
@@ -125,11 +117,8 @@ export default async function Image({ params }) {
         subtitle = firstName ? firstName : "etaklif.vercel.app";
     }
 
-    // Get the appropriate background image
     const backgroundImage =
       uploadedImage || DEFAULT_IMAGES[type] || DEFAULT_IMAGES.wedding;
-
-    // Create the OpenGraph image with dark overlay to ensure text visibility
     return new ImageResponse(
       (
         <div

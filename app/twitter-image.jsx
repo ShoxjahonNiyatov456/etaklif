@@ -1,4 +1,3 @@
-// Twitter karta uchun opengraph-image komponentini qayta ishlatamiz
 export { default } from './opengraph-image'
 export const alt = 'etaklif.vercel.app'
 export const contentType = 'image/png'

@@ -20,7 +20,6 @@ export default function WeddingTemplate({
   const formattedDate = date
     ? (() => {
       try {
-        // Agar date YYYY-MM-DD formatida kelsa
         if (date.includes("-")) {
           const dateObj = new Date(date);
           if (isNaN(dateObj.getTime())) {
@@ -32,10 +31,8 @@ export default function WeddingTemplate({
             "Iyul", "Avgust", "Sentyabr", "Oktyabr", "Noyabr", "Dekabr"
           ];
           const month = months[dateObj.getMonth()];
-          // Faqat kun va oy qaytarish, yil yo'q
           return `${day} ${month}`;
         }
-        // Agar date allaqachon DD Month formatida kelsa (formattan o'tgan)
         else {
           return date;
         }
@@ -45,8 +42,6 @@ export default function WeddingTemplate({
       }
     })()
     : "Sana belgilanmagan";
-
-  // Matnlarni 30 belgigacha cheklash va ularni to'g'ri uzish
   const truncateText = (
     text: string | undefined,
     maxLength: number = 30

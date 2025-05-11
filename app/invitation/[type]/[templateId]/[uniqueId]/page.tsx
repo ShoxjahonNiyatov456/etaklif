@@ -16,7 +16,7 @@ export async function generateMetadata(
   let ogDescription = "";
   const siteUrl = process.env.NEXT_PUBLIC_API_URL || "https://etaklif.vercel.app";
   const imageUrl = `${siteUrl}/invitation/${type}/${templateId}/${uniqueId}/opengraph-image.png`;
-  
+
   try {
     const invitationData = await getInvitationByUniqueId(uniqueId);
     if (invitationData) {
@@ -27,8 +27,7 @@ export async function generateMetadata(
       const time = invitationData.time || '';
       const location = invitationData.location || '';
       const eventName = invitationData.eventName || '';
-      
-      // Tadbir turini aniqlash
+
       let dynamicEventTitle = '';
       if (eventName) {
         dynamicEventTitle = eventName;
@@ -42,11 +41,8 @@ export async function generateMetadata(
           default: dynamicEventTitle = "Marosim";
         }
       }
-      
-      // Sarlavha
+
       ogTitle = `${dynamicEventTitle} taklifnomasi`;
-      
-      // Mezbonlar ismlarini shakllantirish
       let hostNames = '';
       if (firstName && secondName) {
         hostNames = `${firstName} va ${secondName}ning`;
@@ -54,26 +50,22 @@ export async function generateMetadata(
         hostNames = `${firstName}ning`;
       }
 
-      // Tadbir nomini shakllantirish
       let tadbir = '';
       if (hostNames) {
         tadbir = `${hostNames} ${dynamicEventTitle.toLowerCase()}`;
       } else {
         tadbir = dynamicEventTitle.toLowerCase();
       }
-      
-      // Taklifnoma tavsifini yangilab shakllantirish
+
       ogDescription = `📌 ${tadbir.toUpperCase()}GA TAKLIFNOMA 📌\n\n`;
-      
-      // Manzil, sana va vaqt ma'lumotlarini ko'rsatish
       if (location) {
         ogDescription += `📍 MANZIL: ${location}\n`;
       }
-      
+
       if (date) {
         ogDescription += `📅 SANA: ${date}\n`;
       }
-      
+
       if (time) {
         ogDescription += `⏰ VAQT: ${time}`;
       }
@@ -85,7 +77,7 @@ export async function generateMetadata(
   }
 
   const fullUrl = `${siteUrl}/invitation/${type}/${templateId}/${uniqueId}`;
-  
+
   return {
     metadataBase: new URL(siteUrl),
     title: ogTitle,

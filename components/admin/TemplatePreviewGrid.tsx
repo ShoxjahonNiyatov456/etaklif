@@ -19,23 +19,18 @@ export default function TemplatePreviewGrid({
   styleNameMap,
   title
 }: TemplatePreviewGridProps) {
-  // State for modal
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedStyle, setSelectedStyle] = useState<string | null>(null);
-
-  // Select the first style by default
   useEffect(() => {
     if (styles.length > 0 && !selectedStyle) {
       setSelectedStyle(styles[0]);
     }
   }, [styles, selectedStyle]);
-
-  // Sample data for templates
   const sampleData = {
     firstName: 'Alisher',
     secondName: 'Gulnora',
     age: '7',
-    parents: 'Karimovlar oilasi', 
+    parents: 'Karimovlar oilasi',
     celebrationType: '60',
     date: new Date().toISOString(),
     time: '17:00',
@@ -112,57 +107,50 @@ export default function TemplatePreviewGrid({
   const openModal = (style: string) => {
     setSelectedStyle(style);
     setModalOpen(true);
-    // Prevent background scrolling when modal is open
     document.body.style.overflow = 'hidden';
   };
 
   const closeModal = () => {
     setModalOpen(false);
-    // Re-enable scrolling
     document.body.style.overflow = 'auto';
   };
 
-  // Styles ni 5 tadan guruhlash
   const chunkStyles = (styles: string[], size: number) => {
     return styles.reduce((result: string[][], item, index) => {
       const chunkIndex = Math.floor(index / size);
-      
       if (!result[chunkIndex]) {
-        result[chunkIndex] = []; // Yangi chunk yaratish
+        result[chunkIndex] = [];
       }
-      
+
       result[chunkIndex].push(item);
       return result;
     }, []);
   };
-  
-  const groupedStyles = chunkStyles(styles, 5);
-  
-  // Check if there are no templates to show
-  const hasTemplates = styles.length > 0;
 
+  const groupedStyles = chunkStyles(styles, 5);
+  const hasTemplates = styles.length > 0;
   return (
     <>
       <div className="bg-white rounded-lg shadow mb-6">
         <div className="p-6 border-b border-gray-200">
           <h2 className="text-lg font-semibold">{title}</h2>
         </div>
-        
+
         {hasTemplates ? (
           <div className="p-6 overflow-y-auto max-h-[600px] scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
             {groupedStyles.map((styleGroup, groupIndex) => (
               <div key={groupIndex} className="grid grid-cols-5 gap-6 mb-6">
                 {styleGroup.map((style, index) => (
-                  <div 
-                    key={index} 
+                  <div
+                    key={index}
                     className={`border rounded-lg overflow-hidden shadow-sm cursor-pointer transition-transform hover:shadow-md hover:scale-105 ${selectedStyle === style ? 'ring-2 ring-primary-500' : ''}`}
                     onClick={() => openModal(style)}
                   >
                     <div className="p-2 bg-gray-50 border-b">
                       <h4 className="font-medium text-sm text-gray-700">{styleNameMap[style] || style}</h4>
                     </div>
-                    <div 
-                      className="relative bg-white flex justify-center items-center" 
+                    <div
+                      className="relative bg-white flex justify-center items-center"
                       style={{ height: '300px', overflow: 'hidden' }}
                     >
                       <div style={{ transform: 'scale(0.45)', display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }}>
@@ -190,7 +178,7 @@ export default function TemplatePreviewGrid({
           <div className="bg-white rounded-lg max-w-4xl w-full max-h-screen overflow-auto relative">
             <div className="sticky top-0 bg-white p-4 border-b border-gray-200 flex justify-between items-center z-10">
               <h3 className="text-lg font-medium">{styleNameMap[selectedStyle] || selectedStyle}</h3>
-              <button 
+              <button
                 onClick={closeModal}
                 className="p-2 rounded-full hover:bg-gray-100"
               >

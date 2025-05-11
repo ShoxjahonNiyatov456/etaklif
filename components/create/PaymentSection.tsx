@@ -107,17 +107,13 @@ export default function PaymentSection({
         } catch (error) {
             console.error("Error generating link:", error);
             setIsGeneratingLink(false);
-            // Add error notification if you have a notification system
         }
     };
 
     const handlePaymentProcessing = async () => {
         try {
             setPaymentProcessing(true);
-            // Simulate payment processing
             await new Promise((resolve) => setTimeout(resolve, 2000));
-            
-            // Generate link after successful payment
             setIsGeneratingLink(true);
             const link = await generateShareableLink(
                 type as string,
@@ -125,8 +121,6 @@ export default function PaymentSection({
                 formData
             );
             setShareableLink(link);
-            
-            // Complete payment flow
             setIsConfirmDialogOpen(false);
             setPaymentCompleted(true);
             setPaymentProcessing(false);
@@ -166,8 +160,8 @@ export default function PaymentSection({
                             </AlertDialogHeader>
                             <AlertDialogFooter>
                                 <AlertDialogCancel>Bekor qilish</AlertDialogCancel>
-                                <AlertDialogAction 
-                                    onClick={handlePaymentProcessing} 
+                                <AlertDialogAction
+                                    onClick={handlePaymentProcessing}
                                     disabled={paymentProcessing}
                                     className={paymentProcessing ? "opacity-70 cursor-not-allowed" : ""}
                                 >
@@ -205,7 +199,7 @@ export default function PaymentSection({
                         </svg>
                     </div>
                     <h3 className="text-xl font-semibold text-green-600">To'lov muvaffaqiyatli yakunlandi!</h3>
-                   
+
                     <button
                         onClick={shareableLink ? () => setIsShareModalOpen(true) : handleShareInvitation}
                         disabled={isGeneratingLink}

@@ -32,61 +32,48 @@ export default function InvitationClientComponent({
     const [ogTitle, setOgTitle] = useState<string>("");
     const [ogDescription, setOgDescription] = useState<string>("");
     const siteUrl = process.env.NEXT_PUBLIC_API_URL || "https://etaklif.vercel.app";
-    
-    // Taklifnoma ma'lumotlarini keshdan tekshirish
+
     useEffect(() => {
-        // Agar uniqueId mavjud bo'lsa, keshdan tekshirish
         if (uniqueId) {
             const cacheKey = `invitation_${uniqueId}`;
             try {
                 const cachedString = localStorage.getItem(cacheKey);
                 if (cachedString) {
                     const cached = JSON.parse(cachedString);
-                    // Kesh muddati tekshirish (24 soat)
                     const cacheTime = new Date(cached.timestamp);
                     const now = new Date();
                     const cacheAgeHours = (now.getTime() - cacheTime.getTime()) / (1000 * 60 * 60);
-                    
+
                     if (cacheAgeHours < 24) {
-                        // Keshdan ma'lumotlarni olish
                         setInvitationData(cached.data);
                         setLoading(false);
-                        
-                        // Meta ma'lumotlarni yangilash
                         updateMetaData(cached.data);
-                        return; // Keshdan ma'lumot topildi, boshqa tekshirishlar kerak emas
+                        return;
                     }
                 }
             } catch (error) {
                 console.error("Keshni tekshirishda xatolik:", error);
             }
         }
-        
-        // Link orqali kelgan ma'lumotlarni keshdan tekshirish
+
         if (searchParams && Object.keys(searchParams).length > 0) {
             try {
                 const queryString = Object.entries(searchParams)
                     .map(([key, value]) => `${key}=${value}`)
                     .join('&');
-                
-                // Keshlashtirish uchun unikal kalit yaratish
                 const dataHash = btoa(queryString).substring(0, 20);
                 const linkCacheKey = `invitation_link_${dataHash}`;
-                
+
                 const cachedLinkString = localStorage.getItem(linkCacheKey);
                 if (cachedLinkString) {
                     const cachedLink = JSON.parse(cachedLinkString);
-                    // Kesh muddati tekshirish (24 soat)
                     const cacheTime = new Date(cachedLink.timestamp);
                     const now = new Date();
                     const cacheAgeHours = (now.getTime() - cacheTime.getTime()) / (1000 * 60 * 60);
-                    
+
                     if (cacheAgeHours < 24) {
-                        // Keshdan ma'lumotlarni olish
                         setInvitationData(cachedLink.data);
                         setLoading(false);
-                        
-                        // Meta ma'lumotlarni yangilash
                         updateMetaData(cachedLink.data);
                     }
                 }
@@ -96,16 +83,12 @@ export default function InvitationClientComponent({
         }
     }, [uniqueId, searchParams, type]);
 
-    // Meta ma'lumotlarni yangilash uchun yordamchi funksiya
     const updateMetaData = (data: any) => {
-        // OpenGraph meta taglar uchun ma'lumotlar
         const firstName = data.firstName || data.invitationData?.firstName || '';
         const secondName = data.secondName || data.invitationData?.secondName || '';
         const location = data.location || data.invitationData?.location || '';
         const date = data.date || data.invitationData?.date || '';
         const time = data.time || data.invitationData?.time || '';
-
-        // Tadbir turini aniqlash
         let dynamicEventTitle = '';
         switch (type) {
             case 'wedding': dynamicEventTitle = "Nikoh to'yi"; break;
@@ -116,10 +99,7 @@ export default function InvitationClientComponent({
             default: dynamicEventTitle = "Marosim";
         }
 
-        // Sarlavha (Taklifnoma.uz qo'shilmaydi)
         setOgTitle(`${dynamicEventTitle} taklifnomasi`);
-
-        // Tavsif
         let tadbir = '';
         if (firstName && secondName) {
             tadbir = `${firstName} va ${secondName}ning ${dynamicEventTitle.toLowerCase()}`;
@@ -128,53 +108,41 @@ export default function InvitationClientComponent({
         } else {
             tadbir = dynamicEventTitle.toLowerCase();
         }
-
         let desc = `📌 ${tadbir.toUpperCase()}GA TAKLIFNOMA 📌\n\n`;
-        
-        // Manzil, sana va vaqt ma'lumotlarini qo'shish
         if (location) {
             desc += `📍 MANZIL: ${location}\n`;
         }
-        
+
         if (date) {
             desc += `📅 SANA: ${date}\n`;
         }
-        
+
         if (time) {
             desc += `⏰ VAQT: ${time}`;
         }
-        
+
         setOgDescription(desc);
     };
 
     useEffect(() => {
-        // Agar keshdan ma'lumotlar oldindan yuklangan bo'lsa, qayta yuklamaymiz
         if (invitationData) return;
-        
+
         async function loadInvitationData() {
             try {
                 setLoading(true);
                 setError(null);
-
-                // Link orqali ma'lumotlarni tekshirish
                 const queryString = searchParams ? Object.entries(searchParams)
                     .map(([key, value]) => `${key}=${value}`)
                     .join('&') : '';
-                
                 let data = getInvitationDataFromLink(queryString);
-                
-                // Agar link orqali ma'lumotlar kelmasa, uniqueId orqali bazadan olish
                 if (!data && uniqueId) {
                     data = await getInvitationByUniqueId(uniqueId);
                 }
-
                 if (!data) {
                     throw new Error("Taklifnoma ma'lumotlari topilmadi.");
                 }
 
                 setInvitationData(data);
-                
-                // Meta ma'lumotlarni yangilash
                 updateMetaData(data);
             } catch (error: any) {
                 console.error("Taklifnoma ma'lumotlarini olishda xatolik:", error);
@@ -204,13 +172,13 @@ export default function InvitationClientComponent({
         const templateType = invitationData.type || type;
         const currentTemplateId = invitationData.templateId || templateId;
         const actualInvitationData = invitationData.invitationData || invitationData;
-        
+
         if (!templateType || !currentTemplateId || !actualInvitationData) {
             return <p>Taklifnoma turi, shablon ID yoki asosiy ma'lumotlar topilmadi.</p>;
         }
-        
+
         const propsToPass = { ...actualInvitationData, style: currentTemplateId as string };
-        
+
         switch (templateType) {
             case "wedding":
                 return <WeddingTemplate {...propsToPass} />;
@@ -238,13 +206,13 @@ export default function InvitationClientComponent({
                 <meta property="og:url" content={`${siteUrl}/invitation/${type}/${templateId}/${uniqueId}`} />
                 <meta property="og:type" content="website" />
                 <meta property="og:site_name" content="" />
-                
+
                 {/* Twitter Cards */}
                 <meta name="twitter:card" content="summary_large_image" />
                 <meta name="twitter:title" content={ogTitle} />
                 <meta name="twitter:description" content={ogDescription} />
                 <meta name="twitter:image" content={imageUrl} />
-                
+
                 {/* Telegram specific meta tags */}
                 <meta property="telegram:card" content="summary_large_image" />
                 <meta property="telegram:title" content={ogTitle} />

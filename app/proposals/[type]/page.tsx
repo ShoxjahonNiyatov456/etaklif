@@ -170,7 +170,6 @@ export default function ProposalTypePage() {
                               className="px-3 py-1 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors text-sm flex items-center"
                               onClick={(e) => {
                                 e.stopPropagation()
-                                // Preview logic
                               }}
                             >
                               <Eye className="h-4 w-4 mr-1" />

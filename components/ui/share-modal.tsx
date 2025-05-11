@@ -22,29 +22,21 @@ export function ShareModal({ isOpen, onClose, url, title }: ShareModalProps) {
 
   useEffect(() => {
     if (isBrowser && isOpen) {
-      // Set initial loading state
       setIsLoading(true);
-      
-      // Check if URL is available
       if (url && url.trim() !== "") {
-        // Short timeout to ensure the modal animation completes
         const loadingTimer = setTimeout(() => {
           setIsLoading(false);
-          
-          // Try to copy to clipboard after URL is ready
           try {
             navigator.clipboard.writeText(url);
             setCopied(true);
             const timer = setTimeout(() => {
               setCopied(false);
             }, 2000);
-            
             return () => clearTimeout(timer);
           } catch (error) {
             console.error("Failed to copy: ", error);
           }
-        }, 1500); // 1.5 second delay for loading animation
-        
+        }, 1500);
         return () => clearTimeout(loadingTimer);
       }
     }
@@ -55,7 +47,7 @@ export function ShareModal({ isOpen, onClose, url, title }: ShareModalProps) {
       window.open(url, "_blank");
     }
   };
-  
+
   const shareOnWhatsApp = () => {
     safeWindowOpen(
       `https://api.whatsapp.com/send?text=${encodeURIComponent(
@@ -63,15 +55,11 @@ export function ShareModal({ isOpen, onClose, url, title }: ShareModalProps) {
       )}`
     );
   };
-
-  // Share on Facebook
   const shareOnFacebook = () => {
     safeWindowOpen(
       `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`
     );
   };
-
-  // Share on Twitter
   const shareOnTwitter = () => {
     safeWindowOpen(
       `https://twitter.com/intent/tweet?text=${encodeURIComponent(
@@ -79,8 +67,6 @@ export function ShareModal({ isOpen, onClose, url, title }: ShareModalProps) {
       )}&url=${encodeURIComponent(url)}`
     );
   };
-
-  // Share on Telegram
   const shareOnTelegram = () => {
     safeWindowOpen(
       `https://t.me/share/url?url=${encodeURIComponent(
@@ -88,11 +74,9 @@ export function ShareModal({ isOpen, onClose, url, title }: ShareModalProps) {
       )}&text=${encodeURIComponent(title)}`
     );
   };
-
   const shareOnInstagram = () => {
     safeWindowOpen("https://www.instagram.com/");
   };
-
   const safeCopyToClipboard = () => {
     if (isBrowser) {
       try {
@@ -104,11 +88,9 @@ export function ShareModal({ isOpen, onClose, url, title }: ShareModalProps) {
       }
     }
   };
-
   if (!isBrowser) {
     return null;
   }
-
   return (
     <AnimatePresence>
       {isOpen && (
@@ -127,7 +109,7 @@ export function ShareModal({ isOpen, onClose, url, title }: ShareModalProps) {
             </button>
             <div className="mb-4">
               <h3 className="text-lg font-medium mb-2">Ulashish</h3>
-              
+
               {isLoading ? (
                 <div className="flex flex-col items-center justify-center py-6">
                   <Loader2 className="h-8 w-8 text-primary animate-spin mb-2" />
@@ -157,7 +139,7 @@ export function ShareModal({ isOpen, onClose, url, title }: ShareModalProps) {
                 </div>
               )}
             </div>
-            
+
             {!isLoading && (
               <div className="grid grid-cols-5 gap-4 justify-center">
                 <button

@@ -21,8 +21,6 @@ export default function TemplateShowcaseSection({ eventType, styles }: TemplateS
     location: 'Toshkent shahri',
     additionalInfo: 'Iltimos, o\'z vaqtida tashrif buyuring'
   };
-
-  // Map event type to title
   const eventTitleMap: Record<string, string> = {
     'birthday': 'Tug\'ilgan kun',
     'wedding': 'To\'y',

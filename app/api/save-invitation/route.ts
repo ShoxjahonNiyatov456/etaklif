@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { collection, doc, setDoc, serverTimestamp } from "firebase/firestore";
-import { db } from "@/app/services/database"; // Database importini to'g'rilash
+import { db } from "@/app/services/database";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -19,7 +19,8 @@ export async function POST(request: NextRequest) {
       "Content-Type": "application/json",
     };
     const body = await request.json();
-    const { uniqueId, type, templateId, invitationData, userId, createdAt } = body;
+    const { uniqueId, type, templateId, invitationData, userId, createdAt } =
+      body;
 
     if (!uniqueId || !type || !templateId || !invitationData) {
       return NextResponse.json(
@@ -36,9 +37,9 @@ export async function POST(request: NextRequest) {
       type,
       templateId,
       invitationData,
-      userId: userId || "anonymous", // userId mavjud bo'lmasa 'anonymous' ishlatiladi
-      createdAt: createdAt ? new Date(createdAt) : serverTimestamp(), // createdAt ni Date yoki serverTimestamp ga o'tkazish
-      updatedAt: serverTimestamp(), // Yangilangan vaqtni qo'shish
+      userId: userId || "anonymous",
+      createdAt: createdAt ? new Date(createdAt) : serverTimestamp(),
+      updatedAt: serverTimestamp(),
     });
 
     return NextResponse.json(
