@@ -2,8 +2,6 @@
 
 import type React from "react";
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { Send, ExternalLink, Download, Check } from "lucide-react";
 
 export default function CreatePage() {
   const [selectedType, setSelectedType] = useState<string | null>(null);
@@ -56,60 +54,6 @@ export default function CreatePage() {
     saveFormData();
   }, [formData]);
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    if (name === "firstName" || name === "secondName" || name === "parents") {
-      if (value.length > 20) {
-        return;
-      }
-    } else if (name === "age") {
-      if (!/^\d{0,3}$/.test(value)) {
-        return;
-      }
-    } else if (name === "date") {
-      const yearPart = value.split("-")[0];
-      if (yearPart && yearPart.length > 4) {
-        return;
-      }
-    } else if (name === "location" || name === "additionalInfo") {
-      const words = value
-        .trim()
-        .split(/\s+/)
-        .filter((word) => word.length > 0);
-      if (words.length > 20) {
-        const currentWords = formData[name as keyof typeof formData]
-          .trim()
-          .split(/\s+/)
-          .filter((word) => word.length > 0);
-        if (currentWords.length >= 20) {
-          return;
-        }
-        const limitedText = words.slice(0, 20).join(" ");
-        setFormData((prev) => ({ ...prev, [name]: limitedText }));
-        return;
-      }
-    }
-
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const countWords = (text: string): number => {
-    return text
-      .trim()
-      .split(/\s+/)
-      .filter((word) => word.length > 0).length;
-  };
-
-  const invitationTypes = [
-    { id: "wedding", name: "To'y" },
-    { id: "birthday", name: "Tug'ilgan kun" },
-    { id: "funeral", name: "El oshi" },
-    { id: "jubilee", name: "Yubiley" },
-    { id: "engagement", name: "Qiz uzatish" },
-  ];
-
   const getTemplates = () => {
     switch (selectedType) {
       case "wedding":
@@ -155,15 +99,6 @@ export default function CreatePage() {
   };
 
   const templates = getTemplates();
-
-  const fadeIn = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.6 },
-    },
-  };
 
   const getTemplateStyleClass = () => {
     if (!selectedTemplate) return "floral-border paper-bg";

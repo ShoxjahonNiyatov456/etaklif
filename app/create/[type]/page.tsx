@@ -224,13 +224,15 @@ export default function CreatePage() {
                 </TabsTrigger>
                 <TabsTrigger
                   value="templates"
-                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-pink-600 data-[state=active]:text-white data-[state=inactive]:text-gray-400 data-[state=inactive]:hover:text-white"
+                  disabled={!formCompleted}
+                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-pink-600 data-[state=active]:text-white data-[state=inactive]:text-gray-400 data-[state=inactive]:hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Shablonlar
                 </TabsTrigger>
                 <TabsTrigger
                   value="preview"
-                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-pink-600 data-[state=active]:text-white data-[state=inactive]:text-gray-400 data-[state=inactive]:hover:text-white"
+                  disabled={!templateSelected}
+                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-pink-600 data-[state=active]:text-white data-[state=inactive]:text-gray-400 data-[state=inactive]:hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Ko'rinish
                 </TabsTrigger>
@@ -265,58 +267,72 @@ export default function CreatePage() {
               </TabsContent>
 
               <TabsContent value="templates" className="mt-6">
-                <TemplateSection
-                  type={type as string}
-                  selectedTemplate={selectedTemplate}
-                  uploadedImage={uploadedImage}
-                  onTemplateSelect={(templateId) => {
-                    setSelectedTemplate(templateId)
-                    setTemplateSelected(true)
-                  }}
-                  onImageUpload={(e) => {
-                    const file = e.target.files?.[0]
-                    if (file) {
-                      const reader = new FileReader()
-                      reader.onload = (e) => {
-                        if (e.target?.result) {
-                          setUploadedImage(e.target.result as string)
-                        }
-                      }
-                      reader.readAsDataURL(file)
-                    }
-                  }}
-                  onClearUploadedImage={() => {
-                    setUploadedImage(null)
-                  }}
-                />
-                {templateSelected && (
-                  <div className="mt-6 flex justify-end">
-                    <Button
-                      onClick={() => setActiveTab("preview")}
-                      className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white border-0"
-                    >
-                      Keyingisi
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </Button>
+                {!formCompleted ? (
+                  <div className="text-center py-8 text-gray-400">
+                    <p>Davom etish uchun avval barcha ma'lumotlarni to'ldiring</p>
                   </div>
+                ) : (
+                  <>
+                    <TemplateSection
+                      type={type as string}
+                      selectedTemplate={selectedTemplate}
+                      uploadedImage={uploadedImage}
+                      onTemplateSelect={(templateId) => {
+                        setSelectedTemplate(templateId)
+                        setTemplateSelected(true)
+                      }}
+                      onImageUpload={(e) => {
+                        const file = e.target.files?.[0]
+                        if (file) {
+                          const reader = new FileReader()
+                          reader.onload = (e) => {
+                            if (e.target?.result) {
+                              setUploadedImage(e.target.result as string)
+                            }
+                          }
+                          reader.readAsDataURL(file)
+                        }
+                      }}
+                      onClearUploadedImage={() => {
+                        setUploadedImage(null)
+                      }}
+                    />
+                    {templateSelected && (
+                      <div className="mt-6 flex justify-end">
+                        <Button
+                          onClick={() => setActiveTab("preview")}
+                          className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white border-0"
+                        >
+                          Keyingisi
+                          <ArrowRight className="ml-2 h-4 w-4" />
+                        </Button>
+                      </div>
+                    )}
+                  </>
                 )}
               </TabsContent>
 
               <TabsContent value="preview" className="mt-6">
-                <div className="space-y-6">
-                  <PreviewSection
-                    type={type as string}
-                    selectedTemplate={selectedTemplate}
-                    formData={formData}
-                    uploadedImage={uploadedImage}
-                  />
-                  <PaymentSection
-                    type={type as string}
-                    selectedTemplate={selectedTemplate}
-                    formData={formData}
-                    uploadedImage={uploadedImage}
-                  />
-                </div>
+                {!templateSelected ? (
+                  <div className="text-center py-8 text-gray-400">
+                    <p>Davom etish uchun avval shablonni tanlang</p>
+                  </div>
+                ) : (
+                  <div className="space-y-6">
+                    <PreviewSection
+                      type={type as string}
+                      selectedTemplate={selectedTemplate}
+                      formData={formData}
+                      uploadedImage={uploadedImage}
+                    />
+                    <PaymentSection
+                      type={type as string}
+                      selectedTemplate={selectedTemplate}
+                      formData={formData}
+                      uploadedImage={uploadedImage}
+                    />
+                  </div>
+                )}
               </TabsContent>
             </Tabs>
           </motion.div>
