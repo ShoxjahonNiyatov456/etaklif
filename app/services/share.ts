@@ -193,13 +193,31 @@ const saveInvitationToServer = async (
 };
 
 /**
- * Taklifnoma ma'lumotlarini havola orqali olish
+ * Taklifnoma ma'lumotlarini havola orqali olish (keshlashtirish bilan)
  */
 export const getInvitationDataFromLink = (queryParams: string): any => {
   try {
     const data = new URLSearchParams(queryParams).get("data");
     if (data) {
-      return JSON.parse(decodeURIComponent(data));
+      const decodedData = JSON.parse(decodeURIComponent(data));
+      
+      // Agar ma'lumotlar mavjud bo'lsa, keshga saqlash
+      try {
+        // Keshlashtirish uchun unikal kalit yaratish
+        const dataHash = btoa(queryParams).substring(0, 20);
+        const cacheKey = `invitation_link_${dataHash}`;
+        
+        localStorage.setItem(cacheKey, JSON.stringify({
+          data: decodedData,
+          timestamp: new Date().toISOString()
+        }));
+        console.log('Havola ma\'lumotlari keshga saqlandi');
+      } catch (storageError) {
+        console.error("Keshga saqlashda xatolik:", storageError);
+        // Keshga saqlash xatoligi bo'lsa ham, natijani qaytaramiz
+      }
+      
+      return decodedData;
     }
     return null;
   } catch (error) {
@@ -207,6 +225,7 @@ export const getInvitationDataFromLink = (queryParams: string): any => {
     return null;
   }
 };
+
 
 /**
  * Unique ID bo'yicha taklifnomani Firebase'dan olish
@@ -228,23 +247,65 @@ const getInvitationFromFirebase = async (uniqueId: string): Promise<any> => {
 };
 
 /**
- * Unique ID bo'yicha taklifnomani olish
+ * Unique ID bo'yicha taklifnomani olish (keshlashtirish bilan)
  */
 export const getInvitationByUniqueId = async (
   uniqueId: string
 ): Promise<any> => {
   try {
+    // LocalStorage'dan keshni tekshirish
+    const cacheKey = `invitation_${uniqueId}`;
+    let cachedData = null;
+    
+    try {
+      const cachedString = localStorage.getItem(cacheKey);
+      if (cachedString) {
+        const cached = JSON.parse(cachedString);
+        // Kesh muddati tekshirish (24 soat)
+        const cacheTime = new Date(cached.timestamp);
+        const now = new Date();
+        const cacheAgeHours = (now.getTime() - cacheTime.getTime()) / (1000 * 60 * 60);
+        
+        if (cacheAgeHours < 24) {
+          cachedData = cached.data;
+          console.log('Taklifnoma keshdan olindi:', uniqueId);
+          return cachedData;
+        } else {
+          // Kesh muddati o'tgan, o'chirib tashlash
+          localStorage.removeItem(cacheKey);
+        }
+      }
+    } catch (cacheError) {
+      console.error("Keshni o'qishda xatolik:", cacheError);
+      // Kesh xatoligi bo'lsa, davom etamiz va Firebase'dan olamiz
+    }
+    
+    // Keshda yo'q bo'lsa, Firebase'dan olish
     const firebaseData = await getInvitationFromFirebase(uniqueId);
     if (firebaseData) {
       // Ma'lumotlarni qaytarishda ham strukturasini tekshirish
       const { invitationData, type, templateId, ...rest } = firebaseData;
-      return {
+      const result = {
         ...rest,
         type,
         templateId,
         // Agar invitationData mavjud bo'lsa uni qaytarish, aks holda asosiy ma'lumotlarni qaytarish
         ...invitationData
       };
+      
+      // Natijani keshga saqlash
+      try {
+        localStorage.setItem(cacheKey, JSON.stringify({
+          data: result,
+          timestamp: new Date().toISOString()
+        }));
+        console.log('Taklifnoma keshga saqlandi:', uniqueId);
+      } catch (storageError) {
+        console.error("Keshga saqlashda xatolik:", storageError);
+        // Keshga saqlash xatoligi bo'lsa ham, natijani qaytaramiz
+      }
+      
+      return result;
     }
     return null;
   } catch (error) {
@@ -254,10 +315,37 @@ export const getInvitationByUniqueId = async (
 };
 
 /**
- * Foydalanuvchining barcha taklifnomalarini olish
+ * Foydalanuvchining barcha taklifnomalarini olish (keshlashtirish bilan)
  */
 export const getInvitationsByUser = async (userId?: string): Promise<any[]> => {
   try {
+    // Keshdan tekshirish
+    const cacheKey = `user_invitations_${userId || 'anonymous'}`;
+    let cachedData = null;
+    
+    try {
+      const cachedString = localStorage.getItem(cacheKey);
+      if (cachedString) {
+        const cached = JSON.parse(cachedString);
+        // Kesh muddati tekshirish (5 daqiqa)
+        const cacheTime = new Date(cached.timestamp);
+        const now = new Date();
+        const cacheAgeMinutes = (now.getTime() - cacheTime.getTime()) / (1000 * 60);
+        
+        if (cacheAgeMinutes < 5) {
+          console.log('Foydalanuvchi taklifnomalari keshdan olindi');
+          return cached.data;
+        } else {
+          // Kesh muddati o'tgan, o'chirib tashlash
+          localStorage.removeItem(cacheKey);
+        }
+      }
+    } catch (cacheError) {
+      console.error("Keshni o'qishda xatolik:", cacheError);
+      // Kesh xatoligi bo'lsa, davom etamiz va serverdan olamiz
+    }
+    
+    // Serverdan ma'lumotlarni olish
     const response = await fetch(
       `/api/user-invitations${userId ? `?userId=${userId}` : ""}`
     );
@@ -268,9 +356,25 @@ export const getInvitationsByUser = async (userId?: string): Promise<any[]> => {
     if (!data || !Array.isArray(data.invitations)) {
       return [];
     }
-    return data.invitations.sort((a: any, b: any) => {
+    
+    // Ma'lumotlarni saralash
+    const sortedInvitations = data.invitations.sort((a: any, b: any) => {
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     });
+    
+    // Natijani keshga saqlash
+    try {
+      localStorage.setItem(cacheKey, JSON.stringify({
+        data: sortedInvitations,
+        timestamp: new Date().toISOString()
+      }));
+      console.log('Foydalanuvchi taklifnomalari keshga saqlandi');
+    } catch (storageError) {
+      console.error("Keshga saqlashda xatolik:", storageError);
+      // Keshga saqlash xatoligi bo'lsa ham, natijani qaytaramiz
+    }
+    
+    return sortedInvitations;
   } catch (error) {
     console.error("Taklifnomalarni olishda xatolik:", error);
     return [];

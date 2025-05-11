@@ -29,11 +29,128 @@ export default function InvitationClientComponent({
     const [invitationData, setInvitationData] = useState<any>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-    const [ogTitle, setOgTitle] = useState<string>("Taklifnoma");
+    const [ogTitle, setOgTitle] = useState<string>("");
     const [ogDescription, setOgDescription] = useState<string>("");
     const siteUrl = process.env.NEXT_PUBLIC_API_URL || "https://etaklif.vercel.app";
+    
+    // Taklifnoma ma'lumotlarini keshdan tekshirish
+    useEffect(() => {
+        // Agar uniqueId mavjud bo'lsa, keshdan tekshirish
+        if (uniqueId) {
+            const cacheKey = `invitation_${uniqueId}`;
+            try {
+                const cachedString = localStorage.getItem(cacheKey);
+                if (cachedString) {
+                    const cached = JSON.parse(cachedString);
+                    // Kesh muddati tekshirish (24 soat)
+                    const cacheTime = new Date(cached.timestamp);
+                    const now = new Date();
+                    const cacheAgeHours = (now.getTime() - cacheTime.getTime()) / (1000 * 60 * 60);
+                    
+                    if (cacheAgeHours < 24) {
+                        // Keshdan ma'lumotlarni olish
+                        setInvitationData(cached.data);
+                        setLoading(false);
+                        
+                        // Meta ma'lumotlarni yangilash
+                        updateMetaData(cached.data);
+                        return; // Keshdan ma'lumot topildi, boshqa tekshirishlar kerak emas
+                    }
+                }
+            } catch (error) {
+                console.error("Keshni tekshirishda xatolik:", error);
+            }
+        }
+        
+        // Link orqali kelgan ma'lumotlarni keshdan tekshirish
+        if (searchParams && Object.keys(searchParams).length > 0) {
+            try {
+                const queryString = Object.entries(searchParams)
+                    .map(([key, value]) => `${key}=${value}`)
+                    .join('&');
+                
+                // Keshlashtirish uchun unikal kalit yaratish
+                const dataHash = btoa(queryString).substring(0, 20);
+                const linkCacheKey = `invitation_link_${dataHash}`;
+                
+                const cachedLinkString = localStorage.getItem(linkCacheKey);
+                if (cachedLinkString) {
+                    const cachedLink = JSON.parse(cachedLinkString);
+                    // Kesh muddati tekshirish (24 soat)
+                    const cacheTime = new Date(cachedLink.timestamp);
+                    const now = new Date();
+                    const cacheAgeHours = (now.getTime() - cacheTime.getTime()) / (1000 * 60 * 60);
+                    
+                    if (cacheAgeHours < 24) {
+                        // Keshdan ma'lumotlarni olish
+                        setInvitationData(cachedLink.data);
+                        setLoading(false);
+                        
+                        // Meta ma'lumotlarni yangilash
+                        updateMetaData(cachedLink.data);
+                    }
+                }
+            } catch (error) {
+                console.error("Link keshini tekshirishda xatolik:", error);
+            }
+        }
+    }, [uniqueId, searchParams, type]);
+
+    // Meta ma'lumotlarni yangilash uchun yordamchi funksiya
+    const updateMetaData = (data: any) => {
+        // OpenGraph meta taglar uchun ma'lumotlar
+        const firstName = data.firstName || data.invitationData?.firstName || '';
+        const secondName = data.secondName || data.invitationData?.secondName || '';
+        const location = data.location || data.invitationData?.location || '';
+        const date = data.date || data.invitationData?.date || '';
+        const time = data.time || data.invitationData?.time || '';
+
+        // Tadbir turini aniqlash
+        let dynamicEventTitle = '';
+        switch (type) {
+            case 'wedding': dynamicEventTitle = "Nikoh to'yi"; break;
+            case 'birthday': dynamicEventTitle = "Tug'ilgan kun"; break;
+            case 'funeral': dynamicEventTitle = "Ma'raka"; break;
+            case 'jubilee': dynamicEventTitle = "Yubiley"; break;
+            case 'engagement': dynamicEventTitle = "Unashtiruv"; break;
+            default: dynamicEventTitle = "Marosim";
+        }
+
+        // Sarlavha (Taklifnoma.uz qo'shilmaydi)
+        setOgTitle(`${dynamicEventTitle} taklifnomasi`);
+
+        // Tavsif
+        let tadbir = '';
+        if (firstName && secondName) {
+            tadbir = `${firstName} va ${secondName}ning ${dynamicEventTitle.toLowerCase()}`;
+        } else if (firstName) {
+            tadbir = `${firstName}ning ${dynamicEventTitle.toLowerCase()}`;
+        } else {
+            tadbir = dynamicEventTitle.toLowerCase();
+        }
+
+        let desc = `📌 ${tadbir.toUpperCase()}GA TAKLIFNOMA 📌\n\n`;
+        
+        // Manzil, sana va vaqt ma'lumotlarini qo'shish
+        if (location) {
+            desc += `📍 MANZIL: ${location}\n`;
+        }
+        
+        if (date) {
+            desc += `📅 SANA: ${date}\n`;
+        }
+        
+        if (time) {
+            desc += `⏰ VAQT: ${time}`;
+        }
+        
+        setOgDescription(desc);
+    };
 
     useEffect(() => {
+        // Agar keshdan ma'lumotlar oldindan yuklangan bo'lsa, qayta yuklamaymiz
+        if (invitationData) return;
+        
         async function loadInvitationData() {
             try {
                 setLoading(true);
@@ -56,54 +173,9 @@ export default function InvitationClientComponent({
                 }
 
                 setInvitationData(data);
-
-                // OpenGraph meta taglar uchun ma'lumotlar
-                const firstName = data.firstName || data.invitationData?.firstName || '';
-                const secondName = data.secondName || data.invitationData?.secondName || '';
-                const location = data.location || data.invitationData?.location || '';
-                const date = data.date || data.invitationData?.date || '';
-                const time = data.time || data.invitationData?.time || '';
-
-                // Tadbir turini aniqlash
-                let dynamicEventTitle = '';
-                switch (type) {
-                  case 'wedding': dynamicEventTitle = "Nikoh to'yi"; break;
-                  case 'birthday': dynamicEventTitle = "Tug'ilgan kun"; break;
-                  case 'funeral': dynamicEventTitle = "Ma'raka"; break;
-                  case 'jubilee': dynamicEventTitle = "Yubiley"; break;
-                  case 'engagement': dynamicEventTitle = "Unashtiruv"; break;
-                  default: dynamicEventTitle = "Marosim";
-                }
-
-                // Sarlavha
-                setOgTitle(`${dynamicEventTitle} taklifnomasi`);
-
-                // Tavsif
-                let tadbir = '';
-                if (firstName && secondName) {
-                  tadbir = `${firstName} va ${secondName}ning ${dynamicEventTitle.toLowerCase()}`;
-                } else if (firstName) {
-                  tadbir = `${firstName}ning ${dynamicEventTitle.toLowerCase()}`;
-                } else {
-                  tadbir = dynamicEventTitle.toLowerCase();
-                }
-
-                let desc = `📌 ${tadbir.toUpperCase()}GA TAKLIFNOMA 📌\n\n`;
                 
-                // Manzil, sana va vaqt ma'lumotlarini qo'shish
-                if (location) {
-                  desc += `📍 MANZIL: ${location}\n`;
-                }
-                
-                if (date) {
-                  desc += `📅 SANA: ${date}\n`;
-                }
-                
-                if (time) {
-                  desc += `⏰ VAQT: ${time}`;
-                }
-                
-                setOgDescription(desc);
+                // Meta ma'lumotlarni yangilash
+                updateMetaData(data);
             } catch (error: any) {
                 console.error("Taklifnoma ma'lumotlarini olishda xatolik:", error);
                 setError(error.message || "Noma'lum xatolik yuz berdi");
@@ -114,6 +186,7 @@ export default function InvitationClientComponent({
 
         loadInvitationData();
     }, [uniqueId, searchParams, type]);
+
 
     const renderTemplate = () => {
         if (loading) {
