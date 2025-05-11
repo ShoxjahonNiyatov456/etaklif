@@ -3,8 +3,8 @@
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import Image from "next/image"
-import { getAuth, onAuthStateChanged } from "firebase/auth"
-import { initializeApp } from "firebase/app"
+import { onAuthStateChanged } from "firebase/auth"
+import { auth } from "../app/firebase"
 import { useRouter } from "next/navigation"
 import { Sparkles, Calendar, Gift, Crown, ChevronRight, User, Plus, ArrowRight } from "lucide-react"
 
@@ -18,22 +18,6 @@ export default function Home() {
   const [activeCategory, setActiveCategory] = useState("all")
 
   useEffect(() => {
-    const firebaseConfig = {
-      apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-      authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-      projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-      storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-      messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-      appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-    }
-
-    try {
-      initializeApp(firebaseConfig)
-    } catch (error) {
-      console.log("Firebase already initialized")
-    }
-
-    const auth = getAuth()
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         setCurrentUser(user)
@@ -59,7 +43,7 @@ export default function Home() {
       id: "wedding-1",
       title: "Elegant To'y",
       category: "wedding",
-      image: "/wedding-template-1.jpg",
+      image: "/tuy.webp",
       color: "from-purple-500 to-pink-500",
       icon: <Sparkles className="h-5 w-5" />,
     },
@@ -177,7 +161,7 @@ export default function Home() {
                 <div className="absolute inset-0 bg-black/50 backdrop-blur-sm rounded-2xl border border-purple-500/30 shadow-xl transform -rotate-3"></div>
                 <div className="absolute inset-0 flex items-center justify-center">
                   <Image
-                    src="/placeholder.svg?height=400&width=300"
+                    src="/main.jpg"
                     width={300}
                     height={400}
                     alt="Taklifnoma namunasi"

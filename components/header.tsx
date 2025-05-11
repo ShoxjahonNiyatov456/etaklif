@@ -3,7 +3,8 @@
 import Link from "next/link"
 import { useState, useEffect } from "react"
 import { Menu, X, User, LogOut, Sparkles } from "lucide-react"
-import { getAuth, onAuthStateChanged } from "firebase/auth"
+import { onAuthStateChanged } from "firebase/auth"
+import { auth } from "../app/firebase"
 import { logoutUser } from "../app/services/auth"
 
 export default function Header() {
@@ -22,7 +23,6 @@ export default function Header() {
   }, [])
 
   useEffect(() => {
-    const auth = getAuth()
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         setCurrentUser(user)
