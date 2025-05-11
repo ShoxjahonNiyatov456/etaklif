@@ -6,7 +6,7 @@ import Image from "next/image"
 import { onAuthStateChanged } from "firebase/auth"
 import { auth } from "../app/firebase"
 import { useRouter } from "next/navigation"
-import { Sparkles, Calendar, Gift, Crown, ChevronRight, User, Plus, ArrowRight } from "lucide-react"
+import { Sparkles, Calendar, Gift, Crown, ChevronRight, User, ArrowRight } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
@@ -107,7 +107,7 @@ export default function Home() {
         </div>
 
         <div className="container mx-auto px-4 relative z-10">
-          <div className="flex flex-col lg:flex-row items-center gap-16 mt-16">
+          <div className="flex flex-col lg:flex-row items-center gap-8 md:gap-16 mt-8 md:mt-16">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -153,18 +153,18 @@ export default function Home() {
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="lg:w-1/2 relative"
+              className="lg:w-1/2 w-full px-4 py-8"
             >
-              <div className="relative h-[500px] w-full">
+              <div className="relative mx-auto max-w-sm md:max-w-md">
                 <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-2xl backdrop-blur-sm transform rotate-6"></div>
                 <div className="absolute inset-0 bg-black/50 backdrop-blur-sm rounded-2xl border border-purple-500/30 shadow-xl transform -rotate-3"></div>
-                <div className="absolute inset-0 flex items-center justify-center">
+                <div className="relative aspect-[3/4] rounded-xl overflow-hidden border-2 border-purple-500/30 shadow-2xl">
                   <Image
                     src="/main.jpg"
-                    width={300}
-                    height={400}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
                     alt="Taklifnoma namunasi"
-                    className="object-contain rounded-lg shadow-2xl transform -rotate-3 hover:rotate-0 transition-transform duration-500"
+                    className="object-cover"
                     priority
                   />
                 </div>
@@ -230,7 +230,7 @@ export default function Home() {
                       className={`absolute inset-0 bg-gradient-to-br ${template.color} opacity-20 group-hover:opacity-30 transition-opacity`}
                     ></div>
                     <Image
-                      src={template.image}
+                      src={template.image || "/placeholder.svg"}
                       alt={template.title}
                       width={400}
                       height={300}
