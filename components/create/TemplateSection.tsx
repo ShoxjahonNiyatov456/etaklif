@@ -330,7 +330,8 @@ export default function TemplateSection({
                             <img
                                 src={uploadedImage || "/placeholder.svg"}
                                 alt="Uploaded"
-                                className="w-full h-40 object-cover rounded-lg border border-gray-700"
+                                className="w-full h-40 object-contain bg-gray-900/50 rounded-lg border border-gray-700"
+                                style={{ aspectRatio: "16/9" }}
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
                         </div>

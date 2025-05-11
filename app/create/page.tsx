@@ -234,7 +234,7 @@ export default function CreatePage() {
                       {selectedType === "engagement" && "QIZ UZATISH MAROSIMI"}
                     </div>
                     <h2
-                      className={`${getFontFamilyClass()} text-3xl font-medium`}
+                      className={`${getFontFamilyClass()} text-3xl font-medium text-black`}
                     >
                       {formData.firstName || "Aziza Karimova"}
                     </h2>
