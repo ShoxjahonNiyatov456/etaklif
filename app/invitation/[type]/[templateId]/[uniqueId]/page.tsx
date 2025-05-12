@@ -41,7 +41,6 @@ export async function generateMetadata(
           default: dynamicEventTitle = "Marosim";
         }
       }
-
       ogTitle = `${dynamicEventTitle} taklifnomasi`;
       let hostNames = '';
       if (firstName && secondName) {
@@ -49,23 +48,19 @@ export async function generateMetadata(
       } else if (firstName) {
         hostNames = `${firstName}ning`;
       }
-
       let tadbir = '';
       if (hostNames) {
         tadbir = `${hostNames} ${dynamicEventTitle.toLowerCase()}`;
       } else {
         tadbir = dynamicEventTitle.toLowerCase();
       }
-
-      ogDescription = `📌 ${tadbir.toUpperCase()}GA TAKLIFNOMA 📌\n\n`;
+      ogDescription = `📌XURMATLI YAQINIM SIZ ${tadbir.toUpperCase()}IGA TAKLIF ETILDINGIZ 📌\n\n`;
       if (location) {
         ogDescription += `📍 MANZIL: ${location}\n`;
       }
-
       if (date) {
         ogDescription += `📅 SANA: ${date}\n`;
       }
-
       if (time) {
         ogDescription += `⏰ VAQT: ${time}`;
       }

@@ -5,7 +5,6 @@ import { motion } from "framer-motion"
 import { Share2, Check, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ShareModal } from "@/components/ui/share-modal"
-import { getCurrentUser } from "@/app/services/auth"
 import {
     AlertDialog,
     AlertDialogAction,
@@ -17,6 +16,81 @@ import {
     AlertDialogDescription,
 } from "@/components/ui/alert-dialog"
 import { generateShareableLink } from "@/app/services/share"
+
+
+interface Template {
+    id: string
+    name: string
+    style: string
+    hasImageUpload: boolean
+    color: string
+}
+
+const getTemplatesForType = (currentType: string): Template[] => {
+    switch (currentType) {
+        case "wedding":
+            return [
+                { id: "floral-gold", name: "Guldor oltin", style: "floral-gold", hasImageUpload: false, color: "from-amber-500 to-yellow-500" },
+                { id: "elegant-frame", name: "Elegant ramka", style: "elegant-frame", hasImageUpload: false, color: "from-purple-500 to-pink-500" },
+                { id: "blue-floral", name: "Ko'k guldor", style: "blue-floral", hasImageUpload: false, color: "from-blue-500 to-cyan-500" },
+                { id: "golden-ornament", name: "Oltin naqsh", style: "golden-ornament", hasImageUpload: false, color: "from-yellow-500 to-amber-500" },
+                { id: "floral-hexagon", name: "Guldor olti burchak", style: "floral-hexagon", hasImageUpload: false, color: "from-rose-500 to-pink-500" },
+                { id: "vintage-ornament", name: "Vintage naqsh", style: "vintage-ornament", hasImageUpload: false, color: "from-teal-500 to-cyan-500" },
+                { id: "modern-minimalist", name: "Zamonaviy minimalist", style: "modern-minimalist", hasImageUpload: false, color: "from-gray-500 to-slate-500" },
+                { id: "rustic-charm", name: "Rustik joziba", style: "rustic-charm", hasImageUpload: false, color: "from-orange-500 to-amber-500" },
+                { id: "luxury-classic", name: "Hashamatli klassika", style: "luxury-classic", hasImageUpload: false, color: "from-red-500 to-rose-500" },
+                { id: "garden-party", name: "Bog' ziyofati", style: "garden-party", hasImageUpload: false, color: "from-green-500 to-emerald-500" },
+                { id: "romantic-roses", name: "Romantik atirgullar", style: "romantic-roses", hasImageUpload: false, color: "from-pink-500 to-red-500" },
+                { id: "royal-elegance", name: "Qirollik hashamati", style: "royal-elegance", hasImageUpload: false, color: "from-indigo-500 to-purple-500" },
+                { id: "bohemian-chic", name: "Boho uslubi", style: "bohemian-chic", hasImageUpload: false, color: "from-orange-500 to-red-500" },
+                { id: "crystal-glamour", name: "Kristall jozibasi", style: "crystal-glamour", hasImageUpload: false, color: "from-cyan-500 to-blue-500" },
+                { id: "vintage-lace", name: "Vintage to'r", style: "vintage-lace", hasImageUpload: false, color: "from-amber-500 to-orange-500" },
+                { id: "modern-geometric", name: "Zamonaviy geometrik", style: "modern-geometric", hasImageUpload: false, color: "from-violet-500 to-purple-500" },
+                { id: "enchanted-garden", name: "Sehrli bog'", style: "enchanted-garden", hasImageUpload: false, color: "from-emerald-500 to-green-500" },
+                { id: "marble-luxury", name: "Marmar hashamat", style: "marble-luxury", hasImageUpload: false, color: "from-slate-500 to-gray-500" },
+                { id: "celestial-dreams", name: "Samoviy orzular", style: "celestial-dreams", hasImageUpload: false, color: "from-blue-500 to-indigo-500" },
+                { id: "traditional-charm", name: "An'anaviy joziba", style: "traditional-charm", hasImageUpload: false, color: "from-rose-500 to-red-500" },
+            ];
+        case "birthday":
+            return [
+                { id: "colorful", name: "Rang-barang", style: "colorful", hasImageUpload: false, color: "from-pink-500 to-purple-500" },
+                { id: "kids", name: "Bolalar uchun", style: "kids", hasImageUpload: false, color: "from-blue-500 to-cyan-500" },
+                { id: "floral-frame", name: "Guldor ramka", style: "floral-frame", hasImageUpload: false, color: "from-green-500 to-emerald-500" },
+                { id: "butterfly", name: "Kapalaklar", style: "butterfly", hasImageUpload: false, color: "from-purple-500 to-indigo-500" },
+                { id: "kids-photo", name: "Bolalar suratli", style: "kids-photo", hasImageUpload: true, color: "from-cyan-500 to-blue-500" },
+                { id: "unicorn", name: "Yoltoq", style: "unicorn", hasImageUpload: false, color: "from-pink-500 to-rose-500" },
+            ];
+        case "funeral":
+            return [
+                { id: "traditional", name: "An'anaviy", style: "traditional", hasImageUpload: false, color: "from-gray-500 to-slate-500" },
+                { id: "calm", name: "Sokin", style: "calm", hasImageUpload: false, color: "from-blue-500 to-slate-500" },
+                { id: "photo-memorial", name: "Suratli xotira", style: "photo-memorial", hasImageUpload: true, color: "from-slate-500 to-gray-500" },
+                { id: "elegant-memorial", name: "Elegant xotira", style: "elegant-memorial", hasImageUpload: true, color: "from-indigo-500 to-slate-500" },
+                { id: "islamic-memorial", name: "Islomiy uslub", style: "islamic-memorial", hasImageUpload: true, color: "from-green-500 to-emerald-500" },
+            ];
+        case "jubilee":
+            return [
+                { id: "classic", name: "Klassik", style: "classic", hasImageUpload: false, color: "from-amber-500 to-yellow-500" },
+                { id: "modern", name: "Zamonaviy", style: "modern", hasImageUpload: false, color: "from-blue-500 to-cyan-500" },
+                { id: "ornate", name: "Bezakli", style: "ornate", hasImageUpload: false, color: "from-purple-500 to-pink-500" },
+                { id: "minimalist", name: "Minimalist", style: "minimalist", hasImageUpload: false, color: "from-gray-500 to-slate-500" },
+                { id: "traditional", name: "An'anaviy Yubiley", style: "traditional-jubilee", hasImageUpload: true, color: "from-red-500 to-rose-500" }, // Ensure unique style/id if needed
+                { id: "luxury", name: "Hashamatli", style: "luxury", hasImageUpload: false, color: "from-yellow-500 to-amber-500" },
+                { id: "festive", name: "Bayramona", style: "festive", hasImageUpload: false, color: "from-red-500 to-orange-500" },
+                { id: "photo-jubilee", name: "Suratli yubiley", style: "photo-jubilee", hasImageUpload: true, color: "from-cyan-500 to-blue-500" },
+            ];
+        case "engagement":
+            return [
+                { id: "romantic", name: "Romantik", style: "romantic", hasImageUpload: false, color: "from-pink-500 to-rose-500" },
+                { id: "national", name: "Milliy", style: "national", hasImageUpload: false, color: "from-red-500 to-orange-500" },
+                { id: "floral-engagement", name: "Gulli Unashtiruv", style: "floral-engagement", hasImageUpload: true, color: "from-rose-500 to-pink-500" },
+                { id: "modern-engagement", name: "Zamonaviy Unashtiruv", style: "modern-engagement", hasImageUpload: true, color: "from-purple-500 to-indigo-500" },
+                { id: "traditional-engagement", name: "An'anaviy Unashtiruv", style: "traditional-engagement", hasImageUpload: true, color: "from-amber-500 to-yellow-500" },
+            ];
+        default:
+            return [];
+    }
+}
 
 interface PaymentSectionProps {
     type: string
@@ -41,47 +115,8 @@ export default function PaymentSection({ type, selectedTemplate, formData, uploa
     const [paymentProcessing, setPaymentProcessing] = useState(false)
     const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false)
     const [isGeneratingLink, setIsGeneratingLink] = useState(false)
-
-    const handlePayment = async () => {
-        const currentUser = getCurrentUser()
-
-        if (!currentUser) {
-            alert("Avval ro'yxatdan o'ting yoki tizimga kiring.")
-            setPaymentProcessing(false)
-            return
-        }
-
-        try {
-            setPaymentProcessing(true)
-            await new Promise((resolve) => setTimeout(resolve, 1500))
-
-            setPaymentCompleted(true)
-
-            const invitationData = {
-                userId: currentUser.uid,
-                firstName: formData.firstName,
-                secondName: formData.secondName,
-                date: formData.date,
-                time: formData.time,
-                location: formData.location,
-                additionalInfo: formData.additionalInfo,
-                age: formData.age,
-                parents: formData.parents,
-                uploadedImage: uploadedImage,
-            }
-
-            const { generateShareableLink } = await import("@/app/services/share")
-            const link = await generateShareableLink(type as string, selectedTemplate, invitationData)
-
-            setShareableLink(link)
-        } catch (error) {
-            console.error("To'lov jarayonida xatolik:", error)
-            alert("To'lov jarayonida xatolik yuz berdi. Iltimos, qaytadan urinib ko'ring.")
-        } finally {
-            setPaymentProcessing(false)
-        }
-    }
-
+    const currentTemplateDetails = getTemplatesForType(type).find(t => t.id === selectedTemplate);
+    const templateRequiresImage = currentTemplateDetails?.hasImageUpload ?? false;
     const handleShareInvitation = async () => {
         try {
             setIsGeneratingLink(true)
@@ -94,7 +129,6 @@ export default function PaymentSection({ type, selectedTemplate, formData, uploa
             setIsGeneratingLink(false)
         }
     }
-
     const handlePaymentProcessing = async () => {
         try {
             setPaymentProcessing(true)
@@ -112,7 +146,6 @@ export default function PaymentSection({ type, selectedTemplate, formData, uploa
             setIsGeneratingLink(false)
         }
     }
-
     return (
         <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -123,20 +156,22 @@ export default function PaymentSection({ type, selectedTemplate, formData, uploa
             <h3 className="text-xl font-semibold mb-6 text-white">Taklifnomani yakunlash</h3>
             {!paymentCompleted ? (
                 <>
-                    <Button
-                        onClick={() => setIsConfirmDialogOpen(true)}
-                        disabled={paymentProcessing}
-                        className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white border-0"
-                    >
-                        {paymentProcessing ? (
-                            <div className="flex items-center justify-center">
-                                <Loader2 className="h-5 w-5 mr-2 animate-spin" />
-                                <span>Tayyorlanmoqda...</span>
-                            </div>
-                        ) : (
-                            <>Yakunlash uchun bosing!</>
-                        )}
-                    </Button>
+                    {!(templateRequiresImage && !uploadedImage) && (
+                        <Button
+                            onClick={() => setIsConfirmDialogOpen(true)}
+                            disabled={paymentProcessing}
+                            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white border-0 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            {paymentProcessing ? (
+                                <div className="flex items-center justify-center">
+                                    <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+                                    <span>Tayyorlanmoqda...</span>
+                                </div>
+                            ) : (
+                                <>Yakunlash uchun bosing!</>
+                            )}
+                        </Button>
+                    )}
                     <AlertDialog open={isConfirmDialogOpen} onOpenChange={setIsConfirmDialogOpen}>
                         <AlertDialogContent className="bg-gray-900 border border-gray-800 text-white">
                             <AlertDialogHeader>
@@ -174,7 +209,6 @@ export default function PaymentSection({ type, selectedTemplate, formData, uploa
                         <Check className="h-10 w-10 text-green-500" />
                     </div>
                     <h3 className="text-xl font-semibold text-green-500">To'lov muvaffaqiyatli yakunlandi!</h3>
-
                     <Button
                         onClick={shareableLink ? () => setIsShareModalOpen(true) : handleShareInvitation}
                         disabled={isGeneratingLink}

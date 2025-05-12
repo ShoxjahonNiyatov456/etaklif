@@ -173,7 +173,6 @@ body {
   pointer-events: none;
 }
 
-/* Nature template */
 .nature-template {
   position: relative;
 }
@@ -192,7 +191,6 @@ body {
   pointer-events: none;
 }
 
-/* Traditional template */
 .traditional-template {
   position: relative;
   background-color: #f5f5f5;
@@ -287,94 +285,6 @@ body {
   background-repeat: no-repeat;
   opacity: 0.7;
   pointer-events: none;
-}
-
-/* Template thumbnails */
-.floral-thumbnail {
-  background-image: url("/floral-thumbnail.jpg");
-  background-size: cover;
-  background-position: center;
-}
-
-.minimal-thumbnail {
-  background-color: #ffffff;
-  border: 1px solid #e5e7eb;
-}
-
-.minimal-thumbnail::before {
-  content: "";
-  position: absolute;
-  top: 4px;
-  left: 4px;
-  right: 4px;
-  bottom: 4px;
-  border: 1px solid #d1d5db;
-}
-
-.gold-thumbnail {
-  background-image: url("/gold-thumbnail.jpg");
-  background-size: cover;
-  background-position: center;
-}
-
-.vintage-thumbnail {
-  background-image: url("/vintage-thumbnail.jpg");
-  background-size: cover;
-  background-position: center;
-}
-
-.geometric-thumbnail {
-  background-image: url("/geometric-thumbnail.jpg");
-  background-size: cover;
-  background-position: center;
-}
-
-.festive-thumbnail {
-  background-image: url("/festive-thumbnail.jpg");
-  background-size: cover;
-  background-position: center;
-}
-
-.elegant-thumbnail {
-  background-image: url("/elegant-thumbnail.jpg");
-  background-size: cover;
-  background-position: center;
-}
-
-.nature-thumbnail {
-  background-image: url("/nature-thumbnail.jpg");
-  background-size: cover;
-  background-position: center;
-}
-
-.traditional-thumbnail {
-  background-image: url("/traditional-thumbnail.jpg");
-  background-size: cover;
-  background-position: center;
-}
-
-.celebration-thumbnail {
-  background-image: url("/celebration-thumbnail.jpg");
-  background-size: cover;
-  background-position: center;
-}
-
-.romantic-thumbnail {
-  background-image: url("/romantic-thumbnail.jpg");
-  background-size: cover;
-  background-position: center;
-}
-
-.national-thumbnail {
-  background-image: url("/national-thumbnail.jpg");
-  background-size: cover;
-  background-position: center;
-}
-
-.modern-thumbnail {
-  background-image: url("/modern-thumbnail.jpg");
-  background-size: cover;
-  background-position: center;
 }
 
 .invitation-preview {

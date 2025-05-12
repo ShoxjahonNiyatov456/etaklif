@@ -50,7 +50,6 @@ export default async function Image({ params }) {
       console.error("Error fetching invitation data:", fetchError);
       invitationData = {};
     }
-
     const location =
       invitationData?.location || rawData?.location || "Manzil ko'rsatilmagan";
     const time = invitationData?.time || rawData?.time || "Vaqt ko'rsatilmagan";
@@ -133,7 +132,6 @@ export default async function Image({ params }) {
             overflow: "hidden",
           }}
         >
-          {/* Background image */}
           <div
             style={{
               position: "absolute",
@@ -144,8 +142,6 @@ export default async function Image({ params }) {
               filter: "brightness(0.6)",
             }}
           />
-
-          {/* Dark overlay to ensure text readability */}
           <div
             style={{
               position: "absolute",
@@ -153,8 +149,6 @@ export default async function Image({ params }) {
               background: "rgba(0, 0, 0, 0.5)",
             }}
           />
-
-          {/* Content overlay */}
           <div
             style={{
               position: "relative",
@@ -169,7 +163,6 @@ export default async function Image({ params }) {
               color: "#ffffff",
             }}
           >
-            {/* Taklifnoma sarlavhasi */}
             <div
               style={{
                 fontSize: 72,
@@ -181,8 +174,6 @@ export default async function Image({ params }) {
             >
               {title}
             </div>
-
-            {/* Qo'shimcha ma'lumot (ismlar) */}
             <div
               style={{
                 fontSize: 56,
@@ -193,8 +184,6 @@ export default async function Image({ params }) {
             >
               {subtitle}
             </div>
-
-            {/* Taklifnoma ma'lumotlari */}
             <div
               style={{
                 display: "flex",
@@ -224,8 +213,6 @@ export default async function Image({ params }) {
                   {time}
                 </div>
               </div>
-
-              {/* Manzil */}
               <div
                 style={{ display: "flex", alignItems: "center", gap: "15px" }}
               >

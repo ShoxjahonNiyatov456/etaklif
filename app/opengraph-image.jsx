@@ -32,7 +32,7 @@ export default async function Image() {
             background: 'linear-gradient(to bottom right, #f0f9ff, #e6f7ff, #ccecff)',
           }}
         />
-        
+
         <div
           style={{
             position: 'absolute',
@@ -59,7 +59,7 @@ export default async function Image() {
           >
             etaklif.vercel.app
           </div>
-          
+
           <div
             style={{
               fontSize: 32,
@@ -69,7 +69,7 @@ export default async function Image() {
           >
             Zamonaviy taklifnomalar platformasi
           </div>
-          
+
           <div
             style={{
               display: 'flex',
