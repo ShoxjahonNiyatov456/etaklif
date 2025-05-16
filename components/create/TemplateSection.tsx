@@ -32,11 +32,60 @@ export default function TemplateSection({
       case "wedding":
         return [
           {
-            id: "floral-gold",
-            name: "Guldor oltin",
-            style: "floral-gold",
+            id: "burgundy-roses",
+            name: "Qizil atirgullar",
+            style: "burgundy-roses",
             hasImageUpload: false,
-            color: "from-amber-500 to-yellow-500",
+            color: "from-rose-800 to-rose-600",
+          },
+          {
+            id: "peach-floral",
+            name: "Shaftoli guldor",
+            style: "peach-floral",
+            hasImageUpload: false,
+            color: "from-amber-800 to-amber-600",
+          },
+          {
+            id: "golden-frame",
+            name: "Oltin ramka",
+            style: "golden-frame",
+            hasImageUpload: false,
+            color: "from-amber-400 to-gray-800",
+          },
+          {
+            id: "colorful-garden",
+            name: "Rang-barang bog'",
+            style: "colorful-garden",
+            hasImageUpload: false,
+            color: "from-pink-900 to-pink-700",
+          },
+          {
+            id: "watercolor-bouquet",
+            name: "Akvarel guldasta",
+            style: "watercolor-bouquet",
+            hasImageUpload: false,
+            color: "from-rose-800 to-rose-700",
+          },
+          {
+            id: "pink-roses",
+            name: "Pushti atirgullar",
+            style: "pink-roses",
+            hasImageUpload: false,
+            color: "from-rose-800 to-rose-600",
+          },
+          {
+            id: "rose-gold",
+            name: "Pushti oltin",
+            style: "rose-gold",
+            hasImageUpload: false,
+            color: "from-rose-800 to-rose-700",
+          },
+          {
+            id: "elegant-corner",
+            name: "Elegant burchak",
+            style: "elegant-corner",
+            hasImageUpload: false,
+            color: "from-rose-800 to-rose-700",
           },
           {
             id: "elegant-frame",
@@ -60,13 +109,6 @@ export default function TemplateSection({
             color: "from-yellow-500 to-amber-500",
           },
           {
-            id: "floral-hexagon",
-            name: "Guldor olti burchak",
-            style: "floral-hexagon",
-            hasImageUpload: false,
-            color: "from-rose-500 to-pink-500",
-          },
-          {
             id: "vintage-ornament",
             name: "Vintage naqsh",
             style: "vintage-ornament",
@@ -74,102 +116,25 @@ export default function TemplateSection({
             color: "from-teal-500 to-cyan-500",
           },
           {
-            id: "modern-minimalist",
-            name: "Zamonaviy minimalist",
-            style: "modern-minimalist",
+            id: "floral-hexagon",
+            name: "Guldor olti burchak",
+            style: "floral-hexagon",
             hasImageUpload: false,
-            color: "from-gray-500 to-slate-500",
+            color: "from-rose-500 to-pink-500",
           },
           {
-            id: "rustic-charm",
-            name: "Rustik joziba",
-            style: "rustic-charm",
+            id: "blue-roses",
+            name: "Ko'k atirgullar",
+            style: "blue-roses",
             hasImageUpload: false,
-            color: "from-orange-500 to-amber-500",
+            color: "from-blue-500 to-cyan-500",
           },
           {
-            id: "luxury-classic",
-            name: "Hashamatli klassika",
-            style: "luxury-classic",
+            id: "elegant-script",
+            name: "Elegant yozuv",
+            style: "elegant-script",
             hasImageUpload: false,
-            color: "from-red-500 to-rose-500",
-          },
-          {
-            id: "garden-party",
-            name: "Bog' ziyofati",
-            style: "garden-party",
-            hasImageUpload: false,
-            color: "from-green-500 to-emerald-500",
-          },
-          {
-            id: "romantic-roses",
-            name: "Romantik atirgullar",
-            style: "romantic-roses",
-            hasImageUpload: false,
-            color: "from-pink-500 to-red-500",
-          },
-          {
-            id: "royal-elegance",
-            name: "Qirollik hashamati",
-            style: "royal-elegance",
-            hasImageUpload: false,
-            color: "from-indigo-500 to-purple-500",
-          },
-          {
-            id: "bohemian-chic",
-            name: "Boho uslubi",
-            style: "bohemian-chic",
-            hasImageUpload: false,
-            color: "from-orange-500 to-red-500",
-          },
-          {
-            id: "crystal-glamour",
-            name: "Kristall jozibasi",
-            style: "crystal-glamour",
-            hasImageUpload: false,
-            color: "from-cyan-500 to-blue-500",
-          },
-          {
-            id: "vintage-lace",
-            name: "Vintage to'r",
-            style: "vintage-lace",
-            hasImageUpload: false,
-            color: "from-amber-500 to-orange-500",
-          },
-          {
-            id: "modern-geometric",
-            name: "Zamonaviy geometrik",
-            style: "modern-geometric",
-            hasImageUpload: false,
-            color: "from-violet-500 to-purple-500",
-          },
-          {
-            id: "enchanted-garden",
-            name: "Sehrli bog'",
-            style: "enchanted-garden",
-            hasImageUpload: false,
-            color: "from-emerald-500 to-green-500",
-          },
-          {
-            id: "marble-luxury",
-            name: "Marmar hashamat",
-            style: "marble-luxury",
-            hasImageUpload: false,
-            color: "from-slate-500 to-gray-500",
-          },
-          {
-            id: "celestial-dreams",
-            name: "Samoviy orzular",
-            style: "celestial-dreams",
-            hasImageUpload: false,
-            color: "from-blue-500 to-indigo-500",
-          },
-          {
-            id: "traditional-charm",
-            name: "An'anaviy joziba",
-            style: "traditional-charm",
-            hasImageUpload: false,
-            color: "from-rose-500 to-red-500",
+            color: "from-purple-500 to-indigo-500",
           },
         ];
       case "birthday":
@@ -394,13 +359,12 @@ export default function TemplateSection({
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: index * 0.05 }}
             onClick={() => onTemplateSelect(template.id)}
-            className={`p-4 rounded-xl transition-all duration-300 ${
-              selectedTemplate === template.id
-                ? "bg-gradient-to-br " +
-                  template.color +
-                  " text-white shadow-lg"
-                : "bg-gray-900/50 border border-gray-700 text-gray-300 hover:border-gray-600"
-            }`}
+            className={`p-4 rounded-xl transition-all duration-300 ${selectedTemplate === template.id
+              ? "bg-gradient-to-br " +
+              template.color +
+              " text-white shadow-lg"
+              : "bg-gray-900/50 border border-gray-700 text-gray-300 hover:border-gray-600"
+              }`}
           >
             <div className="text-center">{template.name}</div>
           </motion.button>
