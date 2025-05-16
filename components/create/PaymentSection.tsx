@@ -46,16 +46,16 @@ const getTemplatesForType = (currentType: string): Template[] => {
                 { id: "kids", name: "Bolalar uchun", style: "kids", hasImageUpload: false, color: "from-blue-500 to-cyan-500" },
                 { id: "floral-frame", name: "Guldor ramka", style: "floral-frame", hasImageUpload: false, color: "from-green-500 to-emerald-500" },
                 { id: "butterfly", name: "Kapalaklar", style: "butterfly", hasImageUpload: false, color: "from-purple-500 to-indigo-500" },
-                { id: "kids-photo", name: "Bolalar suratli", style: "kids-photo", hasImageUpload: true, color: "from-cyan-500 to-blue-500" },
+                { id: "kids-photo", name: "Bolalar suratli", style: "kids-photo", hasImageUpload: false, color: "from-cyan-500 to-blue-500" },
                 { id: "unicorn", name: "Yoltoq", style: "unicorn", hasImageUpload: false, color: "from-pink-500 to-rose-500" },
             ];
         case "funeral":
             return [
                 { id: "traditional", name: "An'anaviy", style: "traditional", hasImageUpload: false, color: "from-gray-500 to-slate-500" },
                 { id: "calm", name: "Sokin", style: "calm", hasImageUpload: false, color: "from-blue-500 to-slate-500" },
-                { id: "photo-memorial", name: "Suratli xotira", style: "photo-memorial", hasImageUpload: true, color: "from-slate-500 to-gray-500" },
-                { id: "elegant-memorial", name: "Elegant xotira", style: "elegant-memorial", hasImageUpload: true, color: "from-indigo-500 to-slate-500" },
-                { id: "islamic-memorial", name: "Islomiy uslub", style: "islamic-memorial", hasImageUpload: true, color: "from-green-500 to-emerald-500" },
+                { id: "photo-memorial", name: "Suratli xotira", style: "photo-memorial", hasImageUpload: false, color: "from-slate-500 to-gray-500" },
+                { id: "elegant-memorial", name: "Elegant xotira", style: "elegant-memorial", hasImageUpload: false, color: "from-indigo-500 to-slate-500" },
+                { id: "islamic-memorial", name: "Islomiy uslub", style: "islamic-memorial", hasImageUpload: false, color: "from-green-500 to-emerald-500" },
             ];
         case "jubilee":
             return [
@@ -63,18 +63,18 @@ const getTemplatesForType = (currentType: string): Template[] => {
                 { id: "modern", name: "Zamonaviy", style: "modern", hasImageUpload: false, color: "from-blue-500 to-cyan-500" },
                 { id: "ornate", name: "Bezakli", style: "ornate", hasImageUpload: false, color: "from-purple-500 to-pink-500" },
                 { id: "minimalist", name: "Minimalist", style: "minimalist", hasImageUpload: false, color: "from-gray-500 to-slate-500" },
-                { id: "traditional", name: "An'anaviy Yubiley", style: "traditional-jubilee", hasImageUpload: true, color: "from-red-500 to-rose-500" }, // Ensure unique style/id if needed
+                { id: "traditional", name: "An'anaviy Yubiley", style: "traditional-jubilee", hasImageUpload: false, color: "from-red-500 to-rose-500" }, // Ensure unique style/id if needed
                 { id: "luxury", name: "Hashamatli", style: "luxury", hasImageUpload: false, color: "from-yellow-500 to-amber-500" },
                 { id: "festive", name: "Bayramona", style: "festive", hasImageUpload: false, color: "from-red-500 to-orange-500" },
-                { id: "photo-jubilee", name: "Suratli yubiley", style: "photo-jubilee", hasImageUpload: true, color: "from-cyan-500 to-blue-500" },
+                { id: "photo-jubilee", name: "Suratli yubiley", style: "photo-jubilee", hasImageUpload: false, color: "from-cyan-500 to-blue-500" },
             ];
         case "engagement":
             return [
                 { id: "romantic", name: "Romantik", style: "romantic", hasImageUpload: false, color: "from-pink-500 to-rose-500" },
                 { id: "national", name: "Milliy", style: "national", hasImageUpload: false, color: "from-red-500 to-orange-500" },
-                { id: "floral-engagement", name: "Gulli Unashtiruv", style: "floral-engagement", hasImageUpload: true, color: "from-rose-500 to-pink-500" },
-                { id: "modern-engagement", name: "Zamonaviy Unashtiruv", style: "modern-engagement", hasImageUpload: true, color: "from-purple-500 to-indigo-500" },
-                { id: "traditional-engagement", name: "An'anaviy Unashtiruv", style: "traditional-engagement", hasImageUpload: true, color: "from-amber-500 to-yellow-500" },
+                { id: "floral-engagement", name: "Gulli Unashtiruv", style: "floral-engagement", hasImageUpload: false, color: "from-rose-500 to-pink-500" },
+                { id: "modern-engagement", name: "Zamonaviy Unashtiruv", style: "modern-engagement", hasImageUpload: false, color: "from-purple-500 to-indigo-500" },
+                { id: "traditional-engagement", name: "An'anaviy Unashtiruv", style: "traditional-engagement", hasImageUpload: false, color: "from-amber-500 to-yellow-500" },
             ];
         default:
             return [];

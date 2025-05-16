@@ -44,6 +44,7 @@ export default function EngagementTemplate({
       }
     })()
     : "Sana belgilanmagan";
+
   const truncateText = (text: string | undefined, maxLength: number = 30): string => {
     if (!text) return "";
     return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
@@ -53,82 +54,108 @@ export default function EngagementTemplate({
     case "romantic":
       return (
         <div
-          className="bg-gradient-to-r from-pink-50 to-rose-50 p-8 rounded-lg shadow-lg border border-pink-200"
-          style={{ minHeight: "500px" }}
+          className="relative w-full rounded-lg shadow-lg overflow-hidden"
+          style={{
+            backgroundImage: "url('/qizimages/q1.jpg')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            minHeight: "550px"
+          }}
         >
-          <div className="text-center">
-            <h2 className="text-2xl font-serif text-rose-700 mb-4">Qiz uzatish marosimi</h2>
-            <h3 className="text-3xl font-serif text-rose-800 mb-2">{truncateText(firstName) || "Madina Karimova"}</h3>
-            {parents && <p className="text-lg text-rose-600 mb-6">Ota-onasi: {truncateText(parents)}</p>}
-            <div className="bg-white bg-opacity-70 p-4 rounded-lg mb-4">
-              <p className="text-gray-700 mb-1">{truncateText(formattedDate)}</p>
-              <p className="text-gray-700 mb-1">Soat: {truncateText(time) || "17:00"}</p>
-              <p className="text-gray-700">{truncateText(location) || "Toshkent, Yunusobod tumani"}</p>
-            </div>
-            {truncateText(additionalInfo) && <p className="text-sm text-rose-600 mt-4">{truncateText(additionalInfo)}</p>}
-            <div className="mt-4 flex justify-center">
-              <span className="inline-block text-2xl">💝</span>
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="bg-white/80 backdrop-blur-sm p-8 rounded-lg shadow-lg max-w-md text-center">
+              <h2 className="text-2xl font-serif text-rose-700 mb-4 font-dancing">Qiz uzatish marosimi</h2>
+              <h3 className="text-3xl font-playfair text-rose-800 mb-2">{truncateText(firstName) || "Madina Karimova"}</h3>
+              {parents && <p className="text-lg font-cormorant text-rose-600 mb-6">Ota-onasi: {truncateText(parents)}</p>}
+
+              <div className="w-16 h-1 bg-rose-300 mx-auto mb-6"></div>
+
+              <div className="space-y-2 mb-4">
+                <p className="text-rose-700 font-cormorant text-xl">{truncateText(formattedDate)}</p>
+                <p className="text-rose-700 font-cormorant text-xl">Soat: {truncateText(time) || "17:00"}</p>
+                <p className="text-rose-700 font-cormorant text-xl">{truncateText(location) || "Toshkent, Yunusobod tumani"}</p>
+              </div>
+
+              {truncateText(additionalInfo) && (
+                <p className="text-sm font-cormorant text-rose-600 mt-4 italic">{truncateText(additionalInfo)}</p>
+              )}
+
+              <p className="font-dancing text-rose-500 mt-4 text-lg">Tashrif buyurishingizni so'raymiz</p>
             </div>
           </div>
         </div>
       )
+
     case "national":
       return (
-        <div className="bg-red-50 p-8 rounded-lg shadow-lg border-2 border-red-300" style={{ minHeight: "500px" }}>
-          <div className="text-center">
-            <h2 className="text-2xl font-serif text-red-800 mb-4">Qiz uzatish marosimi</h2>
+        <div
+          className="relative w-full rounded-lg shadow-lg overflow-hidden"
+          style={{
+            backgroundImage: "url('/qizimages/q2.jpg')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            minHeight: "550px"
+          }}
+        >
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="bg-white/70 backdrop-blur-sm p-8 rounded-lg max-w-md text-center">
+              <h2 className="text-2xl font-dancing text-pink-600 mb-4">Qiz uzatish marosimi</h2>
+              <h3 className="text-3xl font-playfair text-pink-700 mb-2">{truncateText(firstName) || "Madina Karimova"}</h3>
+              {parents && <p className="text-lg font-cormorant text-pink-600 mb-6">Ota-onasi: {truncateText(parents)}</p>}
 
-            <h3 className="text-3xl font-serif text-red-900 mb-2">{truncateText(firstName) || "Madina Karimova"}</h3>
-            {parents && <p className="text-lg text-red-700 mb-6">Ota-onasi: {truncateText(parents)}</p>}
+              <div className="w-16 h-0.5 bg-pink-200 mx-auto mb-6"></div>
 
-            <div className="border-t border-b border-red-200 py-4 mb-6">
-              <p className="text-gray-700 mb-1">{truncateText(formattedDate)}</p>
-              <p className="text-gray-700 mb-1">Soat: {truncateText(time) || "17:00"}</p>
-              <p className="text-gray-700">{truncateText(location) || "Toshkent, Yunusobod tumani"}</p>
+              <div className="space-y-2 mb-4">
+                <p className="text-pink-700 font-cormorant text-xl">{truncateText(formattedDate)}</p>
+                <p className="text-pink-700 font-cormorant text-xl">Soat: {truncateText(time) || "17:00"}</p>
+                <p className="text-pink-700 font-cormorant text-xl">{truncateText(location) || "Toshkent, Yunusobod tumani"}</p>
+              </div>
+
+              {truncateText(additionalInfo) && (
+                <p className="text-sm font-cormorant text-pink-600 mt-4 italic">{truncateText(additionalInfo)}</p>
+              )}
+
+              <p className=" font-dancing text-pink-500 mt-4 text-lg">Tashrif buyurishingizni so'raymiz</p>
             </div>
-
-            {truncateText(additionalInfo) && <p className="text-sm text-red-700 mt-4">{truncateText(additionalInfo)}</p>}
-
-            <p className="text-sm text-red-600 mt-4">Tashrif buyurishingizni so'raymiz</p>
           </div>
         </div>
       )
 
     case "floral-engagement":
       return (
-        <div className="bg-[#fff8f8] p-8 rounded-lg shadow-lg" style={{ minHeight: "550px" }}>
-          <div className="text-center">
-            <h2 className="text-2xl font-serif text-rose-700 mb-4">Qiz uzatish marosimi</h2>
-            <div className="mb-6 flex justify-center">
-              {uploadedImage ? (
-                <div className="w-40 h-40 rounded-full border-4 border-rose-200 overflow-hidden relative">
-                  <img
-                    src={uploadedImage}
-                    alt="Qizning rasmi"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              ) : (
-                <div className="w-40 h-40 rounded-full border-4 border-rose-200 bg-rose-50 flex items-center justify-center">
-                  <p className="text-rose-400 text-sm">Rasm yuklang</p>
-                </div>
+        <div
+          className="relative w-full rounded-lg shadow-lg overflow-hidden"
+          style={{
+            backgroundImage: "url('/qizimages/q3.jpg')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            minHeight: "550px"
+          }}
+        >
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="bg-white/70 backdrop-blur-sm p-8 rounded-lg shadow-lg max-w-md text-center">
+              <h2 className="text-2xl font-dancing text-pink-700 mb-4">Qiz uzatish marosimi</h2>
+              <h3 className="text-3xl font-playfair text-pink-800 mb-2">{truncateText(firstName) || "Madina Karimova"}</h3>
+              {parents && <p className="text-lg font-cormorant text-pink-600 mb-6">Ota-onasi: {truncateText(parents)}</p>}
+
+              <div className="flex items-center justify-center gap-2 mb-6">
+                <div className="w-12 h-px bg-pink-300"></div>
+                <div className="w-2 h-2 rounded-full bg-pink-400"></div>
+                <div className="w-12 h-px bg-pink-300"></div>
+              </div>
+
+              <div className="space-y-2 mb-4">
+                <p className="text-pink-700 font-cormorant text-xl">{truncateText(formattedDate)}</p>
+                <p className="text-pink-700 font-cormorant text-xl">Soat: {truncateText(time) || "17:00"}</p>
+                <p className="text-pink-700 font-cormorant text-xl">{truncateText(location) || "Toshkent, Yunusobod tumani"}</p>
+              </div>
+
+              {truncateText(additionalInfo) && (
+                <p className="text-sm font-cormorant text-pink-600 mt-4 italic">{truncateText(additionalInfo)}</p>
               )}
+
+              <p className=" font-dancing text-pink-500 mt-4 text-lg">Tashrif buyurishingizni so'raymiz</p>
             </div>
-
-            <h3 className="text-3xl font-serif text-rose-800 mb-2">{truncateText(firstName) || "Madina Karimova"}</h3>
-            {parents && <p className="text-lg text-rose-600 mb-4">Ota-onasi: {truncateText(parents)}</p>}
-
-            <div className="w-16 h-1 bg-rose-200 mx-auto mb-6"></div>
-
-            <div className="bg-white p-4 rounded-lg shadow-sm mb-4 border border-rose-100">
-              <p className="text-gray-700 mb-1">{truncateText(formattedDate)}</p>
-              <p className="text-gray-700 mb-1">Soat: {truncateText(time) || "17:00"}</p>
-              <p className="text-gray-700">{truncateText(location) || "Toshkent, Yunusobod tumani"}</p>
-            </div>
-
-            {truncateText(additionalInfo) && <p className="text-sm text-rose-600 mt-4">{truncateText(additionalInfo)}</p>}
-
-            <p className="text-sm text-rose-500 mt-4">Tashrif buyurishingizni so'raymiz</p>
           </div>
         </div>
       )
@@ -136,88 +163,73 @@ export default function EngagementTemplate({
     case "modern-engagement":
       return (
         <div
-          className="bg-gradient-to-b from-purple-50 to-pink-50 p-8 rounded-lg shadow-lg"
-          style={{ minHeight: "550px" }}
+          className="relative w-full rounded-lg shadow-lg overflow-hidden"
+          style={{
+            backgroundImage: "url('/qizimages/q4.jpg')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            minHeight: "550px"
+          }}
         >
-          <div className="text-center">
-            <h2 className="text-xl font-sans text-purple-700 uppercase tracking-wider mb-4">Qiz uzatish marosimi</h2>
-            <div className="mb-6 flex justify-center">
-              {uploadedImage ? (
-                <div className="w-40 h-40 rounded-lg overflow-hidden shadow-md relative">
-                  <img
-                    src={uploadedImage}
-                    alt="Qizning rasmi"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              ) : (
-                <div className="w-40 h-40 rounded-lg bg-gradient-to-br from-purple-100 to-pink-100 flex items-center justify-center shadow-md">
-                  <p className="text-purple-400 text-sm">Rasm yuklang</p>
-                </div>
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="bg-white/70 backdrop-blur-sm p-8 rounded-lg shadow-lg max-w-md text-center">
+              <h2 className="text-2xl font-dancing text-amber-700 mb-4">Qiz uzatish marosimi</h2>
+              <h3 className="text-3xl font-playfair text-amber-800 mb-2">{truncateText(firstName) || "Madina Karimova"}</h3>
+              {parents && <p className="text-lg font-cormorant text-amber-600 mb-6">Ota-onasi: {truncateText(parents)}</p>}
+
+              <div className="w-16 h-0.5 bg-amber-200 mx-auto mb-6"></div>
+
+              <div className="space-y-2 mb-4">
+                <p className="text-amber-700 font-cormorant text-xl">{truncateText(formattedDate)}</p>
+                <p className="text-amber-700 font-cormorant text-xl">Soat: {truncateText(time) || "17:00"}</p>
+                <p className="text-amber-700 font-cormorant text-xl">{truncateText(location) || "Toshkent, Yunusobod tumani"}</p>
+              </div>
+
+              {truncateText(additionalInfo) && (
+                <p className="text-sm font-cormorant text-amber-600 mt-4 italic">{truncateText(additionalInfo)}</p>
               )}
+
+              <p className=" font-dancing text-amber-500 mt-4 text-lg">Tashrif buyurishingizni so'raymiz</p>
             </div>
-
-            <h3 className="text-3xl font-sans text-purple-800 mb-2">{truncateText(firstName) || "Madina Karimova"}</h3>
-            {parents && <p className="text-lg text-purple-600 mb-4">Ota-onasi: {truncateText(parents)}</p>}
-
-            <div className="flex justify-center items-center mb-6">
-              <div className="w-12 h-px bg-purple-300"></div>
-              <div className="w-2 h-2 rounded-full bg-pink-400 mx-2"></div>
-              <div className="w-12 h-px bg-purple-300"></div>
-            </div>
-
-            <div className="bg-white bg-opacity-80 p-4 rounded-lg shadow-sm mb-4">
-              <p className="text-gray-700 mb-1">{truncateText(formattedDate)}</p>
-              <p className="text-gray-700 mb-1">Soat: {truncateText(time) || "17:00"}</p>
-              <p className="text-gray-700">{truncateText(location) || "Toshkent, Yunusobod tumani"}</p>
-            </div>
-
-            {truncateText(additionalInfo) && <p className="text-sm text-purple-600 mt-4">{truncateText(additionalInfo)}</p>}
           </div>
         </div>
       )
 
     case "traditional-engagement":
       return (
-        <div className="bg-[#fff9f0] p-8 rounded-lg shadow-lg border-2 border-amber-200" style={{ minHeight: "550px" }}>
-          <div className="text-center">
-            <h2 className="text-2xl font-serif text-amber-800 mb-4">Qiz uzatish marosimi</h2>
-            <div className="mb-6 flex justify-center">
-              {uploadedImage ? (
-                <div className="relative">
-                  <div className="w-36 h-36 rounded-lg overflow-hidden border-2 border-amber-300 relative">
-                    <img
-                      src={uploadedImage}
-                      alt="Qizning rasmi"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="absolute -bottom-2 -right-2 text-2xl">🌹</div>
-                  <div className="absolute -top-2 -left-2 text-2xl">🌹</div>
-                </div>
-              ) : (
-                <div className="relative">
-                  <div className="w-36 h-36 rounded-lg bg-amber-50 border-2 border-amber-300 flex items-center justify-center">
-                    <p className="text-amber-600 text-sm">Rasm yuklang</p>
-                  </div>
-                  <div className="absolute -bottom-2 -right-2 text-2xl">🌹</div>
-                  <div className="absolute -top-2 -left-2 text-2xl">🌹</div>
-                </div>
+        <div
+          className="relative w-full rounded-lg shadow-lg overflow-hidden"
+          style={{
+            backgroundImage: "url('/qizimages/q5.jpg')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            minHeight: "550px"
+          }}
+        >
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="bg-white/70 backdrop-blur-sm p-8 rounded-lg shadow-lg max-w-md text-center">
+              <h2 className="text-2xl font-dancing text-neutral-700 mb-4">Qiz uzatish marosimi</h2>
+              <h3 className="text-3xl font-playfair text-neutral-800 mb-2">{truncateText(firstName) || "Madina Karimova"}</h3>
+              {parents && <p className="text-lg font-cormorant text-neutral-600 mb-6">Ota-onasi: {truncateText(parents)}</p>}
+
+              <div className="flex items-center justify-center gap-2 mb-6">
+                <div className="w-12 h-px bg-neutral-300"></div>
+                <div className="w-2 h-2 rounded-full bg-neutral-400"></div>
+                <div className="w-12 h-px bg-neutral-300"></div>
+              </div>
+
+              <div className="space-y-2 mb-4">
+                <p className="text-neutral-700 font-cormorant text-xl">{truncateText(formattedDate)}</p>
+                <p className="text-neutral-700 font-cormorant text-xl">Soat: {truncateText(time) || "17:00"}</p>
+                <p className="text-neutral-700 font-cormorant text-xl">{truncateText(location) || "Toshkent, Yunusobod tumani"}</p>
+              </div>
+
+              {truncateText(additionalInfo) && (
+                <p className="text-sm font-cormorant text-neutral-600 mt-4 italic">{truncateText(additionalInfo)}</p>
               )}
+
+              <p className="font-dancing text-neutral-500 mt-4 text-lg">Tashrif buyurishingizni so'raymiz</p>
             </div>
-
-            <h3 className="text-3xl font-serif text-amber-900 mb-2">{truncateText(firstName) || "Madina Karimova"}</h3>
-            {parents && <p className="text-lg text-amber-700 mb-4">Ota-onasi: {truncateText(parents)}</p>}
-
-            <div className="border-t border-b border-amber-200 py-4 my-4">
-              <p className="text-amber-800 mb-1">{truncateText(formattedDate)}</p>
-              <p className="text-amber-800 mb-1">Soat: {truncateText(time) || "17:00"}</p>
-              <p className="text-amber-800">{truncateText(location) || "Toshkent, Yunusobod tumani"}</p>
-            </div>
-
-            {truncateText(additionalInfo) && <p className="text-sm text-amber-700 mt-4">{truncateText(additionalInfo)}</p>}
-
-            <p className="text-sm text-amber-600 mt-4">Tashrif buyurishingizni so'raymiz</p>
           </div>
         </div>
       )

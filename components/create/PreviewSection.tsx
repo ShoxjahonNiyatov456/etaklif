@@ -54,13 +54,14 @@ export default function PreviewSection({ type, selectedTemplate, formData, uploa
                     ) : type === "birthday" ? (
                         <BirthdayTemplate
                             style={selectedTemplate}
-                            firstName={formData.firstName}
-                            age={formData.age}
-                            date={formattedDate}
-                            time={formData.time}
-                            location={wrappedLocationText}
-                            additionalInfo={wrappedAdditionalInfo}
-                            uploadedImage={uploadedImage}
+                            data={{
+                                name: formData.firstName,
+                                age: formData.age,
+                                date: formattedDate,
+                                time: formData.time,
+                                location: wrappedLocationText,
+                                additionalInfo: wrappedAdditionalInfo
+                            }}
                         />
                     ) : type === "funeral" ? (
                         <FuneralTemplate

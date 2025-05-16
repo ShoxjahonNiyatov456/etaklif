@@ -129,7 +129,7 @@ export default function WeddingTemplate({
           >
             <div className="absolute inset-0 bg-white/10"></div>
             <div className="relative z-10 p-8 flex flex-col justify-center items-center h-full">
-              <p className="font-serif text-amber-800 mb-2 uppercase tracking-widest text-xs">
+              <p className="font-serif text-amber-800 mb-2 mt-20 uppercase tracking-widest text-xs">
                 Siz To'yga taklif etildingiz
               </p>
 
@@ -146,7 +146,9 @@ export default function WeddingTemplate({
               >
                 {secondName || "Akbar"}
               </h2>
-
+              <p className="font-serif text-amber-800 mb-2 uppercase tracking-widest text-xs">
+                Orzularimiz birlashgan kun – bu bizning to‘yimiz! Sizni ushbu quvonchli lahzalarga guvoh bo‘lishga taklif qilamiz.
+              </p>
               <div className="w-20 h-px bg-amber-600 my-4"></div>
 
               <div className="bg-white/70 rounded-lg p-4 mb-4 w-full max-w-xs">
@@ -296,9 +298,7 @@ export default function WeddingTemplate({
               <div className="w-16 h-px bg-rose-500 my-6"></div>
 
               <p className="font-medium text-rose-700 mb-6 max-w-xs">
-                Sizni bizning nikoh to'yimizga
-                <br />
-                taklif etishdan mamnunmiz
+                Siz aziz do‘stimizni, baxt sari qo‘ygan ilk qadamlarimizda yonimizda bo‘lishingizni xohlaymiz
               </p>
 
               <div className="bg-white/70 rounded-lg p-4 mb-4 w-full max-w-xs">
@@ -398,9 +398,7 @@ export default function WeddingTemplate({
               <div className="w-16 h-px bg-rose-300 my-6"></div>
 
               <p className="font-medium text-rose-700 mb-6 max-w-xs">
-                Sizni bizning nikoh to'yimizga
-                <br />
-                taklif etishdan mamnunmiz
+                Muhabbat yo‘lida birga yurishga qaror qildik. Bu quvonchli kunimizda sizni ham oramizda ko‘rishni istaymiz.
               </p>
 
               <div className="bg-white/70 rounded-lg p-4 mb-4 w-full max-w-xs border border-rose-200">
@@ -468,7 +466,7 @@ export default function WeddingTemplate({
 
               <div className="w-20 h-px bg-rose-400 my-4"></div>
 
-              <p className="font-medium text-rose-700 mb-6 max-w-xs">ning to'yiga taklif qilindingiz</p>
+              <p className="font-medium text-rose-700 mb-6 max-w-xs">Quvonchimizni siz bilan bo‘lishmoqchimiz! Bizning nikoh marosimimizga taklif etishdan mamnunmiz!</p>
 
               <div className="bg-white border border-rose-200 rounded-lg p-4 mb-4 w-full max-w-xs shadow-sm">
                 <p className="text-rose-800 font-medium mb-2">{formattedDate}</p>
@@ -499,8 +497,7 @@ export default function WeddingTemplate({
               <p className="text-xl font-cursive text-amber-700 mb-2">va</p>
               <h2 className="text-3xl font-serif text-amber-800 mb-6">{secondName || "KIERAN"}</h2>
 
-              <p className="text-lg text-amber-700 mb-4">ning to'yiga taklif etilasiz</p>
-
+              <p className="text-lg text-amber-700 mb-4">Sizni baxtimizga sherik bo‘lish uchun to‘y tantanamizga taklif qilamiz!</p>
               <div className="bg-white bg-opacity-70 p-4 rounded-lg mb-6">
                 <p className="text-amber-700 mb-2">{formattedDate}</p>
                 <p className="text-amber-700 mb-2">Soat: {time || "2 PM"}</p>
@@ -612,9 +609,7 @@ export default function WeddingTemplate({
               <h2 className="text-3xl font-serif text-amber-800 mb-2">{firstName || "ZARA"}</h2>
               <p className="text-xl font-cursive text-amber-700 mb-2">va</p>
               <h2 className="text-3xl font-serif text-amber-800 mb-6">{secondName || "KIERAN"}</h2>
-
-              <p className="text-lg text-amber-700 mb-4">ning to'yiga taklif etilasiz</p>
-
+              <p className="text-lg text-amber-700 mb-4">Sizni baxtimizga sherik bo‘lish uchun to‘y tantanamizga taklif qilamiz!</p>
               <div className="bg-white bg-opacity-70 p-4 rounded-lg mb-6">
                 <p className="text-amber-700 mb-2">{formattedDate}</p>
                 <p className="text-amber-700 mb-2">Soat: {time || "2 PM"}</p>
@@ -687,7 +682,7 @@ export default function WeddingTemplate({
               <h2 className="text-2xl font-serif tracking-wide uppercase mb-6 text-gray-900">
                 {secondName || "MARCUS WRIGHT"}
               </h2>
-              <p className="text-sm text-gray-700 mb-4">sizlarni ishtirok etishiga taklif qilamiz</p>
+              <p className="text-sm text-gray-700 mb-4">Bir umrga birga deyilgan va'damizni siz aziz mehmonlar bilan nishonlashni istaymiz.</p>
               <p className="text-2xl font-cursive mb-6">To'y Seremoniyasi</p>
 
               <p className="text-lg font-medium text-gray-800 mb-4 tracking-widest">
@@ -760,11 +755,10 @@ export default function WeddingTemplate({
               <p className="text-lg font-medium text-olive-700 mb-4">
                 {formattedDate ? formattedDate : "SEPTEMBER 16TH AT 5PM 2025"}
               </p>
-
-              <p className="text-sm text-olive-700 mb-1">{location || "st. johnathan cathedral"}</p>
-              <p className="text-sm text-olive-700 mb-1">{location ? "" : "1153 lemonberry road"}</p>
-              <p className="text-sm text-olive-700 mb-6">{location ? "" : "san diego, ca"}</p>
-
+              <p className="">
+                Bir umrga birga deyilgan va'damizni siz aziz mehmonlar bilan nishonlashni istaymiz.
+              </p>
+              <p className="text-sm text-olive-700 mb-1 mt-12">{location || "st. johnathan cathedral"}</p>
               {formattedAdditionalInfo && (
                 <p className="text-xs text-olive-600 italic mt-4">{formattedAdditionalInfo}</p>
               )}
@@ -818,10 +812,8 @@ export default function WeddingTemplate({
                 <br />
                 NIKOH TO'YIMIZGA TAKLIF ETAMIZ
               </p>
-
               <div className="flex justify-center items-center space-x-4 mb-4">
                 <div className="text-center">
-                  <p className="text-sm uppercase text-blue-600">SHANBA</p>
                   <p className="text-5xl font-bold text-blue-800">
                     {formattedDate ? formattedDate.split(" ")[0] : "21"}
                   </p>

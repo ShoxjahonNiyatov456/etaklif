@@ -171,7 +171,7 @@ export default function TemplateSection({
             id: "kids-photo",
             name: "Bolalar suratli",
             style: "kids-photo",
-            hasImageUpload: true,
+            hasImageUpload: false,
             color: "from-cyan-500 to-blue-500",
           },
           {
@@ -200,23 +200,17 @@ export default function TemplateSection({
           },
           {
             id: "photo-memorial",
-            name: "Suratli xotira",
+            name: "Go'zal xotira",
             style: "photo-memorial",
-            hasImageUpload: true,
+            hasImageUpload: false,
             color: "from-slate-500 to-gray-500",
           },
-          {
-            id: "elegant-memorial",
-            name: "Elegant xotira",
-            style: "elegant-memorial",
-            hasImageUpload: true,
-            color: "from-indigo-500 to-slate-500",
-          },
+
           {
             id: "islamic-memorial",
             name: "Islomiy uslub",
             style: "islamic-memorial",
-            hasImageUpload: true,
+            hasImageUpload: false,
             color: "from-green-500 to-emerald-500",
           },
         ];
@@ -254,7 +248,7 @@ export default function TemplateSection({
             id: "traditional",
             name: "An'anaviy",
             style: "traditional",
-            hasImageUpload: true,
+            hasImageUpload: false,
             color: "from-red-500 to-rose-500",
           },
           {
@@ -275,7 +269,7 @@ export default function TemplateSection({
             id: "photo-centric",
             name: "Suratli",
             style: "photo-centric",
-            hasImageUpload: true,
+            hasImageUpload: false,
             color: "from-indigo-500 to-blue-500",
           },
           {
@@ -313,21 +307,21 @@ export default function TemplateSection({
             id: "floral-engagement",
             name: "Guldor",
             style: "floral-engagement",
-            hasImageUpload: true,
+            hasImageUpload: false,
             color: "from-purple-500 to-pink-500",
           },
           {
             id: "modern-engagement",
             name: "Zamonaviy",
             style: "modern-engagement",
-            hasImageUpload: true,
+            hasImageUpload: false,
             color: "from-blue-500 to-indigo-500",
           },
           {
             id: "traditional-engagement",
             name: "An'anaviy",
             style: "traditional-engagement",
-            hasImageUpload: true,
+            hasImageUpload: false,
             color: "from-amber-500 to-yellow-500",
           },
         ];
