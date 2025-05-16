@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { Share2, Check, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -104,6 +104,11 @@ export default function PaymentSection({ type, selectedTemplate, formData, uploa
     const [paymentProcessing, setPaymentProcessing] = useState(false)
     const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false)
     const [isGeneratingLink, setIsGeneratingLink] = useState(false)
+    const [hasMounted, setHasMounted] = useState(false)
+
+    useEffect(() => {
+      setHasMounted(true)
+    }, [])
     const currentTemplateDetails = getTemplatesForType(type).find(t => t.id === selectedTemplate);
     const templateRequiresImage = currentTemplateDetails?.hasImageUpload ?? false;
     const handleShareInvitation = async () => {
@@ -135,11 +140,16 @@ export default function PaymentSection({ type, selectedTemplate, formData, uploa
             setIsGeneratingLink(false)
         }
     }
+    const paymentSectionVariants = {
+      hidden: { opacity: 0, y: 20 },
+      visible: { opacity: 1, y: 0, transition: { duration: 0.5, delay: 0.1 } },
+    }
+
     return (
         <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
+            initial="hidden"
+            animate={hasMounted ? "visible" : "hidden"}
+            variants={paymentSectionVariants}
             className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-6 shadow-lg mt-6"
         >
             <h3 className="text-xl font-semibold mb-6 text-white">Taklifnomani yakunlash</h3>

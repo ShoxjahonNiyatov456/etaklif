@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
 import { Calendar, Clock, MapPin, Eye, Trash, ChevronRight, AlertTriangle, X, Plus } from "lucide-react"
@@ -31,8 +31,14 @@ export default function MyProposalsPage() {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
   const [invitationToDelete, setInvitationToDelete] = useState<string | null>(null)
   const [isDeleting, setIsDeleting] = useState(false)
+  const [hasMounted, setHasMounted] = useState(false)
 
   useEffect(() => {
+    setHasMounted(true)
+  }, [])
+
+  useEffect(() => {
+    // setHasMounted(true) // Already set above
     const loadInvitations = async () => {
       try {
         setLoading(true)
@@ -153,9 +159,9 @@ export default function MyProposalsPage() {
 
       <div className="container mx-auto px-4 py-12 relative z-10">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+          initial="hidden"
+          animate={hasMounted ? "visible" : "hidden"}
+          variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6 } } }}
           className="mb-10"
         >
           <h1 className="text-4xl font-bold mb-3 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
@@ -175,12 +181,12 @@ export default function MyProposalsPage() {
           </div>
         ) : invitations.length > 0 ? (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {invitations.map((invitation) => (
+            {invitations.map((invitation, index) => (
               <motion.div
                 key={invitation.uniqueId}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.4 }}
+                initial="hidden"
+                animate={hasMounted ? "visible" : "hidden"}
+                variants={{ hidden: { opacity: 0, scale: 0.95 }, visible: { opacity: 1, scale: 1, transition: { duration: 0.4, delay: index * 0.1 } } }}
                 className="bg-gray-800/50 backdrop-blur-sm rounded-xl overflow-hidden border border-gray-700 hover:border-purple-500/50 transition-all duration-300 group"
               >
                 <div className="p-5">
@@ -251,9 +257,9 @@ export default function MyProposalsPage() {
           </div>
         ) : (
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+            initial="hidden"
+            animate={hasMounted ? "visible" : "hidden"}
+            variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6 } } }}
             className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-10 text-center"
           >
             <div className="w-20 h-20 mx-auto bg-gray-700/50 rounded-full flex items-center justify-center mb-6">

@@ -52,7 +52,7 @@ export function ProposalCard({
             <div className="rounded-xl overflow-hidden transition-all duration-300 group border border-gray-800 hover:border-purple-500/50 bg-gray-900/80 backdrop-blur-sm relative h-[380px]">
                 <div className="relative h-full w-full overflow-hidden" onClick={handleCardClick}>
                     <div className="absolute top-3 left-3 z-20 bg-black/70 backdrop-blur-sm px-3 rounded-full py-1.5">
-                        <span className="font-medium text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500">
+                        <span className="font-medium text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-white-500 ">
                             {title}
                         </span>
                     </div>

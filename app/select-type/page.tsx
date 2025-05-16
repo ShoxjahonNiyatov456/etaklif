@@ -2,8 +2,15 @@
 import { motion } from "framer-motion"
 import { useRouter } from "next/navigation"
 import { ProposalCard } from "@/components/ui/proposal-card"
+import { useEffect, useState } from "react"
+
 export default function SelectTypePage() {
   const router = useRouter()
+  const [hasMounted, setHasMounted] = useState(false)
+
+  useEffect(() => {
+    setHasMounted(true)
+  }, [])
 
   const invitationTypes = [
     {
@@ -67,7 +74,7 @@ export default function SelectTypePage() {
         <div className="container mx-auto px-4">
           <motion.div
             initial="hidden"
-            animate="visible"
+            animate={hasMounted ? "visible" : "hidden"}
             variants={fadeIn}
             className="text-center max-w-3xl mx-auto"
           >
@@ -78,7 +85,7 @@ export default function SelectTypePage() {
           </motion.div>
           <motion.div
             initial="hidden"
-            animate="visible"
+            animate={hasMounted ? "visible" : "hidden"}
             variants={staggerContainer}
             className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
           >

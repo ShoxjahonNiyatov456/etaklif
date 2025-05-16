@@ -222,7 +222,7 @@ export default function Home() {
                 whileHover={{ y: -10, transition: { duration: 0.2 } }}
               >
                 <Card
-                  className="bg-gray-900/80 border border-gray-800 overflow-hidden rounded-xl hover:border-purple-500/50 transition-all duration-300 group"
+                  className="bg-gray-900/80 text-white border border-gray-800 overflow-hidden rounded-xl hover:border-purple-500/50 transition-all duration-300 group"
                   onClick={() => handleTemplateClick(template.id)}
                 >
                   <div className="relative h-64 overflow-hidden">

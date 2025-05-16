@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -14,6 +14,11 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string>("")
   const router = useRouter()
+  const [hasMounted, setHasMounted] = useState(false)
+
+  useEffect(() => {
+    setHasMounted(true)
+  }, [])
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -63,7 +68,7 @@ export default function LoginPage() {
       <div className="flex-1 flex items-center justify-center py-12">
         <div className="container mx-auto px-4">
           <div className="max-w-md mx-auto">
-            <motion.div initial="hidden" animate="visible" variants={fadeIn}>
+            <motion.div initial="hidden" animate={hasMounted ? "visible" : "hidden"} variants={fadeIn}>
               <div className="bg-white rounded-lg shadow-lg overflow-hidden">
                 <div className="p-6 space-y-2 text-center">
                   <h1 className="text-2xl font-bold text-gray-800">Tizimga kirish</h1>

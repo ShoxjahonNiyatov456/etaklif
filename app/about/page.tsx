@@ -1,9 +1,21 @@
 "use client"
 
 import { motion } from "framer-motion"
+import { useEffect, useState } from "react"
 import { CheckCircle, Users, Zap, Palette, Gift, Phone, Mail, Send } from "lucide-react"
 
 export default function AboutPage() {
+  const [hasMounted, setHasMounted] = useState(false)
+
+  useEffect(() => {
+    setHasMounted(true)
+  }, [])
+
+  const fadeIn = (delay = 0) => ({
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6, delay } },
+  })
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white pt-16 pb-12">
       <div className="absolute inset-0 z-0 opacity-20 pointer-events-none overflow-hidden">
@@ -13,9 +25,9 @@ export default function AboutPage() {
 
       <div className="container mx-auto px-4 py-16 relative z-10">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+          initial="hidden"
+          animate={hasMounted ? "visible" : "hidden"}
+          variants={fadeIn()}
           className="max-w-3xl mx-auto"
         >
           <h1 className="text-4xl font-bold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
@@ -24,9 +36,9 @@ export default function AboutPage() {
 
           <div className="space-y-6 text-gray-300">
             <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
+              initial="hidden"
+              animate={hasMounted ? "visible" : "hidden"}
+              variants={fadeIn(0.1)}
               className="text-xl leading-relaxed"
             >
               Taklifnoma - bu zamonaviy va chiroyli taklifnomalarni yaratish platformasi. Biz 2022-yilda tashkil
@@ -34,9 +46,9 @@ export default function AboutPage() {
             </motion.p>
 
             <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
+              initial="hidden"
+              animate={hasMounted ? "visible" : "hidden"}
+              variants={fadeIn(0.2)}
               className="leading-relaxed"
             >
               Bizning maqsadimiz - foydalanuvchilarga turli marosimlar uchun chiroyli va zamonaviy taklifnomalarni
@@ -45,9 +57,9 @@ export default function AboutPage() {
             </motion.p>
 
             <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
+              initial="hidden"
+              animate={hasMounted ? "visible" : "hidden"}
+              variants={fadeIn(0.3)}
               className="leading-relaxed"
             >
               Biz doimiy ravishda yangi shablonlar va funksiyalarni qo'shib bormoqdamiz. Agar sizda biror taklifingiz
@@ -55,9 +67,9 @@ export default function AboutPage() {
             </motion.p>
 
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
+              initial="hidden"
+              animate={hasMounted ? "visible" : "hidden"}
+              variants={fadeIn(0.4)}
               className="pt-8"
             >
               <h2 className="text-2xl font-bold mb-6 text-white">Bizning afzalliklarimiz</h2>
@@ -87,9 +99,9 @@ export default function AboutPage() {
                 ].map((advantage, index) => (
                   <motion.div
                     key={index}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.4, delay: 0.5 + index * 0.1 }}
+                    initial="hidden"
+                    animate={hasMounted ? "visible" : "hidden"}
+                    variants={fadeIn(0.5 + index * 0.1)}
                     className="flex items-start space-x-3 bg-gray-800/50 backdrop-blur-sm p-4 rounded-xl border border-gray-700"
                   >
                     <div className="mt-0.5">{advantage.icon}</div>
@@ -100,9 +112,9 @@ export default function AboutPage() {
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.8 }}
+              initial="hidden"
+              animate={hasMounted ? "visible" : "hidden"}
+              variants={fadeIn(0.8)}
               className="pt-8"
             >
               <h2 className="text-2xl font-bold mb-6 text-white">Bog'lanish</h2>
