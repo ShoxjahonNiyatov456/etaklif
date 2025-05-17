@@ -2,6 +2,7 @@ import type React from "react";
 import { Inter, Dancing_Script, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import ClientWrapper from "@/components/client-wrapper";
+import { Toaster } from "@/components/ui/toaster";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -78,6 +79,7 @@ export default function RootLayout({
         className={`${inter.variable} ${dancingScript.variable} ${playfairDisplay.variable} font-sans`}
       >
         <ClientWrapper>{children}</ClientWrapper>
+        <Toaster />
       </body>
     </html>
   );

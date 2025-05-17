@@ -120,9 +120,7 @@ const saveInvitationToFirebase = async (
  */
 const cleanInvitationData = (data: any): any => {
   if (!data) return {};
-  if (data.invitationData) {
-    return cleanInvitationData(data.invitationData);
-  }
+  const sourceData = data.invitationData || data;
   const cleanData: any = {};
   const allowedFields = [
     "firstName",
@@ -137,11 +135,14 @@ const cleanInvitationData = (data: any): any => {
     "address",
     "phone",
     "email",
+    "name",
+    "parents",
+    "additionalInfo",
   ];
 
   for (const field of allowedFields) {
-    if (data[field] !== undefined) {
-      cleanData[field] = data[field];
+    if (sourceData[field] !== undefined) {
+      cleanData[field] = sourceData[field];
     }
   }
 
@@ -200,27 +201,48 @@ const saveInvitationToServer = async (
  */
 export const getInvitationDataFromLink = (queryParams: string): any => {
   try {
-    const data = new URLSearchParams(queryParams).get("data");
-    if (data) {
-      const decodedData = JSON.parse(decodeURIComponent(data));
-      try {
-        const dataHash = btoa(queryParams).substring(0, 20);
-        const cacheKey = `invitation_link_${dataHash}`;
-        localStorage.setItem(
-          cacheKey,
-          JSON.stringify({
-            data: decodedData,
-            timestamp: new Date().toISOString(),
-          })
-        );
-        console.log("Havola ma'lumotlari keshga saqlandi");
-      } catch (storageError) {
-        console.error("Keshga saqlashda xatolik:", storageError);
-      }
+    if (!queryParams) return null;
 
-      return decodedData;
+    const params = new URLSearchParams(queryParams);
+    const data = params.get("data");
+
+    if (!data) return null;
+
+    const decodedData = JSON.parse(decodeURIComponent(data));
+    const processedData = {
+      type: decodedData.type,
+      templateId: decodedData.templateId,
+      invitationData: {
+        firstName: decodedData.firstName || decodedData.name,
+        secondName: decodedData.secondName,
+        age: decodedData.age,
+        date: decodedData.date,
+        time: decodedData.time,
+        location: decodedData.location,
+        additionalInfo: decodedData.additionalInfo,
+        parents: decodedData.parents,
+        eventName: decodedData.eventName,
+        description: decodedData.description,
+        uploadedImage: decodedData.uploadedImage,
+      },
+    };
+
+    try {
+      const dataHash = btoa(queryParams).substring(0, 20);
+      const cacheKey = `invitation_link_${dataHash}`;
+      localStorage.setItem(
+        cacheKey,
+        JSON.stringify({
+          data: processedData,
+          timestamp: new Date().toISOString(),
+        })
+      );
+      console.log("Havola ma'lumotlari keshga saqlandi");
+    } catch (storageError) {
+      console.error("Keshga saqlashda xatolik:", storageError);
     }
-    return null;
+
+    return processedData;
   } catch (error) {
     console.error("Taklifnoma ma'lumotlarini o'qishda xatolik:", error);
     return null;

@@ -1,11 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
-import Link from "next/link";
 import Head from "next/head";
-import { Button } from "@/components/ui/button";
-import { Home } from "lucide-react";
 import {
   getInvitationByUniqueId,
   getInvitationDataFromLink,
@@ -88,7 +84,6 @@ export default function InvitationClientComponent({
       }
     }
   }, [uniqueId, searchParams, type]);
-
   const updateMetaData = (data: any) => {
     const firstName = data.firstName || data.invitationData?.firstName || "";
     const secondName = data.secondName || data.invitationData?.secondName || "";
@@ -115,7 +110,6 @@ export default function InvitationClientComponent({
       default:
         dynamicEventTitle = "Marosim";
     }
-
     setOgTitle(`${dynamicEventTitle} taklifnomasi`);
     let tadbir = "";
     if (firstName && secondName) {
@@ -143,15 +137,14 @@ export default function InvitationClientComponent({
 
   useEffect(() => {
     if (invitationData) return;
-
     async function loadInvitationData() {
       try {
         setLoading(true);
         setError(null);
         const queryString = searchParams
           ? Object.entries(searchParams)
-              .map(([key, value]) => `${key}=${value}`)
-              .join("&")
+            .map(([key, value]) => `${key}=${value}`)
+            .join("&")
           : "";
         let data = getInvitationDataFromLink(queryString);
         if (!data && uniqueId) {
@@ -173,7 +166,6 @@ export default function InvitationClientComponent({
 
     loadInvitationData();
   }, [uniqueId, searchParams, type]);
-
   const renderTemplate = () => {
     if (loading) {
       return <p>Yuklanmoqda...</p>;
@@ -186,41 +178,80 @@ export default function InvitationClientComponent({
     if (!invitationData) {
       return <p>Taklifnoma ma'lumotlari topilmadi</p>;
     }
-
     const templateType = invitationData.type || type;
     const currentTemplateId = invitationData.templateId || templateId;
     const actualInvitationData =
       invitationData.invitationData || invitationData;
-
     if (!templateType || !currentTemplateId || !actualInvitationData) {
       return (
         <p>Taklifnoma turi, shablon ID yoki asosiy ma'lumotlar topilmadi.</p>
       );
     }
-
-    const propsToPass = {
-      ...actualInvitationData,
-      style: currentTemplateId as string,
-    };
-
     switch (templateType) {
       case "wedding":
-        return <WeddingTemplate {...propsToPass} />;
+        return (
+          <WeddingTemplate
+            style={currentTemplateId}
+            firstName={actualInvitationData.firstName}
+            secondName={actualInvitationData.secondName}
+            date={actualInvitationData.date}
+            time={actualInvitationData.time}
+            location={actualInvitationData.location}
+            additionalInfo={actualInvitationData.additionalInfo}
+          />
+        );
       case "birthday":
-        return <BirthdayTemplate {...propsToPass} />;
+        return (
+          <BirthdayTemplate
+            style={currentTemplateId}
+            firstName={actualInvitationData.firstName || ''}
+            date={actualInvitationData.date || ''}
+            age={actualInvitationData.age || ''}
+            time={actualInvitationData.time || ''}
+            location={actualInvitationData.location || ''}
+            additionalInfo={actualInvitationData.additionalInfo || ''}
+          />
+        );
       case "funeral":
-        return <FuneralTemplate {...propsToPass} />;
+        return (
+          <FuneralTemplate
+            style={currentTemplateId}
+            firstName={actualInvitationData.firstName}
+            date={actualInvitationData.date}
+            time={actualInvitationData.time}
+            location={actualInvitationData.location}
+            additionalInfo={actualInvitationData.additionalInfo}
+          />
+        );
       case "jubilee":
-        return <JubileeTemplate {...propsToPass} />;
+        return (
+          <JubileeTemplate
+            style={currentTemplateId}
+            firstName={actualInvitationData.firstName}
+            age={actualInvitationData.age || ""}
+            date={actualInvitationData.date}
+            time={actualInvitationData.time}
+            location={actualInvitationData.location}
+            additionalInfo={actualInvitationData.additionalInfo}
+          />
+        );
       case "engagement":
-        return <EngagementTemplate {...propsToPass} />;
+        return (
+          <EngagementTemplate
+            style={currentTemplateId}
+            firstName={actualInvitationData.firstName}
+            parents={actualInvitationData.parents}
+            date={actualInvitationData.date}
+            time={actualInvitationData.time}
+            location={actualInvitationData.location}
+            additionalInfo={actualInvitationData.additionalInfo}
+          />
+        );
       default:
-        return <p>Noto'g'ri taklifnoma turi: {templateType}</p>;
+        return <p>Noma'lum taklifnoma turi</p>;
     }
   };
-
   const imageUrl = `${siteUrl}/invitation/${type}/${templateId}/${uniqueId}/opengraph-image.png`;
-
   return (
     <>
       <Head>

@@ -1,6 +1,9 @@
 "use client"
 
 import { motion } from "framer-motion"
+import { useEffect, useState } from "react"
+import { useToast } from "@/components/ui/use-toast"
+import { auth } from "@/app/firebase"
 import WeddingTemplate from "@/components/invitation-templates/WeddingTemplate"
 import BirthdayTemplate from "@/components/invitation-templates/BirthdayTemplate"
 import FuneralTemplate from "@/components/invitation-templates/FuneralTemplate"
@@ -24,10 +27,18 @@ interface PreviewSectionProps {
 }
 
 export default function PreviewSection({ type, selectedTemplate, formData, uploadedImage }: PreviewSectionProps) {
+    const [isAuthenticated, setIsAuthenticated] = useState(false)
+
+    useEffect(() => {
+        const unsubscribe = auth.onAuthStateChanged((user) => {
+            setIsAuthenticated(!!user)
+        })
+
+        return () => unsubscribe()
+    }, [])
+
     const wrappedLocationText = formData.location ? formData.location.substring(0, 30) : ""
-
     const wrappedAdditionalInfo = formData.additionalInfo ? formData.additionalInfo.substring(0, 30) : ""
-
     const formattedDate = formData.date
 
     return (
@@ -54,14 +65,12 @@ export default function PreviewSection({ type, selectedTemplate, formData, uploa
                     ) : type === "birthday" ? (
                         <BirthdayTemplate
                             style={selectedTemplate}
-                            data={{
-                                name: formData.firstName,
-                                age: formData.age,
-                                date: formattedDate,
-                                time: formData.time,
-                                location: wrappedLocationText,
-                                additionalInfo: wrappedAdditionalInfo
-                            }}
+                            firstName={formData.firstName}
+                            date={formattedDate}
+                            age={formData.age}
+                            time={formData.time}
+                            location={wrappedLocationText}
+                            additionalInfo={wrappedAdditionalInfo}
                         />
                     ) : type === "funeral" ? (
                         <FuneralTemplate
@@ -77,7 +86,7 @@ export default function PreviewSection({ type, selectedTemplate, formData, uploa
                         <JubileeTemplate
                             style={selectedTemplate}
                             firstName={formData.firstName}
-                            celebrationType={formData.age}
+                            age={formData.age}
                             date={formattedDate}
                             time={formData.time}
                             location={wrappedLocationText}

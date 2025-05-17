@@ -5,7 +5,7 @@ import { uz } from 'date-fns/locale';
 interface JubileeTemplateProps {
   style: string;
   firstName: string;
-  celebrationType: string;
+  age: string;
   date: string;
   time: string;
   location: string;
@@ -16,7 +16,7 @@ interface JubileeTemplateProps {
 const JubileeTemplate: React.FC<JubileeTemplateProps> = ({
   style,
   firstName,
-  celebrationType,
+  age,
   date,
   time,
   location,
@@ -30,7 +30,6 @@ const JubileeTemplate: React.FC<JubileeTemplateProps> = ({
     if (text.length <= maxLength) return text;
     return text.slice(0, maxLength) + '...';
   };
-  const age = celebrationType || "60";
   switch (style) {
     case 'classic':
       return (

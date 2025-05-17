@@ -1,20 +1,17 @@
 import Image from "next/image"
 
-interface InvitationCardProps {
-  style: string
-  data: {
-    name: string
-    age: string
-    date: string
-    time: string
-    location: string
-    additionalInfo: string
-  }
+interface InvitationData {
+  firstName?: string;
+  age?: string;
+  date?: string;
+  time?: string;
+  location?: string;
+  additionalInfo?: string;
+  style?: string
 }
 
-export default function InvitationCard({ style, data }: InvitationCardProps) {
-  const { name, age, date, time, location, additionalInfo } = data || {};
 
+export default function InvitationCard({ firstName, age, date, time, location, additionalInfo, style }: InvitationData) {
   const formatDateDisplay = (dateString: string | undefined, defaultDate: string = "12 Iyun"): string => {
     if (!dateString) {
       return defaultDate;
@@ -49,7 +46,6 @@ export default function InvitationCard({ style, data }: InvitationCardProps) {
       return dateString;
     }
   };
-
   const getCardContent = () => {
     switch (style) {
       case "colorful":
@@ -63,7 +59,7 @@ export default function InvitationCard({ style, data }: InvitationCardProps) {
             />
             <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center">
               <div className="bg-white/80 backdrop-blur-sm rounded-lg p-6 shadow-lg max-w-xs w-full">
-                <h2 className="font-dancing text-3xl text-blue-600 mb-2">{name || "Aziza"}</h2>
+                <h2 className="font-dancing text-3xl text-blue-600 mb-2">{firstName || "Aziza"}</h2>
                 <p className="text-xl font-semibold text-blue-500 mb-4">{age || "7"} yoshga to'ldi!</p>
                 <div className="space-y-2 text-gray-700">
                   <p>{formatDateDisplay(date)}</p>
@@ -87,7 +83,7 @@ export default function InvitationCard({ style, data }: InvitationCardProps) {
             />
             <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center">
               <div className="w-full max-w-xs space-y-4">
-                <h2 className="font-dancing text-4xl text-amber-400 drop-shadow-lg">{name || "Aziza"}</h2>
+                <h2 className="font-dancing text-4xl text-amber-400 drop-shadow-lg">{firstName || "Aziza"}</h2>
                 <p className="text-2xl font-semibold text-amber-300">{age || "7"} yoshga to'ldi!</p>
                 <p className="text-2xl font-semibold text-amber-500">Yana bir yil, yana bir unutilmas kun. Sizni tug‘ilgan kunimizda kutib qolamiz!</p>
                 <div className="space-y-2 text-amber-900 mt-8">
@@ -112,7 +108,7 @@ export default function InvitationCard({ style, data }: InvitationCardProps) {
             />
             <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center">
               <div className="bg-white/40 backdrop-blur-sm rounded-lg p-6 shadow-lg max-w-xs w-full">
-                <h2 className="font-dancing text-3xl text-gray-800 mb-2">{name || "Aziza"}</h2>
+                <h2 className="font-dancing text-3xl text-gray-800 mb-2">{firstName || "Aziza"}</h2>
                 <p className="text-xl font-semibold text-gray-700 mb-4">{age || "7"} yoshga to'ldi!</p>
                 <p className="font-cursive pb-6 pt-2 text-2xl">Yana bir yilga ulg‘aydi! Bu baxtli kunimda siz aziz insonni yonimda ko‘rishni juda istayman</p>
                 <div className="space-y-2 text-gray-700">
@@ -137,7 +133,7 @@ export default function InvitationCard({ style, data }: InvitationCardProps) {
             />
             <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center">
               <div className="bg-white/80 backdrop-blur-sm rounded-lg p-6 shadow-lg max-w-xs w-full">
-                <h2 className="font-dancing text-3xl text-amber-600 mb-2">{name || "Aziza"}</h2>
+                <h2 className="font-dancing text-3xl text-amber-600 mb-2">{firstName || "Aziza"}</h2>
                 <p className="text-xl font-semibold text-amber-500 mb-4">{age || "7"} yoshga to'ldi!</p>
                 <p className="text-xl font-sans pt-2 pb-6 text-rose-600">Kechikmang, tort sovg‘a emas — sizning tabassumingiz menga eng katta tuhfa! Sizni tug‘ilgan kunimga chorlayman!</p>
                 <div className="space-y-2 text-gray-700">
@@ -162,7 +158,7 @@ export default function InvitationCard({ style, data }: InvitationCardProps) {
             />
             <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center">
               <div className="p-6 max-w-xs w-full">
-                <h2 className="font-dancing text-3xl text-orange-600">{name || "Aziza"}</h2>
+                <h2 className="font-dancing text-3xl text-orange-600">{firstName || "Aziza"}</h2>
                 <p className="text-xl font-semibold text-orange-500 mb-4">{age || "7"} yoshga to'ldi!</p>
                 <p className="text-xl text-pink-700 font-serif">Hayotdagi eng yaxshi lahzalar do‘stlar bilan bo‘lishganda ajoyib bo‘ladi. Tug‘ilgan kunimda sizni mehmon sifatida kutaman.</p>
                 <div className="space-y-2 mt-2 text-gray-700">
@@ -187,7 +183,7 @@ export default function InvitationCard({ style, data }: InvitationCardProps) {
             />
             <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center">
               <div className="w-full max-w-xs space-y-4">
-                <h2 className="font-dancing text-4xl text-amber-400 drop-shadow-lg">{name || "Aziza"}</h2>
+                <h2 className="font-dancing text-4xl text-amber-400 drop-shadow-lg">{firstName || "Aziza"}</h2>
                 <p className="text-2xl font-semibold text-amber-400">{age || "7"} yoshga to'ldi!</p>
                 <p className="text-2xl font-semibold text-amber-900">Yaxshi odamlar bilan o‘tkazilgan kun – bu unutilmas bayram. Tug‘ilgan kunimni aynan shunday qilish uchun sizni kutyapman!
                 </p>
@@ -210,6 +206,5 @@ export default function InvitationCard({ style, data }: InvitationCardProps) {
         )
     }
   }
-
   return <div className="flex justify-center">{getCardContent()}</div>
 }

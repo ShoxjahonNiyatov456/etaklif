@@ -35,12 +35,14 @@ export default function TemplateShowcaseSection({ eventType, styles }: TemplateS
         return (
           <BirthdayTemplate
             style={style}
-            firstName={sampleData.firstName}
-            age={sampleData.age}
-            date={sampleData.date}
-            time={sampleData.time}
-            location={sampleData.location}
-            additionalInfo={sampleData.additionalInfo}
+            data={{
+              name: sampleData.firstName,
+              age: sampleData.age,
+              date: sampleData.date,
+              time: sampleData.time,
+              location: sampleData.location,
+              additionalInfo: sampleData.additionalInfo,
+            }}  
           />
         );
       case 'wedding':
@@ -83,7 +85,7 @@ export default function TemplateShowcaseSection({ eventType, styles }: TemplateS
           <JubileeTemplate
             style={style}
             firstName={sampleData.firstName}
-            celebrationType={sampleData.age}
+            age={sampleData.age} // Changed from celebrationType to age
             date={sampleData.date}
             time={sampleData.time}
             location={sampleData.location}
@@ -98,7 +100,6 @@ export default function TemplateShowcaseSection({ eventType, styles }: TemplateS
   return (
     <div className="bg-white rounded-lg shadow-md p-6 mb-6">
       <h2 className="text-xl font-semibold text-gray-800 mb-4">{eventTitleMap[eventType] || eventType} Shablonlari</h2>
-      
       <div className="mb-4">
         <h3 className="text-lg font-medium text-gray-700 mb-2">Mavjud shablonlar turlari:</h3>
         <div className="flex flex-wrap gap-2">
@@ -109,7 +110,7 @@ export default function TemplateShowcaseSection({ eventType, styles }: TemplateS
           ))}
         </div>
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
         {styles.map((style, index) => (
           <div key={index} className="border rounded-lg overflow-hidden shadow-sm">
@@ -126,4 +127,4 @@ export default function TemplateShowcaseSection({ eventType, styles }: TemplateS
       </div>
     </div>
   );
-} 
+}

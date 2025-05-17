@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { Mail, Phone, MapPin, Facebook, Twitter, Send } from "lucide-react"
+import { Mail, Phone, MapPin, Facebook, Send, Instagram } from "lucide-react"
 
 export default function Footer() {
   return (
@@ -8,7 +8,6 @@ export default function Footer() {
         <div className="absolute top-0 left-1/4 w-64 h-64 bg-purple-600 rounded-full filter blur-[100px]"></div>
         <div className="absolute bottom-0 right-1/4 w-64 h-64 bg-blue-600 rounded-full filter blur-[100px]"></div>
       </div>
-
       <div className="container mx-auto px-4 py-12 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
           <div>
@@ -18,19 +17,19 @@ export default function Footer() {
             <p className="text-gray-400 mb-6">Zamonaviy va chiroyli taklifnomalar yaratish platformasi.</p>
             <div className="flex space-x-4">
               <a
-                href="#"
+                href="https://www.facebook.com/profile.php?id=61563008766338&locale=ru_RU"
                 className="w-9 h-9 rounded-full bg-gray-800 hover:bg-purple-900/50 flex items-center justify-center text-gray-400 hover:text-purple-400 transition-colors"
               >
                 <Facebook className="h-4 w-4" />
               </a>
               <a
-                href="#"
+                href="https://www.instagram.com/shohjahon.dev/"
                 className="w-9 h-9 rounded-full bg-gray-800 hover:bg-purple-900/50 flex items-center justify-center text-gray-400 hover:text-purple-400 transition-colors"
               >
-                <Twitter className="h-4 w-4" />
+                <Instagram className="h-4 w-4" />
               </a>
               <a
-                href="https://t.me/taklifnoma"
+                href="https://t.me/Popo_1302"
                 className="w-9 h-9 rounded-full bg-gray-800 hover:bg-purple-900/50 flex items-center justify-center text-gray-400 hover:text-purple-400 transition-colors"
               >
                 <Send className="h-4 w-4" />
@@ -58,7 +57,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/examples"
+                  href="/select-type"
                   className="text-gray-400 hover:text-purple-400 transition-colors flex items-center"
                 >
                   <span className="w-1.5 h-1.5 bg-purple-500 rounded-full mr-2"></span>
@@ -66,7 +65,7 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/faq" className="text-gray-400 hover:text-purple-400 transition-colors flex items-center">
+                <Link href="https://t.me/Popo_1302" className="text-gray-400 hover:text-purple-400 transition-colors flex items-center">
                   <span className="w-1.5 h-1.5 bg-purple-500 rounded-full mr-2"></span>
                   Ko'p so'raladigan savollar
                 </Link>
@@ -98,7 +97,6 @@ export default function Footer() {
             </ul>
           </div>
         </div>
-
         <div className="border-t border-gray-800 mt-12 pt-8 text-center text-gray-500 text-sm">
           <p>© {new Date().getFullYear()} Taklifnoma. Barcha huquqlar himoyalangan.</p>
         </div>

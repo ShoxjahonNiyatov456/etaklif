@@ -1,112 +1,129 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import Link from "next/link"
-import { motion, AnimatePresence } from "framer-motion"
-import { Calendar, Clock, MapPin, Eye, Trash, ChevronRight, AlertTriangle, X, Plus } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { getInvitationsByUser } from "@/app/services/share"
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Calendar,
+  Clock,
+  MapPin,
+  Eye,
+  Trash,
+  ChevronRight,
+  AlertTriangle,
+  X,
+  Plus,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { getInvitationsByUser } from "@/app/services/share";
 
 type Invitation = {
-  uniqueId: string
-  type: string
-  templateId: string
+  uniqueId: string;
+  type: string;
+  templateId: string;
   invitationData: {
-    firstName: string
-    secondName?: string
-    date: string
-    time: string
-    location: string
-    additionalInfo?: string
-    age?: string
-    parents?: string
-    uploadedImage?: string
-  }
-  createdAt: string
-}
+    firstName: string;
+    secondName?: string;
+    date: string;
+    time: string;
+    location: string;
+    additionalInfo?: string;
+    age?: string;
+    parents?: string;
+    uploadedImage?: string;
+  };
+  createdAt: string;
+};
 
 export default function MyProposalsPage() {
-  const [invitations, setInvitations] = useState<Invitation[]>([])
-  const [loading, setLoading] = useState(true)
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false)
-  const [invitationToDelete, setInvitationToDelete] = useState<string | null>(null)
-  const [isDeleting, setIsDeleting] = useState(false)
-  const [hasMounted, setHasMounted] = useState(false)
+  const [invitations, setInvitations] = useState<Invitation[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [invitationToDelete, setInvitationToDelete] = useState<string | null>(
+    null
+  );
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [hasMounted, setHasMounted] = useState(false);
 
   useEffect(() => {
-    setHasMounted(true)
-  }, [])
+    setHasMounted(true);
+  }, []);
 
   useEffect(() => {
     // setHasMounted(true) // Already set above
     const loadInvitations = async () => {
       try {
-        setLoading(true)
-        const myInvitations = await getInvitationsByUser()
-        setInvitations(myInvitations)
+        setLoading(true);
+        const myInvitations = await getInvitationsByUser();
+        setInvitations(myInvitations);
       } catch (error) {
-        console.error("Taklifnomalarni yuklashda xatolik:", error)
+        console.error("Taklifnomalarni yuklashda xatolik:", error);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    loadInvitations()
-  }, [])
+    loadInvitations();
+  }, []);
 
   const openDeleteModal = (uniqueId: string) => {
-    setInvitationToDelete(uniqueId)
-    setDeleteModalOpen(true)
-  }
+    setInvitationToDelete(uniqueId);
+    setDeleteModalOpen(true);
+  };
 
   const closeDeleteModal = () => {
-    setDeleteModalOpen(false)
+    setDeleteModalOpen(false);
     setTimeout(() => {
-      setInvitationToDelete(null)
-    }, 300)
-  }
+      setInvitationToDelete(null);
+    }, 300);
+  };
 
   const deleteInvitation = async () => {
-    if (!invitationToDelete) return
+    if (!invitationToDelete) return;
 
     try {
-      setIsDeleting(true)
-      const response = await fetch(`/api/delete-invitation?uniqueId=${invitationToDelete}`, {
-        method: "DELETE",
-      })
+      setIsDeleting(true);
+      const response = await fetch(
+        `/api/delete-invitation?uniqueId=${invitationToDelete}`,
+        {
+          method: "DELETE",
+        }
+      );
 
       if (!response.ok) {
-        throw new Error("Taklifnomani o'chirishda xatolik")
+        throw new Error("Taklifnomani o'chirishda xatolik");
       }
 
-      setInvitations((prevInvitations) => prevInvitations.filter((inv) => inv.uniqueId !== invitationToDelete))
-      closeDeleteModal()
+      setInvitations((prevInvitations) =>
+        prevInvitations.filter((inv) => inv.uniqueId !== invitationToDelete)
+      );
+      closeDeleteModal();
     } catch (error) {
-      console.error("Taklifnomani o'chirishda xatolik:", error)
+      console.error("Taklifnomani o'chirishda xatolik:", error);
     } finally {
-      setIsDeleting(false)
+      setIsDeleting(false);
     }
-  }
+  };
 
   const getInvitationTypeName = (type: string) => {
     switch (type) {
       case "wedding":
-        return "To'y"
+        return "To'y";
       case "birthday":
-        return "Tug'ilgan kun"
+        return "Tug'ilgan kun";
       case "funeral":
-        return "El oshi"
+        return "El oshi";
       case "jubilee":
-        return "Yubiley"
+        return "Yubiley";
       case "engagement":
-        return "Qiz uzatish"
+        return "Qiz uzatish";
       default:
-        return "Taklifnoma"
+        return "Taklifnoma";
     }
-  }
+  };
 
   const formatDate = (dateString: string) => {
-    if (!dateString) return ""
+    if (!dateString) return "";
 
     try {
       const months = [
@@ -122,33 +139,33 @@ export default function MyProposalsPage() {
         "Oktyabr",
         "Noyabr",
         "Dekabr",
-      ]
+      ];
 
-      const date = new Date(dateString)
-      const day = date.getDate()
-      const month = months[date.getMonth()]
-      return `${day} ${month}`
+      const date = new Date(dateString);
+      const day = date.getDate();
+      const month = months[date.getMonth()];
+      return `${day} ${month}`;
     } catch (error) {
-      return dateString
+      return dateString;
     }
-  }
+  };
 
   const getTypeColor = (type: string) => {
     switch (type) {
       case "wedding":
-        return "from-purple-500 to-pink-500"
+        return "from-purple-500 to-pink-500";
       case "birthday":
-        return "from-blue-500 to-cyan-500"
+        return "from-blue-500 to-cyan-500";
       case "funeral":
-        return "from-gray-500 to-slate-500"
+        return "from-gray-500 to-slate-500";
       case "jubilee":
-        return "from-amber-500 to-yellow-500"
+        return "from-amber-500 to-yellow-500";
       case "engagement":
-        return "from-rose-500 to-red-500"
+        return "from-rose-500 to-red-500";
       default:
-        return "from-purple-500 to-pink-500"
+        return "from-purple-500 to-pink-500";
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white pt-16 pb-24">
@@ -161,14 +178,18 @@ export default function MyProposalsPage() {
         <motion.div
           initial="hidden"
           animate={hasMounted ? "visible" : "hidden"}
-          variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6 } } }}
+          variants={{
+            hidden: { opacity: 0, y: 20 },
+            visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+          }}
           className="mb-10"
         >
           <h1 className="text-4xl font-bold mb-3 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
             Mening taklifnomalarim
           </h1>
           <p className="text-gray-400">
-            Yaratilgan va sotib olingan taklifnomalaringizni shu yerda ko'rishingiz mumkin.
+            Yaratilgan va sotib olingan taklifnomalaringizni shu yerda
+            ko'rishingiz mumkin.
           </p>
         </motion.div>
 
@@ -186,7 +207,14 @@ export default function MyProposalsPage() {
                 key={invitation.uniqueId}
                 initial="hidden"
                 animate={hasMounted ? "visible" : "hidden"}
-                variants={{ hidden: { opacity: 0, scale: 0.95 }, visible: { opacity: 1, scale: 1, transition: { duration: 0.4, delay: index * 0.1 } } }}
+                variants={{
+                  hidden: { opacity: 0, scale: 0.95 },
+                  visible: {
+                    opacity: 1,
+                    scale: 1,
+                    transition: { duration: 0.4, delay: index * 0.1 },
+                  },
+                }}
                 className="bg-gray-800/50 backdrop-blur-sm rounded-xl overflow-hidden border border-gray-700 hover:border-purple-500/50 transition-all duration-300 group"
               >
                 <div className="p-5">
@@ -194,15 +222,17 @@ export default function MyProposalsPage() {
                     <div>
                       <span
                         className={`inline-block text-xs font-medium px-3 py-1 rounded-full mb-2 bg-gradient-to-r ${getTypeColor(
-                          invitation.type,
+                          invitation.type
                         )} text-white`}
                       >
                         {getInvitationTypeName(invitation.type)}
                       </span>
                       <h3 className="text-xl font-semibold mb-1 text-white">
                         {invitation.invitationData.firstName}
-                        {invitation.invitationData.secondName && ` & ${invitation.invitationData.secondName}`}
-                        {invitation.invitationData.age && `, ${invitation.invitationData.age} yosh`}
+                        {invitation.invitationData.secondName &&
+                          ` & ${invitation.invitationData.secondName}`}
+                        {invitation.invitationData.age &&
+                          `, ${invitation.invitationData.age} yosh`}
                       </h3>
                     </div>
                     <button
@@ -220,21 +250,27 @@ export default function MyProposalsPage() {
                       <div className="w-8 h-8 rounded-full bg-gray-700/50 flex items-center justify-center mr-3">
                         <Calendar className="h-4 w-4 text-purple-400" />
                       </div>
-                      <span className="text-sm">{formatDate(invitation.invitationData.date)}</span>
+                      <span className="text-sm">
+                        {formatDate(invitation.invitationData.date)}
+                      </span>
                     </div>
 
                     <div className="flex items-center text-gray-400">
                       <div className="w-8 h-8 rounded-full bg-gray-700/50 flex items-center justify-center mr-3">
                         <Clock className="h-4 w-4 text-purple-400" />
                       </div>
-                      <span className="text-sm">{invitation.invitationData.time}</span>
+                      <span className="text-sm">
+                        {invitation.invitationData.time}
+                      </span>
                     </div>
 
                     <div className="flex items-start text-gray-400">
                       <div className="w-8 h-8 rounded-full bg-gray-700/50 flex items-center justify-center mr-3 mt-0.5">
                         <MapPin className="h-4 w-4 text-purple-400" />
                       </div>
-                      <span className="text-sm line-clamp-1">{invitation.invitationData.location}</span>
+                      <span className="text-sm line-clamp-1">
+                        {invitation.invitationData.location}
+                      </span>
                     </div>
                   </div>
 
@@ -248,7 +284,9 @@ export default function MyProposalsPage() {
                     </Link>
 
                     <span className="text-xs text-gray-500">
-                      {new Date(invitation.createdAt).toLocaleDateString("uz-UZ")}
+                      {new Date(invitation.createdAt).toLocaleDateString(
+                        "uz-UZ"
+                      )}
                     </span>
                   </div>
                 </div>
@@ -259,15 +297,21 @@ export default function MyProposalsPage() {
           <motion.div
             initial="hidden"
             animate={hasMounted ? "visible" : "hidden"}
-            variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6 } } }}
+            variants={{
+              hidden: { opacity: 0, y: 20 },
+              visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+            }}
             className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-10 text-center"
           >
             <div className="w-20 h-20 mx-auto bg-gray-700/50 rounded-full flex items-center justify-center mb-6">
               <Plus className="h-10 w-10 text-purple-400" />
             </div>
-            <h3 className="text-2xl font-semibold mb-3 text-white">Taklifnomalar topilmadi</h3>
+            <h3 className="text-2xl font-semibold mb-3 text-white">
+              Taklifnomalar topilmadi
+            </h3>
             <p className="text-gray-400 mb-8 max-w-md mx-auto">
-              Hozircha hech qanday taklifnoma yaratilmagan. Yangi taklifnoma yaratish uchun quyidagi tugmani bosing.
+              Hozircha hech qanday taklifnoma yaratilmagan. Yangi taklifnoma
+              yaratish uchun quyidagi tugmani bosing.
             </p>
             <Link href="/select-type">
               <Button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white border-0 rounded-full px-8 py-6 text-lg">
@@ -311,16 +355,19 @@ export default function MyProposalsPage() {
                     <div className="w-16 h-16 bg-red-900/30 rounded-full flex items-center justify-center mb-4">
                       <AlertTriangle className="h-8 w-8 text-red-400" />
                     </div>
-                    <h3 className="text-xl font-bold text-white mb-2">Taklifnomani o'chirish</h3>
+                    <h3 className="text-xl font-bold text-white mb-2">
+                      Taklifnomani o'chirish
+                    </h3>
                     <p className="text-gray-400">
-                      Ushbu taklifnomani o'chirishni xohlaysizmi? Bu amalni qaytarib bo'lmaydi.
+                      Ushbu taklifnomani o'chirishni xohlaysizmi? Bu amalni
+                      qaytarib bo'lmaydi.
                     </p>
                   </div>
 
                   <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                     <Button
                       variant="outline"
-                      className="flex-1 py-2.5 border-gray-700 text-gray-300 hover:bg-gray-800 hover:text-white"
+                      className="flex-1 py-2.5 border-gray-700 text-black hover:bg-gray-800 hover:text-white"
                       onClick={closeDeleteModal}
                     >
                       Bekor qilish
@@ -348,5 +395,5 @@ export default function MyProposalsPage() {
         )}
       </AnimatePresence>
     </div>
-  )
+  );
 }

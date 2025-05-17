@@ -23,26 +23,42 @@ export function ShareModal({ isOpen, onClose, url, title }: ShareModalProps) {
   }, [])
 
   useEffect(() => {
+    let loadingTimerId: NodeJS.Timeout | undefined = undefined;
+    let copiedTimerId: NodeJS.Timeout | undefined = undefined;
+
     if (isBrowser && isOpen) {
-      setIsLoading(true)
       if (url && url.trim() !== "") {
-        const loadingTimer = setTimeout(() => {
-          setIsLoading(false)
+        setIsLoading(true); // Set loading true when we intend to copy after a delay
+        loadingTimerId = setTimeout(async () => {
           try {
-            navigator.clipboard.writeText(url)
-            setCopied(true)
-            const timer = setTimeout(() => {
-              setCopied(false)
-            }, 2000)
-            return () => clearTimeout(timer)
+            await navigator.clipboard.writeText(url);
+            setCopied(true);
+            copiedTimerId = setTimeout(() => {
+              setCopied(false);
+            }, 2000);
           } catch (error) {
-            console.error("Failed to copy: ", error)
+            console.error("Failed to copy to clipboard automatically: ", error);
+          } finally {
+            setIsLoading(false); // Set loading false after the attempt (success or fail)
           }
-        }, 1500)
-        return () => clearTimeout(loadingTimer)
+        }, 1500);
+      } else {
+        // URL is empty/invalid, or modal is open but nothing to copy.
+        setIsLoading(false); // Ensure loading is false.
+      }
+    } else {
+      // Modal is closed or not in browser.
+      setIsLoading(false); // Ensure loading is false.
+      if (!isOpen) {
+        setCopied(false); // Reset copied state if modal is closed.
       }
     }
-  }, [isOpen, url, isBrowser])
+
+    return () => {
+      if (loadingTimerId) clearTimeout(loadingTimerId);
+      if (copiedTimerId) clearTimeout(copiedTimerId);
+    };
+  }, [isOpen, url, isBrowser]);
 
   const safeWindowOpen = (url: string) => {
     if (isBrowser) {
