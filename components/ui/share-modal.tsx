@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { createPortal } from "react-dom"
 import { motion, AnimatePresence } from "framer-motion"
 import { X, Copy, Check } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -98,28 +99,29 @@ export function ShareModal({ isOpen, onClose, url, title }: ShareModalProps) {
     }
   }
 
-  if (!isBrowser) {
+  if (!isBrowser || !document.body) {
     return null
   }
 
-  return (
+  return createPortal(
     <AnimatePresence>
       {isOpen && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 w-full h-full bg-black/90 backdrop-blur-md flex flex-col"
+          className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/90 backdrop-blur-md" // Full screen overlay, centering, and animation container
         >
-          <div className="flex justify-between items-center p-4 border-b border-gray-800">
-            <h2 className="text-xl font-semibold text-white">Ulashish</h2>
-            <button onClick={onClose} className="text-gray-400 hover:text-gray-300 transition-colors">
-              <X size={24} />
-            </button>
-          </div>
+          <div className="bg-gray-900 rounded-lg shadow-xl w-full max-w-md flex flex-col overflow-hidden">
+            {/* Modal Content Below */}
+            <div className="flex justify-between items-center p-4 border-b border-gray-800">
+              <h2 className="text-xl font-semibold text-white">Ulashish</h2>
+              <button onClick={onClose} className="text-gray-400 hover:text-gray-300 transition-colors">
+                <X size={24} />
+              </button>
+            </div>
 
-          <div className="flex-1 flex flex-col items-center justify-center p-4">
-            <div className="w-full max-w-md mx-auto">
+            <div className="p-6">
               {isLoading ? (
                 <div className="flex flex-col items-center justify-center py-8">
                   <div className="relative w-16 h-16 mb-4">
@@ -224,7 +226,7 @@ export function ShareModal({ isOpen, onClose, url, title }: ShareModalProps) {
         </motion.div>
       )}
     </AnimatePresence>
-  )
+    , document.body)
 }
 
 export default ShareModal
