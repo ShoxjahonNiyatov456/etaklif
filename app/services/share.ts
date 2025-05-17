@@ -92,6 +92,7 @@ const saveInvitationToFirebase = async (
     const invitationsCollection = collection(db, "invitations");
     const invitationRef = doc(invitationsCollection, uniqueId);
     const cleanedInvitationData = cleanInvitationData(invitationData);
+
     await setDoc(invitationRef, {
       uniqueId,
       type,
@@ -102,6 +103,15 @@ const saveInvitationToFirebase = async (
       updatedAt: serverTimestamp(),
     });
 
+    const cachedInvitationsCollection = collection(db, "cachedInvitations");
+    const cachedInvitationRef = doc(cachedInvitationsCollection, uniqueId);
+    await setDoc(cachedInvitationRef, {
+      ...cleanedInvitationData,
+      type,
+      templateId,
+      retrievedAt: serverTimestamp(),
+    });
+
     await saveInvitationToServer(
       uniqueId,
       type,
@@ -110,7 +120,56 @@ const saveInvitationToFirebase = async (
     );
   } catch (error) {
     console.error("Taklifnomani saqlashda xatolik:", error);
-    throw error;
+  }
+};
+
+/**
+ * Taklifnoma ma'lumotlarini unikal ID orqali olish (avval keshdan, keyin asosiy bazadan)
+ */
+export const getInvitationByUniqueId = async (
+  uniqueId: string
+): Promise<any | null> => {
+  if (!uniqueId) {
+    console.warn("getInvitationByUniqueId: uniqueId mavjud emas");
+    return null;
+  }
+
+  try {
+    const cachedDocRef = doc(db, "cachedInvitations", uniqueId);
+    const cachedDocSnap = await getDoc(cachedDocRef);
+    if (cachedDocSnap.exists()) {
+      console.log("Keshdan ma'lumot olindi:", uniqueId);
+      const cachedData = cachedDocSnap.data();
+      return {
+        uniqueId,
+        type: cachedData.type,
+        templateId: cachedData.templateId,
+        invitationData: cachedData,
+      };
+    }
+    console.log("Keshda topilmadi, asosiy bazadan qidirilmoqda:", uniqueId);
+    const invitationDocRef = doc(db, "invitations", uniqueId);
+    const invitationDocSnap = await getDoc(invitationDocRef);
+
+    if (invitationDocSnap.exists()) {
+      const data = invitationDocSnap.data();
+      const cachedInvitationsCollection = collection(db, "cachedInvitations");
+      const newCachedInvitationRef = doc(cachedInvitationsCollection, uniqueId);
+      await setDoc(newCachedInvitationRef, {
+        ...(data.invitationData || {}),
+        type: data.type,
+        templateId: data.templateId,
+        retrievedAt: serverTimestamp(),
+      });
+      console.log("Asosiy bazadan olinib, keshga saqlandi:", uniqueId);
+      return data;
+    }
+
+    console.warn("Taklifnoma topilmadi:", uniqueId);
+    return null;
+  } catch (error) {
+    console.error("Taklifnoma olishda xatolik:", uniqueId, error);
+    return null;
   }
 };
 
@@ -264,64 +323,6 @@ const getInvitationFromFirebase = async (uniqueId: string): Promise<any> => {
     }
   } catch (error) {
     console.error("Firebase'dan ma'lumot olishda xatolik:", error);
-    return null;
-  }
-};
-
-/**
- * Unique ID bo'yicha taklifnomani olish (keshlashtirish bilan)
- */
-export const getInvitationByUniqueId = async (
-  uniqueId: string
-): Promise<any> => {
-  try {
-    const cacheKey = `invitation_${uniqueId}`;
-    let cachedData = null;
-    try {
-      const cachedString = localStorage.getItem(cacheKey);
-      if (cachedString) {
-        const cached = JSON.parse(cachedString);
-        const cacheTime = new Date(cached.timestamp);
-        const now = new Date();
-        const cacheAgeHours =
-          (now.getTime() - cacheTime.getTime()) / (1000 * 60 * 60);
-        if (cacheAgeHours < 24) {
-          cachedData = cached.data;
-          console.log("Taklifnoma keshdan olindi:", uniqueId);
-          return cachedData;
-        } else {
-          localStorage.removeItem(cacheKey);
-        }
-      }
-    } catch (cacheError) {
-      console.error("Keshni o'qishda xatolik:", cacheError);
-    }
-    const firebaseData = await getInvitationFromFirebase(uniqueId);
-    if (firebaseData) {
-      const { invitationData, type, templateId, ...rest } = firebaseData;
-      const result = {
-        ...rest,
-        type,
-        templateId,
-        ...invitationData,
-      };
-      try {
-        localStorage.setItem(
-          cacheKey,
-          JSON.stringify({
-            data: result,
-            timestamp: new Date().toISOString(),
-          })
-        );
-        console.log("Taklifnoma keshga saqlandi:", uniqueId);
-      } catch (storageError) {
-        console.error("Keshga saqlashda xatolik:", storageError);
-      }
-      return result;
-    }
-    return null;
-  } catch (error) {
-    console.error("Taklifnomani olishda xatolik:", error);
     return null;
   }
 };

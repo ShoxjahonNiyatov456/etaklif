@@ -51,7 +51,6 @@ export const eventTypesService = {
     });
   },
 
-  // Faol event turlarini olish
   async getActiveEventTypes(): Promise<EventType[]> {
     const eventTypesCollection = collection(db, "eventTypes");
     const q = query(
@@ -76,7 +75,6 @@ export const eventTypesService = {
     });
   },
 
-  // Yangi event turini qo'shish
   async createEventType(eventTypeData: EventTypeFormData): Promise<EventType> {
     const eventTypesCollection = collection(db, "eventTypes");
     const newEventTypeRef = doc(eventTypesCollection);
@@ -99,7 +97,6 @@ export const eventTypesService = {
     };
   },
 
-  // Event turini tahrirlash
   async updateEventType(
     id: string,
     eventTypeData: Partial<EventTypeFormData>
@@ -151,7 +148,6 @@ export const eventTypesService = {
   },
 };
 
-// Shablonlar uchun xizmat
 export const templatesService = {
   async getAllTemplates(): Promise<Template[]> {
     const templatesCollection = collection(db, "templates");
@@ -175,7 +171,6 @@ export const templatesService = {
     });
   },
 
-  // Faol shablonlarni olish
   async getActiveTemplates(): Promise<Template[]> {
     const templatesCollection = collection(db, "templates");
     const q = query(
@@ -202,7 +197,6 @@ export const templatesService = {
     });
   },
 
-  // Ma'lum event turi uchun shablonlarni olish
   async getTemplatesByEventType(eventTypeId: string): Promise<Template[]> {
     const templatesCollection = collection(db, "templates");
     const q = query(
@@ -230,7 +224,6 @@ export const templatesService = {
     });
   },
 
-  // Yangi shablon qo'shish
   async createTemplate(templateData: TemplateFormData): Promise<Template> {
     const templatesCollection = collection(db, "templates");
     const newTemplateRef = doc(templatesCollection);
@@ -253,7 +246,6 @@ export const templatesService = {
     };
   },
 
-  // Shablonni tahrirlash
   async updateTemplate(
     id: string,
     templateData: Partial<TemplateFormData>
@@ -308,7 +300,6 @@ export const templatesService = {
   },
 };
 
-// Fayl yuklash uchun xizmat
 export const storageService = {
   async uploadImage(file: File, path: string): Promise<string> {
     const storageRef = ref(storage, `${path}/${Date.now()}_${file.name}`);

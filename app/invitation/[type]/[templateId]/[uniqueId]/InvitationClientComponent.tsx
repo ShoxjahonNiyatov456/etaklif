@@ -34,55 +34,6 @@ export default function InvitationClientComponent({
     process.env.NEXT_PUBLIC_API_URL || "https://etaklif.vercel.app";
 
   useEffect(() => {
-    if (uniqueId) {
-      const cacheKey = `invitation_${uniqueId}`;
-      try {
-        const cachedString = localStorage.getItem(cacheKey);
-        if (cachedString) {
-          const cached = JSON.parse(cachedString);
-          const cacheTime = new Date(cached.timestamp);
-          const now = new Date();
-          const cacheAgeHours =
-            (now.getTime() - cacheTime.getTime()) / (1000 * 60 * 60);
-
-          if (cacheAgeHours < 24) {
-            setInvitationData(cached.data);
-            setLoading(false);
-            updateMetaData(cached.data);
-            return;
-          }
-        }
-      } catch (error) {
-        console.error("Keshni tekshirishda xatolik:", error);
-      }
-    }
-
-    if (searchParams && Object.keys(searchParams).length > 0) {
-      try {
-        const queryString = Object.entries(searchParams)
-          .map(([key, value]) => `${key}=${value}`)
-          .join("&");
-        const dataHash = btoa(queryString).substring(0, 20);
-        const linkCacheKey = `invitation_link_${dataHash}`;
-
-        const cachedLinkString = localStorage.getItem(linkCacheKey);
-        if (cachedLinkString) {
-          const cachedLink = JSON.parse(cachedLinkString);
-          const cacheTime = new Date(cachedLink.timestamp);
-          const now = new Date();
-          const cacheAgeHours =
-            (now.getTime() - cacheTime.getTime()) / (1000 * 60 * 60);
-
-          if (cacheAgeHours < 24) {
-            setInvitationData(cachedLink.data);
-            setLoading(false);
-            updateMetaData(cachedLink.data);
-          }
-        }
-      } catch (error) {
-        console.error("Link keshini tekshirishda xatolik:", error);
-      }
-    }
   }, [uniqueId, searchParams, type]);
   const updateMetaData = (data: any) => {
     const firstName = data.firstName || data.invitationData?.firstName || "";
@@ -136,20 +87,26 @@ export default function InvitationClientComponent({
   };
 
   useEffect(() => {
-    if (invitationData) return;
     async function loadInvitationData() {
+      if (!uniqueId && (!searchParams || Object.keys(searchParams).length === 0)) {
+        setError("Taklifnoma uchun ID yoki parametrlar mavjud emas.");
+        setLoading(false);
+        return;
+      }
+
       try {
         setLoading(true);
         setError(null);
-        const queryString = searchParams
-          ? Object.entries(searchParams)
-            .map(([key, value]) => `${key}=${value}`)
-            .join("&")
-          : "";
-        let data = getInvitationDataFromLink(queryString);
-        if (!data && uniqueId) {
+        let data;
+        if (uniqueId) {
           data = await getInvitationByUniqueId(uniqueId);
+        } else if (searchParams && Object.keys(searchParams).length > 0) {
+          const queryString = Object.entries(searchParams)
+            .map(([key, value]) => `${key}=${value}`)
+            .join("&");
+          data = getInvitationDataFromLink(queryString); 
         }
+
         if (!data) {
           throw new Error("Taklifnoma ma'lumotlari topilmadi.");
         }
@@ -165,7 +122,7 @@ export default function InvitationClientComponent({
     }
 
     loadInvitationData();
-  }, [uniqueId, searchParams, type]);
+  }, [uniqueId, searchParams, type, invitationData]);
   const renderTemplate = () => {
     if (loading) {
       return <p>Yuklanmoqda...</p>;

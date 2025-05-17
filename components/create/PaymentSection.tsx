@@ -214,7 +214,7 @@ const getTemplatesForType = (currentType: string): Template[] => {
           style: "traditional-jubilee",
           hasImageUpload: false,
           color: "from-red-500 to-rose-500",
-        }, // Ensure unique style/id if needed
+        }, 
         {
           id: "luxury",
           name: "Hashamatli",

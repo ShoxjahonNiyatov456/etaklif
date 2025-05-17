@@ -50,7 +50,6 @@ export default function MyProposalsPage() {
   }, []);
 
   useEffect(() => {
-    // setHasMounted(true) // Already set above
     const loadInvitations = async () => {
       try {
         setLoading(true);

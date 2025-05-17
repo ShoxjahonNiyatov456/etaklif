@@ -29,7 +29,7 @@ export function ShareModal({ isOpen, onClose, url, title }: ShareModalProps) {
 
     if (isBrowser && isOpen) {
       if (url && url.trim() !== "") {
-        setIsLoading(true); // Set loading true when we intend to copy after a delay
+        setIsLoading(true); 
         loadingTimerId = setTimeout(async () => {
           try {
             await navigator.clipboard.writeText(url);
@@ -40,18 +40,16 @@ export function ShareModal({ isOpen, onClose, url, title }: ShareModalProps) {
           } catch (error) {
             console.error("Failed to copy to clipboard automatically: ", error);
           } finally {
-            setIsLoading(false); // Set loading false after the attempt (success or fail)
+            setIsLoading(false); 
           }
         }, 1500);
       } else {
-        // URL is empty/invalid, or modal is open but nothing to copy.
-        setIsLoading(false); // Ensure loading is false.
+        setIsLoading(false); 
       }
     } else {
-      // Modal is closed or not in browser.
-      setIsLoading(false); // Ensure loading is false.
+      setIsLoading(false); 
       if (!isOpen) {
-        setCopied(false); // Reset copied state if modal is closed.
+        setCopied(false); 
       }
     }
 
