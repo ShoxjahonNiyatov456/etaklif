@@ -10,7 +10,7 @@ interface LayoutProps {
 }
 
 export async function generateMetadata({ params }: LayoutProps): Promise<Metadata> {
-  const { type, templateId } = params;
+  const { type, templateId } = await params;
   return {
     title: 'Taklifnoma',
     description: 'Taklifnomalarni ko\'rish va yaratish platformasi.',
@@ -32,7 +32,7 @@ export async function generateMetadata({ params }: LayoutProps): Promise<Metadat
       card: 'summary_large_image',
       title: 'Taklifnoma',
       description: 'Taklifnomalarni ko\'rish va yaratish platformasi.',
-      images: [`${process.env.NEXT_PUBLIC_API_URL}/images/default-og.jpg`], 
+      images: [`${process.env.NEXT_PUBLIC_API_URL}/images/default-og.jpg`],
     },
   };
 }

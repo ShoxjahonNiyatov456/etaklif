@@ -1,4 +1,5 @@
 import React from 'react'
+import { Metadata } from 'next';
 
 export default function InvitationLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -9,10 +10,12 @@ export default function InvitationLayout({ children }: { children: React.ReactNo
     </div>
   )
 }
-export const metadata = {
-  other: {
-    'telegram:card': 'summary_large_image',
-    'telegram:site': '@taklifnoma_uz',
-    'telegram:creator': '@taklifnoma_uz',
-  }
+export async function generateMetadata({ params }: { params: { type: string, templateId: string } }): Promise<Metadata> {
+  return {
+    other: {
+      'telegram:card': 'summary_large_image',
+      'telegram:site': '@taklifnoma_uz',
+      'telegram:creator': '@taklifnoma_uz',
+    }
+  };
 }

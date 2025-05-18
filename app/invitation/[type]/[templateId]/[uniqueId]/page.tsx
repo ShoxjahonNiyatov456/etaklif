@@ -11,7 +11,7 @@ interface InvitationPageProps {
 export async function generateMetadata(
   { params }: InvitationPageProps
 ): Promise<Metadata> {
-  const { uniqueId, type, templateId } = params;
+  const { uniqueId, type, templateId } = await params;
   let ogTitle = "Taklifnoma";
   let ogDescription = "";
   const siteUrl = process.env.NEXT_PUBLIC_API_URL || "https://etaklif.vercel.app";
@@ -41,6 +41,7 @@ export async function generateMetadata(
           default: dynamicEventTitle = "Marosim";
         }
       }
+
       ogTitle = `${dynamicEventTitle} taklifnomasi`;
       let hostNames = '';
       if (firstName && secondName) {
@@ -48,12 +49,14 @@ export async function generateMetadata(
       } else if (firstName) {
         hostNames = `${firstName}ning`;
       }
+
       let tadbir = '';
       if (hostNames) {
         tadbir = `${hostNames} ${dynamicEventTitle.toLowerCase()}`;
       } else {
         tadbir = dynamicEventTitle.toLowerCase();
       }
+
       ogDescription = `📌XURMATLI YAQINIM SIZ ${tadbir.toUpperCase()}IGA TAKLIF ETILDINGIZ 📌\n\n`;
       if (location) {
         ogDescription += `📍 MANZIL: ${location}\n`;
@@ -112,16 +115,17 @@ export async function generateMetadata(
   };
 }
 
-export default async function InvitationPage({ params, searchParams }: InvitationPageProps) {
-  const awaitedParams = await params;
-  const awaitedSearchParams = await searchParams;
+
+export default async function InvitationPage({ params: paramsProp, searchParams: searchParamsProp }: InvitationPageProps) {
+  const { type, templateId, uniqueId } = await paramsProp;
+  const resolvedSearchParams = await searchParamsProp;
   return (
     <Suspense fallback={<div>Yuklanmoqda...</div>}>
       <InvitationClientComponent
-        type={awaitedParams.type}
-        templateId={awaitedParams.templateId}
-        uniqueId={awaitedParams.uniqueId}
-        searchParams={awaitedSearchParams}
+        type={type}
+        templateId={templateId}
+        uniqueId={uniqueId}
+        searchParams={resolvedSearchParams}
       />
     </Suspense>
   );

@@ -103,15 +103,6 @@ const saveInvitationToFirebase = async (
       updatedAt: serverTimestamp(),
     });
 
-    const cachedInvitationsCollection = collection(db, "cachedInvitations");
-    const cachedInvitationRef = doc(cachedInvitationsCollection, uniqueId);
-    await setDoc(cachedInvitationRef, {
-      ...cleanedInvitationData,
-      type,
-      templateId,
-      retrievedAt: serverTimestamp(),
-    });
-
     await saveInvitationToServer(
       uniqueId,
       type,
@@ -124,7 +115,7 @@ const saveInvitationToFirebase = async (
 };
 
 /**
- * Taklifnoma ma'lumotlarini unikal ID orqali olish (avval keshdan, keyin asosiy bazadan)
+ * Taklifnoma ma'lumotlarini unikal ID orqali Firebase'dan olish
  */
 export const getInvitationByUniqueId = async (
   uniqueId: string
@@ -135,33 +126,11 @@ export const getInvitationByUniqueId = async (
   }
 
   try {
-    const cachedDocRef = doc(db, "cachedInvitations", uniqueId);
-    const cachedDocSnap = await getDoc(cachedDocRef);
-    if (cachedDocSnap.exists()) {
-      console.log("Keshdan ma'lumot olindi:", uniqueId);
-      const cachedData = cachedDocSnap.data();
-      return {
-        uniqueId,
-        type: cachedData.type,
-        templateId: cachedData.templateId,
-        invitationData: cachedData,
-      };
-    }
-    console.log("Keshda topilmadi, asosiy bazadan qidirilmoqda:", uniqueId);
     const invitationDocRef = doc(db, "invitations", uniqueId);
     const invitationDocSnap = await getDoc(invitationDocRef);
 
     if (invitationDocSnap.exists()) {
       const data = invitationDocSnap.data();
-      const cachedInvitationsCollection = collection(db, "cachedInvitations");
-      const newCachedInvitationRef = doc(cachedInvitationsCollection, uniqueId);
-      await setDoc(newCachedInvitationRef, {
-        ...(data.invitationData || {}),
-        type: data.type,
-        templateId: data.templateId,
-        retrievedAt: serverTimestamp(),
-      });
-      console.log("Asosiy bazadan olinib, keshga saqlandi:", uniqueId);
       return data;
     }
 
@@ -256,7 +225,7 @@ const saveInvitationToServer = async (
 };
 
 /**
- * Taklifnoma ma'lumotlarini havola orqali olish (keshlashtirish bilan)
+ * Taklifnoma ma'lumotlarini havola orqali olish
  */
 export const getInvitationDataFromLink = (queryParams: string): any => {
   try {
@@ -286,21 +255,6 @@ export const getInvitationDataFromLink = (queryParams: string): any => {
       },
     };
 
-    try {
-      const dataHash = btoa(queryParams).substring(0, 20);
-      const cacheKey = `invitation_link_${dataHash}`;
-      localStorage.setItem(
-        cacheKey,
-        JSON.stringify({
-          data: processedData,
-          timestamp: new Date().toISOString(),
-        })
-      );
-      console.log("Havola ma'lumotlari keshga saqlandi");
-    } catch (storageError) {
-      console.error("Keshga saqlashda xatolik:", storageError);
-    }
-
     return processedData;
   } catch (error) {
     console.error("Taklifnoma ma'lumotlarini o'qishda xatolik:", error);
@@ -328,29 +282,10 @@ const getInvitationFromFirebase = async (uniqueId: string): Promise<any> => {
 };
 
 /**
- * Foydalanuvchining barcha taklifnomalarini olish (keshlashtirish bilan)
+ * Foydalanuvchining barcha taklifnomalarini olish
  */
 export const getInvitationsByUser = async (userId?: string): Promise<any[]> => {
   try {
-    const cacheKey = `user_invitations_${userId || "anonymous"}`;
-    try {
-      const cachedString = localStorage.getItem(cacheKey);
-      if (cachedString) {
-        const cached = JSON.parse(cachedString);
-        const cacheTime = new Date(cached.timestamp);
-        const now = new Date();
-        const cacheAgeMinutes =
-          (now.getTime() - cacheTime.getTime()) / (1000 * 60);
-        if (cacheAgeMinutes < 5) {
-          console.log("Foydalanuvchi taklifnomalari keshdan olindi");
-          return cached.data;
-        } else {
-          localStorage.removeItem(cacheKey);
-        }
-      }
-    } catch (cacheError) {
-      console.error("Keshni o'qishda xatolik:", cacheError);
-    }
     const response = await fetch(
       `/api/user-invitations${userId ? `?userId=${userId}` : ""}`
     );
@@ -364,18 +299,6 @@ export const getInvitationsByUser = async (userId?: string): Promise<any[]> => {
     const sortedInvitations = data.invitations.sort((a: any, b: any) => {
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     });
-    try {
-      localStorage.setItem(
-        cacheKey,
-        JSON.stringify({
-          data: sortedInvitations,
-          timestamp: new Date().toISOString(),
-        })
-      );
-      console.log("Foydalanuvchi taklifnomalari keshga saqlandi");
-    } catch (storageError) {
-      console.error("Keshga saqlashda xatolik:", storageError);
-    }
     return sortedInvitations;
   } catch (error) {
     console.error("Taklifnomalarni olishda xatolik:", error);

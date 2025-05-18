@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import Head from "next/head";
 import {
   getInvitationByUniqueId,
-  getInvitationDataFromLink,
 } from "@/app/services/share";
 import WeddingTemplate from "@/components/invitation-templates/WeddingTemplate";
 import BirthdayTemplate from "@/components/invitation-templates/BirthdayTemplate";
@@ -23,7 +22,6 @@ export default function InvitationClientComponent({
   type,
   templateId,
   uniqueId,
-  searchParams,
 }: InvitationClientComponentProps) {
   const [invitationData, setInvitationData] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -33,8 +31,7 @@ export default function InvitationClientComponent({
   const siteUrl =
     process.env.NEXT_PUBLIC_API_URL || "https://etaklif.vercel.app";
 
-  useEffect(() => {
-  }, [uniqueId, searchParams, type]);
+
   const updateMetaData = (data: any) => {
     const firstName = data.firstName || data.invitationData?.firstName || "";
     const secondName = data.secondName || data.invitationData?.secondName || "";
@@ -86,54 +83,148 @@ export default function InvitationClientComponent({
     setOgDescription(desc);
   };
 
+  const [retryCount, setRetryCount] = useState<number>(0);
+  const [isRetrying, setIsRetrying] = useState<boolean>(false);
+  const MAX_RETRIES = 3;
+  const RETRY_DELAY = 2000;
+
   useEffect(() => {
+    let isMounted = true;
+    let retryTimeout: NodeJS.Timeout;
     async function loadInvitationData() {
-      if (!uniqueId && (!searchParams || Object.keys(searchParams).length === 0)) {
-        setError("Taklifnoma uchun ID yoki parametrlar mavjud emas.");
+      if (!uniqueId || !type) {
+        setError("Taklifnoma IDsi yoki turi ko'rsatilmagan yoki yaroqsiz.");
+        setInvitationData(null);
         setLoading(false);
         return;
       }
 
+      if (!isMounted) return;
+
+      // Agar ma'lumotlar allaqachon yuklangan bo'lsa va qayta urinish amalga oshirilmayotgan bo'lsa, qayta yuklamaslik
+      if (invitationData && !isRetrying && Object.keys(invitationData).length > 0) {
+        console.log('[InvitationClientComponent] Ma\'lumotlar allaqachon yuklangan, qayta so\'rov yuborilmaydi');
+        setLoading(false);
+        return;
+      }
+
+      setLoading(true);
+      setError(null);
+
       try {
-        setLoading(true);
-        setError(null);
-        let data;
-        if (uniqueId) {
-          data = await getInvitationByUniqueId(uniqueId);
-        } else if (searchParams && Object.keys(searchParams).length > 0) {
-          const queryString = Object.entries(searchParams)
-            .map(([key, value]) => `${key}=${value}`)
-            .join("&");
-          data = getInvitationDataFromLink(queryString); 
-        }
+        const data = await getInvitationByUniqueId(uniqueId);
+
+        if (!isMounted) return;
 
         if (!data) {
-          throw new Error("Taklifnoma ma'lumotlari topilmadi.");
+          // Ma'lumotlar topilmadi, lekin qayta urinish mumkin
+          if (retryCount < MAX_RETRIES) {
+            setRetryCount(prev => prev + 1);
+            setIsRetrying(true);
+            retryTimeout = setTimeout(() => {
+              if (isMounted) {
+                setIsRetrying(false);
+                loadInvitationData();
+              }
+            }, RETRY_DELAY);
+          } else {
+            // Barcha qayta urinishlar tugadi
+            setError("Taklifnoma ma'lumotlari topilmadi. Iltimos, internet aloqangizni tekshiring.");
+            setInvitationData(null);
+            setIsRetrying(false);
+          }
+        } else {
+          // Ma'lumotlar muvaffaqiyatli yuklandi
+          setRetryCount(0);
+          setIsRetrying(false);
+          setInvitationData((prevData: any) => {
+            if (!prevData || JSON.stringify(prevData) !== JSON.stringify(data)) {
+              updateMetaData(data);
+              return data;
+            }
+            return prevData;
+          });
         }
-
-        setInvitationData(data);
-        updateMetaData(data);
       } catch (error: any) {
-        console.error("Taklifnoma ma'lumotlarini olishda xatolik:", error);
-        setError(error.message || "Noma'lum xatolik yuz berdi");
+        if (!isMounted) return;
+
+        console.error("Ma'lumotlarni yuklashda xatolik:", error);
+
+        // Xatolik yuz berdi, qayta urinish mumkin
+        if (retryCount < MAX_RETRIES) {
+          setRetryCount(prev => prev + 1);
+          setIsRetrying(true);
+          retryTimeout = setTimeout(() => {
+            if (isMounted) {
+              setIsRetrying(false);
+              loadInvitationData();
+            }
+          }, RETRY_DELAY);
+        } else {
+          // Barcha qayta urinishlar tugadi
+          setError("Internet aloqasida muammo. Iltimos, internet aloqangizni tekshiring va sahifani yangilang.");
+          setInvitationData(null);
+          setIsRetrying(false);
+        }
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     }
 
     loadInvitationData();
-  }, [uniqueId, searchParams, type, invitationData]);
+
+    // Tozalash funksiyasi
+    return () => {
+      isMounted = false;
+      if (retryTimeout) {
+        clearTimeout(retryTimeout);
+      }
+    };
+  }, [uniqueId, type]); // Faqat uniqueId va type o'zgarganda useEffect qayta ishga tushadi
   const renderTemplate = () => {
-    if (loading) {
-      return <p>Yuklanmoqda...</p>;
+    if (loading && !invitationData) {
+      return (
+        <div className="flex flex-col items-center justify-center min-h-[50vh] p-4">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500 mb-4"></div>
+          <p className="text-center text-lg font-medium">
+            {isRetrying ? `Taklifnoma ma'lumotlari yuklanmoqda... (${retryCount}/${MAX_RETRIES} urinish)` : "Taklifnoma ma'lumotlari yuklanmoqda..."}
+          </p>
+        </div>
+      );
     }
 
     if (error) {
-      return <p>Xatolik: {error}</p>;
+      return (
+        <div className="flex flex-col items-center justify-center min-h-[50vh] p-4 text-center">
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-md max-w-md">
+            <p className="font-bold mb-2">Xatolik yuz berdi</p>
+            <p>{error}</p>
+            {retryCount >= MAX_RETRIES && (
+              <button
+                onClick={() => {
+                  setRetryCount(0);
+                  setIsRetrying(false);
+                  setError(null);
+                  setLoading(true);
+                }}
+                className="mt-4 bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded"
+              >
+                Qayta urinib ko'rish
+              </button>
+            )}
+          </div>
+        </div>
+      );
     }
 
     if (!invitationData) {
-      return <p>Taklifnoma ma'lumotlari topilmadi</p>;
+      return (
+        <div className="flex flex-col items-center justify-center min-h-[50vh] p-4 text-center">
+          <p className="text-lg font-medium">Taklifnoma ma'lumotlari topilmadi</p>
+        </div>
+      );
     }
     const templateType = invitationData.type || type;
     const currentTemplateId = invitationData.templateId || templateId;
