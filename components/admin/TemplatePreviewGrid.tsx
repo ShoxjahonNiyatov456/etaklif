@@ -92,8 +92,8 @@ export default function TemplatePreviewGrid({
           <JubileeTemplate
             style={style}
             firstName={sampleData.firstName}
-            celebrationType={sampleData.celebrationType}
             date={sampleData.date}
+            age={sampleData.age}
             time={sampleData.time}
             location={sampleData.location}
             additionalInfo={sampleData.additionalInfo}

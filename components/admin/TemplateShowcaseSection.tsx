@@ -35,14 +35,12 @@ export default function TemplateShowcaseSection({ eventType, styles }: TemplateS
         return (
           <BirthdayTemplate
             style={style}
-            data={{
-              name: sampleData.firstName,
-              age: sampleData.age,
-              date: sampleData.date,
-              time: sampleData.time,
-              location: sampleData.location,
-              additionalInfo: sampleData.additionalInfo,
-            }}  
+            firstName={sampleData.firstName}
+            date={sampleData.date}
+            time={sampleData.time}
+            location={sampleData.location}
+            additionalInfo={sampleData.additionalInfo}
+            age={sampleData.age}
           />
         );
       case 'wedding':

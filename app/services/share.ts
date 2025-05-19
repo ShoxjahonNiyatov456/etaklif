@@ -263,25 +263,6 @@ export const getInvitationDataFromLink = (queryParams: string): any => {
 };
 
 /**
- * Unique ID bo'yicha taklifnomani Firebase'dan olish
- */
-const getInvitationFromFirebase = async (uniqueId: string): Promise<any> => {
-  try {
-    const invitationsCollection = collection(db, "invitations");
-    const invitationRef = doc(invitationsCollection, uniqueId);
-    const docSnap = await getDoc(invitationRef);
-    if (docSnap.exists()) {
-      return docSnap.data();
-    } else {
-      return null;
-    }
-  } catch (error) {
-    console.error("Firebase'dan ma'lumot olishda xatolik:", error);
-    return null;
-  }
-};
-
-/**
  * Foydalanuvchining barcha taklifnomalarini olish
  */
 export const getInvitationsByUser = async (userId?: string): Promise<any[]> => {
