@@ -30,10 +30,8 @@ export default function InvitationClientComponent({
   const [ogDescription, setOgDescription] = useState<string>("");
   const siteUrl =
     process.env.NEXT_PUBLIC_API_URL || "https://etaklif.vercel.app";
-
-
   const updateMetaData = (rawData: any) => {
-    const data = rawData.invitationData || rawData; // Ensure we use the nested or direct data
+    const data = rawData.invitationData || rawData;
     const firstName = data.firstName || "";
     const secondName = data.secondName || "";
     const location = data.location || "";
@@ -99,26 +97,18 @@ export default function InvitationClientComponent({
         setLoading(false);
         return;
       }
-
       if (!isMounted) return;
-
-      // Agar ma'lumotlar allaqachon yuklangan bo'lsa va qayta urinish amalga oshirilmayotgan bo'lsa, qayta yuklamaslik
       if (invitationData && !isRetrying && Object.keys(invitationData).length > 0) {
         console.log('[InvitationClientComponent] Ma\'lumotlar allaqachon yuklangan, qayta so\'rov yuborilmaydi');
         setLoading(false);
         return;
       }
-
       setLoading(true);
       setError(null);
-
       try {
         const data = await getInvitationByUniqueId(uniqueId);
-
         if (!isMounted) return;
-
         if (!data) {
-          // Ma'lumotlar topilmadi, lekin qayta urinish mumkin
           if (retryCount < MAX_RETRIES) {
             setRetryCount(prev => prev + 1);
             setIsRetrying(true);
@@ -129,13 +119,11 @@ export default function InvitationClientComponent({
               }
             }, RETRY_DELAY);
           } else {
-            // Barcha qayta urinishlar tugadi
             setError("Taklifnoma ma'lumotlari topilmadi. Iltimos, internet aloqangizni tekshiring.");
             setInvitationData(null);
             setIsRetrying(false);
           }
         } else {
-          // Ma'lumotlar muvaffaqiyatli yuklandi
           setRetryCount(0);
           setIsRetrying(false);
           setInvitationData((prevData: any) => {
@@ -148,10 +136,7 @@ export default function InvitationClientComponent({
         }
       } catch (error: any) {
         if (!isMounted) return;
-
         console.error("Ma'lumotlarni yuklashda xatolik:", error);
-
-        // Xatolik yuz berdi, qayta urinish mumkin
         if (retryCount < MAX_RETRIES) {
           setRetryCount(prev => prev + 1);
           setIsRetrying(true);
@@ -162,7 +147,6 @@ export default function InvitationClientComponent({
             }
           }, RETRY_DELAY);
         } else {
-          // Barcha qayta urinishlar tugadi
           setError("Internet aloqasida muammo. Iltimos, internet aloqangizni tekshiring va sahifani yangilang.");
           setInvitationData(null);
           setIsRetrying(false);
@@ -173,17 +157,15 @@ export default function InvitationClientComponent({
         }
       }
     }
-
     loadInvitationData();
-
-    // Tozalash funksiyasi
     return () => {
       isMounted = false;
       if (retryTimeout) {
         clearTimeout(retryTimeout);
       }
     };
-  }, [uniqueId, type]); // Faqat uniqueId va type o'zgarganda useEffect qayta ishga tushadi
+  }, [uniqueId, type]);
+
   const renderTemplate = () => {
     if (loading && !invitationData) {
       return (
