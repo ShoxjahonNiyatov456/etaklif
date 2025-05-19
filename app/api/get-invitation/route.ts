@@ -33,6 +33,7 @@ export async function GET(request: Request) {
     const headers = {
       ...corsHeaders,
       "Content-Type": "application/json",
+      "Cache-Control": "public, max-age=300, s-maxage=600",
     };
     const { searchParams } = new URL(request.url);
     const uniqueId = searchParams.get("uniqueId");
@@ -60,6 +61,7 @@ export async function GET(request: Request) {
       );
     }
 
+    // Cache-Control sarlavhasi allaqachon headers obyektiga qo'shilgan
     return NextResponse.json(invitationData, { headers });
   } catch (error) {
     console.error("Taklifnomani olishda xatolik:", error);

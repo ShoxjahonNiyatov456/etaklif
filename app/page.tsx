@@ -203,7 +203,7 @@ export default function Home() {
                 variant={activeCategory === category.id ? "default" : "outline"}
                 className={`rounded-full px-6 ${activeCategory === category.id
                   ? "bg-gradient-to-r from-purple-600 to-pink-600 border-0"
-                  : "border-gray-700 text-gray-300 hover:bg-gray-800/50"
+                  : "border-gray-700 text-black hover:bg-purple-600  hover:text-white"
                   }`}
                 onClick={() => setActiveCategory(category.id)}
               >

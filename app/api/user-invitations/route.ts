@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-export const revalidate = 60; // Revalidate every 60 seconds
+export const revalidate = 60;
 import { cookies } from "next/headers";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "@/app/services/database";
