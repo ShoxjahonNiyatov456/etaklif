@@ -18,19 +18,20 @@ export async function generateMetadata(
   const imageUrl = `${siteUrl}/invitation/${type}/${templateId}/${uniqueId}/opengraph-image.png`;
 
   try {
-    const invitationData = await getInvitationByUniqueId(uniqueId);
-    if (invitationData) {
-      const firstName = invitationData.firstName || '';
-      const secondName = invitationData.secondName || '';
-      const age = invitationData.age;
-      const date = invitationData.date || '';
-      const time = invitationData.time || '';
-      const location = invitationData.location || '';
-      const eventName = invitationData.eventName || '';
+    const rawDbData = await getInvitationByUniqueId(uniqueId);
+    if (rawDbData) {
+      const actualInvitationData = rawDbData.invitationData || rawDbData;
+      const firstName = actualInvitationData.firstName || '';
+      const secondName = actualInvitationData.secondName || '';
+      const age = actualInvitationData.age;
+      const date = actualInvitationData.date || '';
+      const time = actualInvitationData.time || '';
+      const location = actualInvitationData.location || '';
+      const eventName = actualInvitationData.eventName || '';
 
       let dynamicEventTitle = '';
-      if (eventName) {
-        dynamicEventTitle = eventName;
+      if (actualInvitationData.eventName) { // Ensure using actualInvitationData here too for consistency
+        dynamicEventTitle = actualInvitationData.eventName;
       } else {
         switch (type) {
           case 'wedding': dynamicEventTitle = "Nikoh to'yi"; break;

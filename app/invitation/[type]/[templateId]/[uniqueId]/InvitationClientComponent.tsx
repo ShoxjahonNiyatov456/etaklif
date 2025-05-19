@@ -32,12 +32,13 @@ export default function InvitationClientComponent({
     process.env.NEXT_PUBLIC_API_URL || "https://etaklif.vercel.app";
 
 
-  const updateMetaData = (data: any) => {
-    const firstName = data.firstName || data.invitationData?.firstName || "";
-    const secondName = data.secondName || data.invitationData?.secondName || "";
-    const location = data.location || data.invitationData?.location || "";
-    const date = data.date || data.invitationData?.date || "";
-    const time = data.time || data.invitationData?.time || "";
+  const updateMetaData = (rawData: any) => {
+    const data = rawData.invitationData || rawData; // Ensure we use the nested or direct data
+    const firstName = data.firstName || "";
+    const secondName = data.secondName || "";
+    const location = data.location || "";
+    const date = data.date || "";
+    const time = data.time || "";
     let dynamicEventTitle = "";
     switch (type) {
       case "wedding":

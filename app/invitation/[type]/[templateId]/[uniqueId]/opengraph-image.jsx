@@ -34,32 +34,30 @@ export default async function Image({ params }) {
     let invitationData = null;
     let rawData = null;
 
+    let actualInvitationData = {};
     try {
-      rawData = await getInvitationByUniqueId(uniqueId);
+      const rawDbData = await getInvitationByUniqueId(uniqueId);
       console.log(
-        "Raw data received:",
-        JSON.stringify(rawData).substring(0, 200) + "..."
+        "Raw data received for OG Image:",
+        JSON.stringify(rawDbData).substring(0, 200) + "..."
       );
-
-      invitationData = rawData?.invitationData || rawData || {};
+      actualInvitationData = rawDbData?.invitationData || rawDbData || {};
       console.log(
-        "Parsed invitation data:",
-        JSON.stringify(invitationData).substring(0, 200) + "..."
+        "Parsed invitation data for OG Image:",
+        JSON.stringify(actualInvitationData).substring(0, 200) + "..."
       );
     } catch (fetchError) {
-      console.error("Error fetching invitation data:", fetchError);
-      invitationData = {};
+      console.error("Error fetching invitation data for OG Image:", fetchError);
+      actualInvitationData = {}; // Fallback to empty object on error
     }
-    const location =
-      invitationData?.location || rawData?.location || "Manzil ko'rsatilmagan";
-    const time = invitationData?.time || rawData?.time || "Vaqt ko'rsatilmagan";
-    const firstName =
-      invitationData?.firstName || rawData?.firstName || "Ism ko'rsatilmagan";
-    const secondName = invitationData?.secondName || rawData?.secondName || "";
-    const age = invitationData?.age || rawData?.age || "";
-    const date = invitationData?.date || rawData?.date || "Sana ko'rsatilmagan";
-    const uploadedImage =
-      invitationData?.uploadedImage || rawData?.uploadedImage || null;
+
+    const location = actualInvitationData?.location || "Manzil ko'rsatilmagan";
+    const time = actualInvitationData?.time || "Vaqt ko'rsatilmagan";
+    const firstName = actualInvitationData?.firstName || "Ism ko'rsatilmagan";
+    const secondName = actualInvitationData?.secondName || "";
+    const age = actualInvitationData?.age || "";
+    const date = actualInvitationData?.date || "Sana ko'rsatilmagan";
+    const uploadedImage = actualInvitationData?.uploadedImage || null;
     let formattedDate = date;
     try {
       if (date && date.includes("-")) {
