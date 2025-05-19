@@ -268,7 +268,8 @@ export const getInvitationDataFromLink = (queryParams: string): any => {
 export const getInvitationsByUser = async (userId?: string): Promise<any[]> => {
   try {
     const response = await fetch(
-      `/api/user-invitations${userId ? `?userId=${userId}` : ""}`
+      `/api/user-invitations${userId ? `?userId=${userId}` : ""}`,
+      { next: { revalidate: 60 } }
     );
     if (!response.ok) {
       throw new Error("Serverdan ma'lumotlarni olishda xatolik");
