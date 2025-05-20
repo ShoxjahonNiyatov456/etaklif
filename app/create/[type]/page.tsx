@@ -6,12 +6,14 @@ import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { ArrowLeft, ArrowRight } from "lucide-react"
 import { useParams, useRouter } from "next/navigation"
+import dynamic from 'next/dynamic'
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import FormSection from "@/components/create/FormSection"
-import TemplateSection from "@/components/create/TemplateSection"
-import PreviewSection from "@/components/create/PreviewSection"
-import PaymentSection from "@/components/create/PaymentSection"
+
+const FormSection = dynamic(() => import('@/components/create/FormSection'), { ssr: false })
+const TemplateSection = dynamic(() => import('@/components/create/TemplateSection'), { ssr: false })
+const PreviewSection = dynamic(() => import('@/components/create/PreviewSection'), { ssr: false })
+const PaymentSection = dynamic(() => import('@/components/create/PaymentSection'), { ssr: false })
 
 export default function CreatePage() {
   const params = useParams()
@@ -238,20 +240,22 @@ export default function CreatePage() {
               </TabsList>
 
               <TabsContent value="form" className="mt-6">
-                <FormSection
-                  type={type as string}
-                  formData={formData}
-                  day={day}
-                  month={month}
-                  hours={hours}
-                  minutes={minutes}
-                  dateError={dateError}
-                  onInputChange={handleInputChange}
-                  onDayChange={setDay}
-                  onMonthChange={setMonth}
-                  onHoursChange={setHours}
-                  onMinutesChange={setMinutes}
-                />
+                {activeTab === 'form' && (
+                  <FormSection
+                    type={type as string}
+                    formData={formData}
+                    day={day}
+                    month={month}
+                    hours={hours}
+                    minutes={minutes}
+                    dateError={dateError}
+                    onInputChange={handleInputChange}
+                    onDayChange={setDay}
+                    onMonthChange={setMonth}
+                    onHoursChange={setHours}
+                    onMinutesChange={setMinutes}
+                  />
+                )}
                 {formCompleted && (
                   <div className="mt-6 flex justify-end mb-8">
                     <Button
@@ -272,30 +276,32 @@ export default function CreatePage() {
                   </div>
                 ) : (
                   <>
-                    <TemplateSection
-                      type={type as string}
-                      selectedTemplate={selectedTemplate}
-                      uploadedImage={uploadedImage}
-                      onTemplateSelect={(templateId) => {
-                        setSelectedTemplate(templateId)
-                        setTemplateSelected(true)
-                      }}
-                      onImageUpload={(e) => {
-                        const file = e.target.files?.[0]
-                        if (file) {
-                          const reader = new FileReader()
-                          reader.onload = (e) => {
-                            if (e.target?.result) {
-                              setUploadedImage(e.target.result as string)
+                    {activeTab === 'templates' && (
+                      <TemplateSection
+                        type={type as string}
+                        selectedTemplate={selectedTemplate}
+                        uploadedImage={uploadedImage}
+                        onTemplateSelect={(templateId) => {
+                          setSelectedTemplate(templateId)
+                          setTemplateSelected(true)
+                        }}
+                        onImageUpload={(e) => {
+                          const file = e.target.files?.[0]
+                          if (file) {
+                            const reader = new FileReader()
+                            reader.onload = (e) => {
+                              if (e.target?.result) {
+                                setUploadedImage(e.target.result as string)
+                              }
                             }
+                            reader.readAsDataURL(file)
                           }
-                          reader.readAsDataURL(file)
-                        }
-                      }}
-                      onClearUploadedImage={() => {
-                        setUploadedImage(null)
-                      }}
-                    />
+                        }}
+                        onClearUploadedImage={() => {
+                          setUploadedImage(null)
+                        }}
+                      />
+                    )}
                     {templateSelected && (
                       <div className="mt-6 flex justify-end">
                         <Button
@@ -318,18 +324,22 @@ export default function CreatePage() {
                   </div>
                 ) : (
                   <div className="space-y-6">
-                    <PreviewSection
-                      type={type as string}
-                      selectedTemplate={selectedTemplate}
-                      formData={formData}
-                      uploadedImage={uploadedImage}
-                    />
-                    <PaymentSection
-                      type={type as string}
-                      selectedTemplate={selectedTemplate}
-                      formData={formData}
-                      uploadedImage={uploadedImage}
-                    />
+                    {activeTab === 'preview' && (
+                      <>
+                        <PreviewSection
+                          type={type as string}
+                          selectedTemplate={selectedTemplate}
+                          formData={formData}
+                          uploadedImage={uploadedImage}
+                        />
+                        <PaymentSection
+                          type={type as string}
+                          selectedTemplate={selectedTemplate}
+                          formData={formData}
+                          uploadedImage={uploadedImage}
+                        />
+                      </>
+                    )}
                   </div>
                 )}
               </TabsContent>

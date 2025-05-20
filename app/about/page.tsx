@@ -2,7 +2,10 @@
 
 import { motion } from "framer-motion"
 import { useEffect, useState } from "react"
-import { CheckCircle, Users, Zap, Palette, Gift, Phone, Mail, Send } from "lucide-react"
+import dynamic from 'next/dynamic'
+
+const AdvantagesSection = dynamic(() => import('@/components/about/AdvantagesSection'), { ssr: false })
+const ContactSection = dynamic(() => import('@/components/about/ContactSection'), { ssr: false })
 
 export default function AboutPage() {
   const [hasMounted, setHasMounted] = useState(false)
@@ -66,84 +69,8 @@ export default function AboutPage() {
               bo'lsa, biz bilan bog'lanishingiz mumkin.
             </motion.p>
 
-            <motion.div
-              initial="hidden"
-              animate={hasMounted ? "visible" : "hidden"}
-              variants={fadeIn(0.4)}
-              className="pt-8"
-            >
-              <h2 className="text-2xl font-bold mb-6 text-white">Bizning afzalliklarimiz</h2>
-
-              <div className="grid md:grid-cols-2 gap-6">
-                {[
-                  {
-                    icon: <Users className="h-5 w-5 text-purple-400" />,
-                    title: "Foydalanish uchun qulay va sodda interfeys",
-                  },
-                  {
-                    icon: <Palette className="h-5 w-5 text-purple-400" />,
-                    title: "Turli marosimlar uchun maxsus shablonlar",
-                  },
-                  {
-                    icon: <Zap className="h-5 w-5 text-purple-400" />,
-                    title: "Tezkor va sifatli xizmat",
-                  },
-                  {
-                    icon: <Gift className="h-5 w-5 text-purple-400" />,
-                    title: "Doimiy yangilanib turuvchi dizaynlar",
-                  },
-                  {
-                    icon: <CheckCircle className="h-5 w-5 text-purple-400" />,
-                    title: "Bepul foydalanish imkoniyati",
-                  },
-                ].map((advantage, index) => (
-                  <motion.div
-                    key={index}
-                    initial="hidden"
-                    animate={hasMounted ? "visible" : "hidden"}
-                    variants={fadeIn(0.5 + index * 0.1)}
-                    className="flex items-start space-x-3 bg-gray-800/50 backdrop-blur-sm p-4 rounded-xl border border-gray-700"
-                  >
-                    <div className="mt-0.5">{advantage.icon}</div>
-                    <p className="font-medium">{advantage.title}</p>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
-
-            <motion.div
-              initial="hidden"
-              animate={hasMounted ? "visible" : "hidden"}
-              variants={fadeIn(0.8)}
-              className="pt-8"
-            >
-              <h2 className="text-2xl font-bold mb-6 text-white">Bog'lanish</h2>
-
-              <p className="mb-4">Savollaringiz yoki takliflaringiz bo'lsa, biz bilan bog'lanishingiz mumkin:</p>
-
-              <div className="space-y-4">
-                <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center">
-                    <Phone className="h-5 w-5 text-purple-400" />
-                  </div>
-                  <span>+998 95 557 13 02</span>
-                </div>
-
-                <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center">
-                    <Mail className="h-5 w-5 text-purple-400" />
-                  </div>
-                  <span>info@etaklif.vercel.app</span>
-                </div>
-
-                <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center">
-                    <Send className="h-5 w-5 text-purple-400" />
-                  </div>
-                  <span>Telegram: @taklifnoma</span>
-                </div>
-              </div>
-            </motion.div>
+            {hasMounted && <AdvantagesSection hasMounted={hasMounted} fadeIn={fadeIn} />}
+            {hasMounted && <ContactSection hasMounted={hasMounted} fadeIn={fadeIn} />}
           </div>
         </motion.div>
       </div>
