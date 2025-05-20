@@ -2,14 +2,12 @@
 
 import { useEffect, useState } from "react";
 import Head from "next/head";
-import {
-  getInvitationByUniqueId,
-} from "@/app/services/share";
 import WeddingTemplate from "@/components/invitation-templates/WeddingTemplate";
 import BirthdayTemplate from "@/components/invitation-templates/BirthdayTemplate";
 import FuneralTemplate from "@/components/invitation-templates/FuneralTemplate";
 import JubileeTemplate from "@/components/invitation-templates/JubileeTemplate";
 import EngagementTemplate from "@/components/invitation-templates/EngagementTemplate";
+import { getCachedInvitation } from "@/app/services/cache";
 
 interface InvitationClientComponentProps {
   type: string;
@@ -106,7 +104,7 @@ export default function InvitationClientComponent({
       setLoading(true);
       setError(null);
       try {
-        const data = await getInvitationByUniqueId(uniqueId);
+        const data = await getCachedInvitation(uniqueId);
         if (!isMounted) return;
         if (!data) {
           if (retryCount < MAX_RETRIES) {
