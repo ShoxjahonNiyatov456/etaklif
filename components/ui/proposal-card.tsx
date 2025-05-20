@@ -61,6 +61,8 @@ export function ProposalCard({
                         src={imageSrc || "/placeholder.svg"}
                         alt={title}
                         fill
+                        quality={75} // Rasm sifatini belgilash (0-100)
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" // Turli ekran o'lchamlari uchun rasm o'lchamlarini ko'rsatish
                         className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500"
                     />
                     <div className="absolute bottom-0 left-0 right-0 p-4 z-20">

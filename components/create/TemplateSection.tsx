@@ -4,6 +4,7 @@ import type React from "react";
 
 import { useRef } from "react";
 import { motion } from "framer-motion";
+import Image from 'next/image';
 import { X, ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -401,9 +402,13 @@ export default function TemplateSection({
             </div>
           ) : (
             <div className="mt-3 relative rounded-lg overflow-hidden">
-              <img
+              <Image
                 src={uploadedImage || "/placeholder.svg"}
                 alt="Uploaded"
+                width={1600} // Asl rasm kengligini taxminiy kiriting yoki dinamik o'rnating
+                height={900} // Asl rasm balandligini taxminiy kiriting yoki dinamik o'rnating
+                quality={75}
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 className="w-full h-40 object-contain bg-gray-900/50 rounded-lg border border-gray-700"
                 style={{ aspectRatio: "16/9" }}
               />

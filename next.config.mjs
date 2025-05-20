@@ -7,7 +7,7 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
-    unoptimized: true,
+    // unoptimized: true, // O'chirib qo'yildi yoki false ga o'zgartiriladi
   },
 }
 
