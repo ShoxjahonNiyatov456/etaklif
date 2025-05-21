@@ -7,7 +7,14 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
-    // unoptimized: true, // O'chirib qo'yildi yoki false ga o'zgartiriladi
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'daryo.uz',
+        port: '',
+        pathname: '/**',
+      },
+    ],
   },
 }
 
