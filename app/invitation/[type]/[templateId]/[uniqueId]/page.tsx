@@ -23,14 +23,12 @@ export async function generateMetadata(
       const actualInvitationData = rawDbData.invitationData || rawDbData;
       const firstName = actualInvitationData.firstName || '';
       const secondName = actualInvitationData.secondName || '';
-      const age = actualInvitationData.age;
       const date = actualInvitationData.date || '';
       const time = actualInvitationData.time || '';
       const location = actualInvitationData.location || '';
-      const eventName = actualInvitationData.eventName || '';
 
       let dynamicEventTitle = '';
-      if (actualInvitationData.eventName) { // Ensure using actualInvitationData here too for consistency
+      if (actualInvitationData.eventName) {
         dynamicEventTitle = actualInvitationData.eventName;
       } else {
         switch (type) {
@@ -118,8 +116,26 @@ export async function generateMetadata(
 
 
 export default async function InvitationPage({ params: paramsProp, searchParams: searchParamsProp }: InvitationPageProps) {
-  const { type, templateId, uniqueId } = await paramsProp;
-  const resolvedSearchParams = await searchParamsProp;
+  const { type, templateId, uniqueId } = paramsProp;
+  const resolvedSearchParams = searchParamsProp;
+
+  let initialInvitationData = null;
+  let error = null;
+
+  try {
+    const rawData = await getInvitationByUniqueId(uniqueId);
+    if (rawData) {
+      initialInvitationData = rawData.invitationData || rawData;
+    } else {
+      console.warn(`[InvitationPage] No data found for uniqueId: ${uniqueId}`);
+    }
+  } catch (e: any) {
+    error = e.message || "Ma'lumotlarni yuklashda xatolik";
+  }
+  if (error && !initialInvitationData) {
+    return <div>Xatolik yuz berdi: {error}</div>;
+  }
+
   return (
     <Suspense fallback={<div>Yuklanmoqda...</div>}>
       <InvitationClientComponent
@@ -127,6 +143,7 @@ export default async function InvitationPage({ params: paramsProp, searchParams:
         templateId={templateId}
         uniqueId={uniqueId}
         searchParams={resolvedSearchParams}
+        initialData={initialInvitationData}
       />
     </Suspense>
   );

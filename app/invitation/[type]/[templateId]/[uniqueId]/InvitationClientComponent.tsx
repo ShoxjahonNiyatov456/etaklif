@@ -14,12 +14,14 @@ interface InvitationClientComponentProps {
   templateId: string;
   uniqueId: string;
   searchParams: { [key: string]: string | string[] | undefined };
+  initialData?: any;
 }
 
 export default function InvitationClientComponent({
   type,
   templateId,
   uniqueId,
+  initialData,
 }: InvitationClientComponentProps) {
   const [invitationData, setInvitationData] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -86,6 +88,13 @@ export default function InvitationClientComponent({
   const RETRY_DELAY = 2000;
 
   useEffect(() => {
+    if (initialData) {
+      setInvitationData(initialData);
+      updateMetaData(initialData);
+      setLoading(false);
+      return;
+    }
+
     let isMounted = true;
     let retryTimeout: NodeJS.Timeout;
     async function loadInvitationData() {
@@ -162,7 +171,7 @@ export default function InvitationClientComponent({
         clearTimeout(retryTimeout);
       }
     };
-  }, [uniqueId, type]);
+  }, [uniqueId, type, initialData]); // Added initialData to dependencies
 
   const renderTemplate = () => {
     if (loading && !invitationData) {
