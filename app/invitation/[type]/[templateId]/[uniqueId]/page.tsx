@@ -115,9 +115,8 @@ export async function generateMetadata(
 }
 
 
-export default async function InvitationPage({ params: paramsProp, searchParams: searchParamsProp }: InvitationPageProps) {
+export default async function InvitationPage({ params: paramsProp }: InvitationPageProps) {
   const { type, templateId, uniqueId } = paramsProp;
-  const resolvedSearchParams = searchParamsProp;
 
   let initialInvitationData = null;
   let error = null;
@@ -142,7 +141,6 @@ export default async function InvitationPage({ params: paramsProp, searchParams:
         type={type}
         templateId={templateId}
         uniqueId={uniqueId}
-        searchParams={resolvedSearchParams}
         initialData={initialInvitationData}
       />
     </Suspense>

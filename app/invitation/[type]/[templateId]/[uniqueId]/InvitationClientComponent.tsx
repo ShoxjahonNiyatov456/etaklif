@@ -13,7 +13,7 @@ interface InvitationClientComponentProps {
   type: string;
   templateId: string;
   uniqueId: string;
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams?: { [key: string]: string | string[] | undefined };
   initialData?: any;
 }
 

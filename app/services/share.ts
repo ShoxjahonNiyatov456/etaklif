@@ -6,6 +6,7 @@ import {
   getDoc,
 } from "firebase/firestore";
 import { db } from "./database";
+import { cache } from 'react';
 
 /**
  * Taklifnoma uchun unikal havola yaratish
@@ -117,7 +118,7 @@ const saveInvitationToFirebase = async (
 /**
  * Taklifnoma ma'lumotlarini unikal ID orqali Firebase'dan olish
  */
-export const getInvitationByUniqueId = async (
+export const getInvitationByUniqueId = cache(async (
   uniqueId: string
 ): Promise<any | null> => {
   if (!uniqueId) {
@@ -140,7 +141,7 @@ export const getInvitationByUniqueId = async (
     console.error("Taklifnoma olishda xatolik:", uniqueId, error);
     return null;
   }
-};
+});
 
 /**
  * Taklifnoma ma'lumotlarini tozalash va Firestore uchun moslashtirish
