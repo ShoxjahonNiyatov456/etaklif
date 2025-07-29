@@ -51,9 +51,9 @@ export default function ContactInfoSection() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.3 }}
-                className="bg-gray-800/50 backdrop-blur-sm p-6 rounded-xl border border-gray-700"
+                className="bg-gray-800/50 backdrop-blur-sm p-6 rounded-xl border border-gray-700 mb-6"
             >
-                <h2 className="text-xl font-semibold mb-6 text-white">Ijtimoiy tarmoqlar</h2>
+                <h2 className="text-xl font-semibold text-white">Ijtimoiy tarmoqlar</h2>
 
                 <div className="flex space-x-4">
                     <a

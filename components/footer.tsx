@@ -29,7 +29,7 @@ export default function Footer() {
                 <Instagram className="h-4 w-4" />
               </a>
               <a
-                href="https://t.me/Popo_1302"
+                href="https://t.me/DarkynZ"
                 className="w-9 h-9 rounded-full bg-gray-800 hover:bg-purple-900/50 flex items-center justify-center text-gray-400 hover:text-purple-400 transition-colors"
               >
                 <Send className="h-4 w-4" />
