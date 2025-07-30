@@ -3,13 +3,29 @@ import { motion } from "framer-motion"
 import { useRouter } from "next/navigation"
 import { ProposalCard } from "@/components/ui/proposal-card"
 import { useEffect, useState } from "react"
+import { onAuthStateChanged } from "firebase/auth"
+import { auth } from "../firebase"
 
 export default function SelectTypePage() {
   const router = useRouter()
   const [hasMounted, setHasMounted] = useState(false)
+  const [currentUser, setCurrentUser] = useState<any>(null)
+  const [authChecked, setAuthChecked] = useState(false)
 
   useEffect(() => {
     setHasMounted(true)
+  }, [])
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setCurrentUser(user)
+      } else {
+        setCurrentUser(null)
+      }
+      setAuthChecked(true)
+    })
+    return () => unsubscribe()
   }, [])
 
   const invitationTypes = [
@@ -65,7 +81,14 @@ export default function SelectTypePage() {
   }
 
   const handleTypeSelect = (typeId: string) => {
-    router.push(`/create/${typeId}`)
+    if (currentUser) {
+      router.push(`/create/${typeId}`)
+    } else {
+      // Ogohlantirish va ro'yxatdan o'tish sahifasiga yo'naltirish
+      if (confirm("Taklifnoma yaratish uchun avval ro'yxatdan o'tishingiz kerak. Ro'yxatdan o'tish sahifasiga o'tishni istaysizmi?")) {
+        router.push("/register")
+      }
+    }
   }
 
   return (

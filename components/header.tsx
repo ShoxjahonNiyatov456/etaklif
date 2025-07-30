@@ -41,7 +41,7 @@ export default function Header() {
       className={`fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled ? "bg-gray-900/80 backdrop-blur-md border-b border-gray-800" : "bg-transparent"
         }`}
     >
-      <div className="flex items-center justify-between pt-4 mb-4 container px-8">
+      <div className="flex items-center justify-between pt-4 mb-4 container mx-auto px-4">
         <Link href="/" className="flex items-center -space-x-6 bg-none bg-transparent">
           <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-500">
             QADRDONLAR

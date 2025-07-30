@@ -9,16 +9,17 @@ export async function GET(request: NextRequest) {
   try {
     const cookieStore = await cookies();
     const userId = cookieStore.get("userId")?.value || "anonymous";
-    const invitationsCollection = collection(db, "invitations");
-    let invitationsQuery;
-    if (userId && userId !== "anonymous") {
-      invitationsQuery = query(
-        invitationsCollection,
-        where("userId", "==", userId)
-      );
-    } else {
-      invitationsQuery = invitationsCollection;
+
+    // Agar foydalanuvchi ro'yxatdan o'tmagan bo'lsa, bo'sh ro'yxat qaytaramiz
+    if (!userId || userId === "anonymous") {
+      return NextResponse.json({ invitations: [] });
     }
+
+    const invitationsCollection = collection(db, "invitations");
+    const invitationsQuery = query(
+      invitationsCollection,
+      where("userId", "==", userId)
+    );
 
     const querySnapshot = await getDocs(invitationsQuery);
     const invitations: any[] = [];

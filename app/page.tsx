@@ -284,7 +284,14 @@ export default function Home() {
   const handleTemplateClick = (templateId: string) => {
     const template = templates.find((t) => t.id === templateId)
     if (template) {
-      router.push(`/create/${template.category}?template=${templateId}&style=${template.style}`)
+      if (currentUser) {
+        router.push(`/create/${template.category}?template=${templateId}&style=${template.style}`)
+      } else {
+        // Ogohlantirish va ro'yxatdan o'tish sahifasiga yo'naltirish
+        if (confirm("Taklifnoma yaratish uchun avval ro'yxatdan o'tishingiz kerak. Ro'yxatdan o'tish sahifasiga o'tishni istaysizmi?")) {
+          router.push("/register")
+        }
+      }
     }
   }
 
@@ -334,7 +341,16 @@ export default function Home() {
                 <Button
                   size="lg"
                   className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white border-0 rounded-full px-8"
-                  onClick={() => router.push("/select-type")}
+                  onClick={() => {
+                    if (currentUser) {
+                      router.push("/select-type")
+                    } else {
+                      // Ogohlantirish va ro'yxatdan o'tish sahifasiga yo'naltirish
+                      if (confirm("Taklifnoma yaratish uchun avval ro'yxatdan o'tishingiz kerak. Ro'yxatdan o'tish sahifasiga o'tishni istaysizmi?")) {
+                        router.push("/register")
+                      }
+                    }
+                  }}
                 >
                   Boshlash
                   <ArrowRight className="ml-2 h-4 w-4" />
@@ -499,6 +515,17 @@ export default function Home() {
                     <Button
                       size="sm"
                       className="rounded-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 border-0 text-xs md:text-sm px-2 md:px-3"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (!currentUser) {
+                          // Ogohlantirish va ro'yxatdan o'tish sahifasiga yo'naltirish
+                          if (confirm("Taklifnoma yaratish uchun avval ro'yxatdan o'tishingiz kerak. Ro'yxatdan o'tish sahifasiga o'tishni istaysizmi?")) {
+                            router.push("/register");
+                          }
+                        } else {
+                          handleTemplateClick(template.id);
+                        }
+                      }}
                     >
                       Yaratish
                       <ChevronRight className="ml-1 h-3 w-3 md:h-4 md:w-4" />

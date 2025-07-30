@@ -214,7 +214,7 @@ const getTemplatesForType = (currentType: string): Template[] => {
           style: "traditional-jubilee",
           hasImageUpload: false,
           color: "from-red-500 to-rose-500",
-        }, 
+        },
         {
           id: "luxury",
           name: "Hashamatli",
@@ -323,14 +323,6 @@ export default function PaymentSection({
   );
   const templateRequiresImage = currentTemplateDetails?.hasImageUpload ?? false;
   const handleShareInvitation = async () => {
-    if (!isAuthenticated) {
-      toast({
-        variant: "destructive",
-        title: "Avval ro'yxatdan o'ting!!!",
-        description: "Taklifnomani ulashish uchun iltimos ro'yxatdan o'ting",
-      });
-      return;
-    }
     try {
       setIsGeneratingLink(true);
       const link = await generateShareableLink(
@@ -347,15 +339,6 @@ export default function PaymentSection({
     }
   };
   const handlePaymentProcessing = async () => {
-    if (!isAuthenticated) {
-      toast({
-        variant: "destructive",
-        title: "Avval ro'yxatdan o'ting!!!",
-        description: "Taklifnomani yakunlash uchun iltimos ro'yxatdan o'ting",
-      });
-      setIsConfirmDialogOpen(false);
-      return;
-    }
     try {
       setPaymentProcessing(true);
       await new Promise((resolve) => setTimeout(resolve, 2000));
@@ -441,9 +424,8 @@ export default function PaymentSection({
                 <AlertDialogAction
                   onClick={handlePaymentProcessing}
                   disabled={paymentProcessing}
-                  className={`bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white border-0 ${
-                    paymentProcessing ? "opacity-70 cursor-not-allowed" : ""
-                  }`}
+                  className={`bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white border-0 ${paymentProcessing ? "opacity-70 cursor-not-allowed" : ""
+                    }`}
                 >
                   {paymentProcessing ? (
                     <div className="flex items-center">
@@ -473,9 +455,8 @@ export default function PaymentSection({
                 : handleShareInvitation
             }
             disabled={isGeneratingLink || !isAuthenticated}
-            className={`px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-medium rounded-lg transition-colors flex items-center justify-center ${
-              isGeneratingLink ? "opacity-70 cursor-not-allowed" : ""
-            }`}
+            className={`px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-medium rounded-lg transition-colors flex items-center justify-center ${isGeneratingLink ? "opacity-70 cursor-not-allowed" : ""
+              }`}
           >
             {isGeneratingLink ? (
               <>

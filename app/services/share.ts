@@ -90,6 +90,25 @@ const saveInvitationToFirebase = async (
       console.error("Cookie'dan userId ni olishda xatolik:", error);
     }
 
+    // Agar foydalanuvchi ro'yxatdan o'tmagan bo'lsa, localStorage va sessionStorage'dan taklifnoma ma'lumotlarini o'chiramiz
+    if (userId === "anonymous" && typeof window !== 'undefined') {
+      // LocalStorage'dan taklifnomalar bilan bog'liq ma'lumotlarni o'chirish
+      const localStorageKeys = Object.keys(localStorage);
+      localStorageKeys.forEach(key => {
+        if (key.includes('invitation') || key.includes('proposal') || key.includes('template')) {
+          localStorage.removeItem(key);
+        }
+      });
+
+      // SessionStorage'dan taklifnomalar bilan bog'liq ma'lumotlarni o'chirish
+      const sessionStorageKeys = Object.keys(sessionStorage);
+      sessionStorageKeys.forEach(key => {
+        if (key.includes('invitation') || key.includes('proposal') || key.includes('template')) {
+          sessionStorage.removeItem(key);
+        }
+      });
+    }
+
     const invitationsCollection = collection(db, "invitations");
     const invitationRef = doc(invitationsCollection, uniqueId);
     const cleanedInvitationData = cleanInvitationData(invitationData);

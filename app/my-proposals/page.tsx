@@ -47,6 +47,25 @@ export default function MyProposalsPage() {
 
   useEffect(() => {
     setHasMounted(true);
+
+    // Agar localStorage yoki sessionStorage'da taklifnomalar saqlangan bo'lsa, ularni o'chirib tashlaymiz
+    if (typeof window !== 'undefined') {
+      // LocalStorage'dan taklifnomalar bilan bog'liq ma'lumotlarni o'chirish
+      const localStorageKeys = Object.keys(localStorage);
+      localStorageKeys.forEach(key => {
+        if (key.includes('invitation') || key.includes('proposal') || key.includes('template')) {
+          localStorage.removeItem(key);
+        }
+      });
+
+      // SessionStorage'dan taklifnomalar bilan bog'liq ma'lumotlarni o'chirish
+      const sessionStorageKeys = Object.keys(sessionStorage);
+      sessionStorageKeys.forEach(key => {
+        if (key.includes('invitation') || key.includes('proposal') || key.includes('template')) {
+          sessionStorage.removeItem(key);
+        }
+      });
+    }
   }, []);
 
   useEffect(() => {

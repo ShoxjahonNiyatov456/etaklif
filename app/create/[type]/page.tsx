@@ -5,7 +5,7 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { ArrowLeft, ArrowRight } from "lucide-react"
-import { useParams, useRouter } from "next/navigation"
+import { useParams, useRouter, useSearchParams } from "next/navigation"
 import dynamic from 'next/dynamic'
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -18,6 +18,7 @@ const PaymentSection = dynamic(() => import('@/components/create/PaymentSection'
 export default function CreatePage() {
   const params = useParams()
   const router = useRouter()
+  const searchParams = useSearchParams()
   const { type } = params
 
   const [activeTab, setActiveTab] = useState("form")
@@ -40,6 +41,27 @@ export default function CreatePage() {
   const [month, setMonth] = useState<string>("")
   const [hours, setHours] = useState<string>("")
   const [minutes, setMinutes] = useState<string>("")
+
+  // URL parametrlarini tekshirish
+  useEffect(() => {
+    const templateParam = searchParams.get('template')
+    const styleParam = searchParams.get('style')
+
+    if (templateParam && styleParam) {
+      setSelectedTemplate(styleParam)
+      setTemplateSelected(true)
+      // Ma'lumotlar to'ldirilmaguncha formCompleted false bo'lib qoladi
+      // setFormCompleted(true) - bu qatorni o'chirib tashladik
+    }
+  }, [searchParams])
+
+  // Agar form to'ldirilgan va shablon tanlangan bo'lsa, preview qismiga o'tish
+  useEffect(() => {
+    // Faqat formCompleted true bo'lganda preview qismiga o'tish
+    if (formCompleted && templateSelected) {
+      setActiveTab("preview")
+    }
+  }, [formCompleted, templateSelected])
 
   const getTomorrowDate = () => {
     const today = new Date()
