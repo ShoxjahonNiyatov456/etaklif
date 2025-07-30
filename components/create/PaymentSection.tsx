@@ -1,10 +1,10 @@
-"use client";
+"use client"
 
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { Share2, Check, Loader2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { ShareModal } from "@/components/ui/share-modal";
+import { useState, useEffect, Fragment } from "react"
+import { motion } from "framer-motion"
+import { Share2, Check, Loader2 } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { ShareModal } from "@/components/ui/share-modal"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -14,17 +14,18 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogDescription,
-} from "@/components/ui/alert-dialog";
-import { generateShareableLink } from "@/app/services/share";
-import { auth } from "@/app/firebase";
-import { toast } from "../ui/use-toast";
+} from "@/components/ui/alert-dialog"
+import { generateShareableLink } from "@/app/services/share"
+import { auth } from "@/app/firebase"
+import { toast } from "../ui/use-toast"
+import { PaymentModal, type PaymentFormData } from "@/components/payment/PaymentModal"
 
 interface Template {
-  id: string;
-  name: string;
-  style: string;
-  hasImageUpload: boolean;
-  color: string;
+  id: string
+  name: string
+  style: string
+  hasImageUpload: boolean
+  color: string
 }
 
 const getTemplatesForType = (currentType: string): Template[] => {
@@ -94,7 +95,7 @@ const getTemplatesForType = (currentType: string): Template[] => {
           hasImageUpload: false,
           color: "from-purple-500 to-indigo-500",
         },
-      ];
+      ]
     case "birthday":
       return [
         {
@@ -139,7 +140,7 @@ const getTemplatesForType = (currentType: string): Template[] => {
           hasImageUpload: false,
           color: "from-pink-500 to-rose-500",
         },
-      ];
+      ]
     case "funeral":
       return [
         {
@@ -177,7 +178,7 @@ const getTemplatesForType = (currentType: string): Template[] => {
           hasImageUpload: false,
           color: "from-green-500 to-emerald-500",
         },
-      ];
+      ]
     case "jubilee":
       return [
         {
@@ -236,7 +237,7 @@ const getTemplatesForType = (currentType: string): Template[] => {
           hasImageUpload: false,
           color: "from-cyan-500 to-blue-500",
         },
-      ];
+      ]
     case "engagement":
       return [
         {
@@ -274,212 +275,260 @@ const getTemplatesForType = (currentType: string): Template[] => {
           hasImageUpload: false,
           color: "from-amber-500 to-yellow-500",
         },
-      ];
+      ]
     default:
-      return [];
+      return []
   }
-};
-
-interface PaymentSectionProps {
-  type: string;
-  selectedTemplate: string;
-  formData: {
-    firstName: string;
-    secondName: string;
-    date: string;
-    time: string;
-    location: string;
-    additionalInfo: string;
-    age: string;
-    parents: string;
-  };
-  uploadedImage: string | null;
 }
 
-export default function PaymentSection({
-  type,
-  selectedTemplate,
-  formData,
-  uploadedImage,
-}: PaymentSectionProps) {
-  const [paymentCompleted, setPaymentCompleted] = useState(false);
-  const [shareableLink, setShareableLink] = useState("");
-  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
-  const [paymentProcessing, setPaymentProcessing] = useState(false);
-  const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
-  const [isGeneratingLink, setIsGeneratingLink] = useState(false);
-  const [hasMounted, setHasMounted] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+interface PaymentSectionProps {
+  type: string
+  selectedTemplate: string
+  formData: {
+    firstName: string
+    secondName: string
+    date: string
+    time: string
+    location: string
+    additionalInfo: string
+    age: string
+    parents: string
+  }
+  uploadedImage: string | null
+}
+
+export default function PaymentSection({ type, selectedTemplate, formData, uploadedImage }: PaymentSectionProps) {
+  const [paymentCompleted, setPaymentCompleted] = useState(false)
+  const [shareableLink, setShareableLink] = useState("")
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false)
+  const [paymentProcessing, setPaymentProcessing] = useState(false)
+  const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false)
+  const [isGeneratingLink, setIsGeneratingLink] = useState(false)
+  const [hasMounted, setHasMounted] = useState(false)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [uniqueId, setUniqueId] = useState("")
 
   useEffect(() => {
-    setHasMounted(true);
+    setHasMounted(true)
     const unsubscribe = auth.onAuthStateChanged((user) => {
-      setIsAuthenticated(!!user);
-    });
-    return () => unsubscribe();
-  }, []);
-  const currentTemplateDetails = getTemplatesForType(type).find(
-    (t) => t.id === selectedTemplate
-  );
-  const templateRequiresImage = currentTemplateDetails?.hasImageUpload ?? false;
+      setIsAuthenticated(!!user)
+    })
+    return () => unsubscribe()
+  }, [])
+
+  const currentTemplateDetails = getTemplatesForType(type).find((t) => t.id === selectedTemplate)
+
+  const templateRequiresImage = currentTemplateDetails?.hasImageUpload ?? false
+
   const handleShareInvitation = async () => {
     try {
-      setIsGeneratingLink(true);
-      const link = await generateShareableLink(
-        type as string,
-        selectedTemplate,
-        formData
-      );
-      setShareableLink(link);
-      setIsShareModalOpen(true);
-      setIsGeneratingLink(false);
+      setIsGeneratingLink(true)
+      const link = await generateShareableLink(type as string, selectedTemplate, formData)
+      setShareableLink(link)
+      setIsShareModalOpen(true)
+      setIsGeneratingLink(false)
     } catch (error) {
-      console.error("Error generating link:", error);
-      setIsGeneratingLink(false);
+      console.error("Error generating link:", error)
+      setIsGeneratingLink(false)
     }
-  };
+  }
+
   const handlePaymentProcessing = async () => {
     try {
-      setPaymentProcessing(true);
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      setIsGeneratingLink(true);
-      const link = await generateShareableLink(
-        type as string,
-        selectedTemplate,
-        formData
-      );
-      setShareableLink(link);
-      setIsConfirmDialogOpen(false);
-      setPaymentCompleted(true);
-      setPaymentProcessing(false);
-      setIsGeneratingLink(false);
+      setPaymentProcessing(true)
+      setIsGeneratingLink(true)
+
+      // Generate the shareable link first
+      const link = await generateShareableLink(type as string, selectedTemplate, formData)
+
+      // Extract the uniqueId from the link
+      const uniqueIdMatch = link.match(/\/[^/]+\/[^/]+\/([^/]+)$/)
+      const extractedUniqueId = uniqueIdMatch ? uniqueIdMatch[1] : null
+
+      if (!extractedUniqueId) {
+        throw new Error("Could not extract uniqueId from generated link")
+      }
+
+      // Save the uniqueId for later use
+      setUniqueId(extractedUniqueId)
+      setShareableLink(link)
+      setIsConfirmDialogOpen(false)
+
+      // Open payment modal
+      setIsPaymentModalOpen(true)
+      setPaymentProcessing(false)
+      setIsGeneratingLink(false)
     } catch (error) {
-      console.error("Error in payment processing:", error);
-      setPaymentProcessing(false);
-      setIsGeneratingLink(false);
+      console.error("Error in payment processing:", error)
+      toast({
+        variant: "destructive",
+        title: "Xatolik yuz berdi",
+        description: "Taklifnomani yaratishda xatolik yuz berdi. Iltimos, qayta urinib ko'ring.",
+      })
+      setPaymentProcessing(false)
+      setIsGeneratingLink(false)
     }
-  };
+  }
+
+  // Payment submission function
+  const submitPaymentRequest = async (paymentData: PaymentFormData) => {
+    try {
+      setIsSubmitting(true)
+      const response = await fetch("/api/update-payment-status", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          uniqueId: uniqueId,
+          paymentStatus: "pending",
+          screenshotBase64: paymentData.screenshotBase64,
+        }),
+      })
+
+      const result = await response.json()
+      if (result.success) {
+        setIsPaymentModalOpen(false)
+        setPaymentCompleted(true)
+        toast({
+          title: "To'lov so'rovi yuborildi",
+          description: "To'lov so'rovingiz muvaffaqiyatli yuborildi va tez orada ko'rib chiqiladi.",
+        })
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Xatolik yuz berdi",
+          description: result.error || "To'lov so'rovini yuborishda xatolik yuz berdi",
+        })
+      }
+    } catch (error) {
+      console.error("Payment submission error:", error)
+      toast({
+        variant: "destructive",
+        title: "Xatolik yuz berdi",
+        description: "To'lov so'rovini yuborishda xatolik yuz berdi. Iltimos, qayta urinib ko'ring.",
+      })
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
   const paymentSectionVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.5, delay: 0.1 } },
-  };
+  }
 
   return (
-    <motion.div
-      initial="hidden"
-      animate={hasMounted ? "visible" : "hidden"}
-      variants={paymentSectionVariants}
-      className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-6 shadow-lg mt-6"
-    >
-      <h3 className="text-xl font-semibold mb-6 text-white">
-        Taklifnomani yakunlash
-      </h3>
-      {!paymentCompleted ? (
-        <>
-          {!(templateRequiresImage && !uploadedImage) && (
+    <>
+      <PaymentModal
+        isOpen={isPaymentModalOpen}
+        onClose={() => setIsPaymentModalOpen(false)}
+        onSubmit={submitPaymentRequest}
+        isSubmitting={isSubmitting}
+        cardNumber="4073 4200 2379 1357"
+        cardOwner="Niyatov Shohjahon"
+      />
+      <motion.div
+        initial="hidden"
+        animate={hasMounted ? "visible" : "hidden"}
+        variants={paymentSectionVariants}
+        className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-6 shadow-lg mt-6"
+      >
+        <h3 className="text-xl font-semibold mb-6 text-white">Taklifnomani yakunlash</h3>
+
+        {!paymentCompleted ? (
+          <>
+            {!(templateRequiresImage && !uploadedImage) && (
+              <Button
+                onClick={() => {
+                  if (!isAuthenticated) {
+                    toast({
+                      variant: "destructive",
+                      title: "Avval ro'yxatdan o'ting!!!",
+                      description: "Taklifnomani yakunlash uchun iltimos ro'yxatdan o'ting",
+                    })
+                  } else {
+                    setIsConfirmDialogOpen(true)
+                  }
+                }}
+                disabled={paymentProcessing}
+                className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white border-0 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {paymentProcessing ? (
+                  <div className="flex items-center justify-center">
+                    <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+                    <span>Tayyorlanmoqda...</span>
+                  </div>
+                ) : (
+                  <>Yakunlash uchun bosing!</>
+                )}
+              </Button>
+            )}
+
+            <AlertDialog open={isConfirmDialogOpen} onOpenChange={setIsConfirmDialogOpen}>
+              <AlertDialogContent className="bg-gray-900 border border-gray-800 text-white">
+                <AlertDialogHeader>
+                  <AlertDialogTitle className="text-white">Rostan ham tugallashni xoxlaysizmi?</AlertDialogTitle>
+                  <AlertDialogDescription className="text-gray-400">
+                    Bu amal taklifnomangizni yakunlaydi va ulashish uchun havola yaratadi. Davom etishni xohlaysizmi?
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel className="bg-gray-800 text-white border-gray-700 hover:bg-gray-700 hover:text-white">
+                    Bekor qilish
+                  </AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={handlePaymentProcessing}
+                    disabled={paymentProcessing}
+                    className={`bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white border-0 ${paymentProcessing ? "opacity-70 cursor-not-allowed" : ""
+                      }`}
+                  >
+                    {paymentProcessing ? (
+                      <div className="flex items-center">
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        To'lov amalga oshirilmoqda...
+                      </div>
+                    ) : (
+                      "Yakunlash"
+                    )}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </>
+        ) : (
+          <div className="flex flex-col items-center justify-center space-y-6 mt-6">
+            <div className="flex items-center justify-center w-20 h-20 bg-gradient-to-br from-green-500/20 to-green-600/20 rounded-full border border-green-500/30">
+              <Check className="h-10 w-10 text-green-500" />
+            </div>
+            <h3 className="text-xl font-semibold text-green-500">To'lov muvaffaqiyatli yakunlandi!</h3>
             <Button
-              onClick={() => {
-                if (!isAuthenticated) {
-                  toast({
-                    variant: "destructive",
-                    title: "Avval ro'yxatdan o'ting!!!",
-                    description:
-                      "Taklifnomani yakunlash uchun iltimos ro'yxatdan o'ting",
-                  });
-                } else {
-                  setIsConfirmDialogOpen(true);
-                }
-              }}
-              disabled={paymentProcessing}
-              className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white border-0 disabled:opacity-50 disabled:cursor-not-allowed"
+              onClick={shareableLink ? () => setIsShareModalOpen(true) : handleShareInvitation}
+              disabled={isGeneratingLink || !isAuthenticated}
+              className={`px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-medium rounded-lg transition-colors flex items-center justify-center ${isGeneratingLink ? "opacity-70 cursor-not-allowed" : ""
+                }`}
             >
-              {paymentProcessing ? (
-                <div className="flex items-center justify-center">
+              {isGeneratingLink ? (
+                <>
                   <Loader2 className="h-5 w-5 mr-2 animate-spin" />
-                  <span>Tayyorlanmoqda...</span>
-                </div>
+                  <span>Havola tayyorlanmoqda...</span>
+                </>
               ) : (
-                <>Yakunlash uchun bosing!</>
+                <>
+                  <Share2 className="h-5 w-5 mr-2" />
+                  Taklifnomani ulashish
+                </>
               )}
             </Button>
-          )}
-          <AlertDialog
-            open={isConfirmDialogOpen}
-            onOpenChange={setIsConfirmDialogOpen}
-          >
-            <AlertDialogContent className="bg-gray-900 border border-gray-800 text-white">
-              <AlertDialogHeader>
-                <AlertDialogTitle className="text-white">
-                  Rostan ham tugallashni xoxlaysizmi?
-                </AlertDialogTitle>
-                <AlertDialogDescription className="text-gray-400">
-                  Bu amal taklifnomangizni yakunlaydi va ulashish uchun havola
-                  yaratadi. Davom etishni xohlaysizmi?
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel className="bg-gray-800 text-white border-gray-700 hover:bg-gray-700 hover:text-white">
-                  Bekor qilish
-                </AlertDialogCancel>
-                <AlertDialogAction
-                  onClick={handlePaymentProcessing}
-                  disabled={paymentProcessing}
-                  className={`bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white border-0 ${paymentProcessing ? "opacity-70 cursor-not-allowed" : ""
-                    }`}
-                >
-                  {paymentProcessing ? (
-                    <div className="flex items-center">
-                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      To'lov amalga oshirilmoqda...
-                    </div>
-                  ) : (
-                    "Yakunlash"
-                  )}
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-        </>
-      ) : (
-        <div className="flex flex-col items-center justify-center space-y-6 mt-6">
-          <div className="flex items-center justify-center w-20 h-20 bg-gradient-to-br from-green-500/20 to-green-600/20 rounded-full border border-green-500/30">
-            <Check className="h-10 w-10 text-green-500" />
           </div>
-          <h3 className="text-xl font-semibold text-green-500">
-            To'lov muvaffaqiyatli yakunlandi!
-          </h3>
-          <Button
-            onClick={
-              shareableLink
-                ? () => setIsShareModalOpen(true)
-                : handleShareInvitation
-            }
-            disabled={isGeneratingLink || !isAuthenticated}
-            className={`px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-medium rounded-lg transition-colors flex items-center justify-center ${isGeneratingLink ? "opacity-70 cursor-not-allowed" : ""
-              }`}
-          >
-            {isGeneratingLink ? (
-              <>
-                <Loader2 className="h-5 w-5 mr-2 animate-spin" />
-                <span>Havola tayyorlanmoqda...</span>
-              </>
-            ) : (
-              <>
-                <Share2 className="h-5 w-5 mr-2" />
-                Taklifnomani ulashish
-              </>
-            )}
-          </Button>
-        </div>
-      )}
-      {shareableLink && (
-        <ShareModal
-          isOpen={isShareModalOpen}
-          onClose={() => setIsShareModalOpen(false)}
-          url={shareableLink}
-          title=""
-        />
-      )}
-    </motion.div>
-  );
+        )}
+
+        {shareableLink && (
+          <ShareModal isOpen={isShareModalOpen} onClose={() => setIsShareModalOpen(false)} url={shareableLink} title="" />
+        )}
+      </motion.div>
+    </>
+  )
 }

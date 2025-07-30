@@ -38,6 +38,7 @@ export async function POST(request: NextRequest) {
       templateId,
       invitationData,
       userId: userId || "anonymous",
+      paymentStatus: "unpaid", // Yangi maydon: to'lov statusi
       createdAt: createdAt ? new Date(createdAt) : serverTimestamp(),
       updatedAt: serverTimestamp(),
     });

@@ -2,6 +2,8 @@ import { Metadata } from 'next';
 import { Suspense } from 'react';
 import InvitationClientComponent from './InvitationClientComponent';
 import { getInvitationByUniqueId } from '@/app/services/share';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '@/app/services/database';
 
 interface InvitationPageProps {
   params: { type: string; templateId: string; uniqueId: string };
@@ -117,7 +119,7 @@ export async function generateMetadata(
 
 export default async function InvitationPage({ params: paramsProp }: InvitationPageProps) {
   const { type, templateId, uniqueId } = paramsProp;
-
+  let paymentStatus = 'unpaid';
   let initialInvitationData = null;
   let error = null;
 
@@ -125,24 +127,37 @@ export default async function InvitationPage({ params: paramsProp }: InvitationP
     const rawData = await getInvitationByUniqueId(uniqueId);
     if (rawData) {
       initialInvitationData = rawData.invitationData || rawData;
+
+      // Firebase'dan to'lov statusini tekshirish
+      const invitationRef = doc(db, "invitations", uniqueId);
+      const invitationSnap = await getDoc(invitationRef);
+
+      if (invitationSnap.exists()) {
+        const data = invitationSnap.data();
+        paymentStatus = data.paymentStatus || 'unpaid';
+      }
     } else {
       console.warn(`[InvitationPage] No data found for uniqueId: ${uniqueId}`);
     }
   } catch (e: any) {
     error = e.message || "Ma'lumotlarni yuklashda xatolik";
+    console.error("To'lov statusini tekshirishda xatolik:", e);
   }
   if (error && !initialInvitationData) {
     return <div>Xatolik yuz berdi: {error}</div>;
   }
 
   return (
-    <Suspense fallback={<div>Yuklanmoqda...</div>}>
-      <InvitationClientComponent
-        type={type}
-        templateId={templateId}
-        uniqueId={uniqueId}
-        initialData={initialInvitationData}
-      />
-    </Suspense>
+    <div className="min-h-screen">
+      <Suspense fallback={<div className="flex justify-center items-center min-h-screen"><div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div></div>}>
+        <InvitationClientComponent
+          type={type}
+          templateId={templateId}
+          uniqueId={uniqueId}
+          initialData={initialInvitationData}
+          paymentStatus={paymentStatus as 'paid' | 'unpaid' | 'pending'}
+        />
+      </Suspense>
+    </div>
   );
 }

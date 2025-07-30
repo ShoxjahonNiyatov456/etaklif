@@ -8,6 +8,10 @@ import FuneralTemplate from "@/components/invitation-templates/FuneralTemplate";
 import JubileeTemplate from "@/components/invitation-templates/JubileeTemplate";
 import EngagementTemplate from "@/components/invitation-templates/EngagementTemplate";
 import { getCachedInvitation } from "@/app/services/cache";
+import { PaymentModal } from "@/components/payment/PaymentModal";
+import { AlertTriangle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 interface InvitationClientComponentProps {
   type: string;
@@ -15,6 +19,7 @@ interface InvitationClientComponentProps {
   uniqueId: string;
   searchParams?: { [key: string]: string | string[] | undefined };
   initialData?: any;
+  paymentStatus?: 'paid' | 'unpaid' | 'pending';
 }
 
 export default function InvitationClientComponent({
@@ -22,12 +27,15 @@ export default function InvitationClientComponent({
   templateId,
   uniqueId,
   initialData,
+  paymentStatus: initialPaymentStatus,
 }: InvitationClientComponentProps) {
   const [invitationData, setInvitationData] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [ogTitle, setOgTitle] = useState<string>("");
   const [ogDescription, setOgDescription] = useState<string>("");
+  const [paymentStatus, setPaymentStatus] = useState<'paid' | 'unpaid' | 'pending'>(initialPaymentStatus || 'unpaid');
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState<boolean>(false);
   const siteUrl =
     process.env.NEXT_PUBLIC_API_URL || "https://etaklif.vercel.app";
   const updateMetaData = (rawData: any) => {
@@ -87,11 +95,56 @@ export default function InvitationClientComponent({
   const MAX_RETRIES = 3;
   const RETRY_DELAY = 2000;
 
+  // To'lov statusini tekshirish uchun funksiya
+  const checkPaymentStatus = async (id: string) => {
+    try {
+      const response = await fetch(`/api/update-payment-status?uniqueId=${id}`);
+      const data = await response.json();
+      if (data.success && data.paymentStatus) {
+        setPaymentStatus(data.paymentStatus);
+        return data.paymentStatus;
+      } else {
+        setPaymentStatus('unpaid');
+        return 'unpaid';
+      }
+    } catch (error) {
+      console.error("To'lov statusini tekshirishda xatolik:", error);
+      setPaymentStatus('unpaid');
+      return 'unpaid';
+    }
+  };
+
+  // To'lov statusini davriy ravishda tekshirish
+  useEffect(() => {
+    let intervalId: NodeJS.Timeout;
+
+    // Agar to'lov statusi 'pending' bo'lsa, har 30 soniyada tekshiramiz
+    if (paymentStatus === 'pending' && uniqueId) {
+      intervalId = setInterval(async () => {
+        const status = await checkPaymentStatus(uniqueId);
+        // Agar to'lov statusi o'zgargan bo'lsa, intervalni to'xtatamiz
+        if (status !== 'pending') {
+          clearInterval(intervalId);
+        }
+      }, 30000); // 30 soniya
+    }
+
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
+  }, [paymentStatus, uniqueId]);
+
   useEffect(() => {
     if (initialData) {
       setInvitationData(initialData);
       updateMetaData(initialData);
       setLoading(false);
+      // To'lov statusini tekshirish
+      if (uniqueId) {
+        checkPaymentStatus(uniqueId);
+      }
       return;
     }
 
@@ -140,6 +193,9 @@ export default function InvitationClientComponent({
             }
             return prevData;
           });
+
+          // To'lov statusini tekshirish
+          checkPaymentStatus(uniqueId);
         }
       } catch (error: any) {
         if (!isMounted) return;
@@ -172,6 +228,42 @@ export default function InvitationClientComponent({
       }
     };
   }, [uniqueId, type, initialData]); // Added initialData to dependencies
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+
+  // To'lov so'rovini yuborish funksiyasi
+  const submitPaymentRequest = async (paymentData: any) => {
+    try {
+      setIsSubmitting(true);
+      const response = await fetch('/api/update-payment-status', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          uniqueId: uniqueId,
+          paymentStatus: 'pending',
+          screenshotBase64: paymentData.screenshotBase64,
+        }),
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        setPaymentStatus('pending');
+        setShowPaymentModal(false);
+        setShowSuccessModal(true);
+      } else {
+        toast.error(result.error || "Xatolik yuz berdi");
+      }
+    } catch (error) {
+      console.error("Payment submission error:", error);
+      toast.error("To'lov so'rovini yuborishda xatolik yuz berdi");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const renderTemplate = () => {
     if (loading && !invitationData) {
@@ -225,69 +317,121 @@ export default function InvitationClientComponent({
         <p>Taklifnoma turi, shablon ID yoki asosiy ma'lumotlar topilmadi.</p>
       );
     }
-    switch (templateType) {
-      case "wedding":
-        return (
-          <WeddingTemplate
-            style={currentTemplateId}
-            firstName={actualInvitationData.firstName}
-            secondName={actualInvitationData.secondName}
-            date={actualInvitationData.date}
-            time={actualInvitationData.time}
-            location={actualInvitationData.location}
-            additionalInfo={actualInvitationData.additionalInfo}
-          />
-        );
-      case "birthday":
-        return (
-          <BirthdayTemplate
-            style={currentTemplateId}
-            firstName={actualInvitationData.firstName || ''}
-            date={actualInvitationData.date || ''}
-            age={actualInvitationData.age || ''}
-            time={actualInvitationData.time || ''}
-            location={actualInvitationData.location || ''}
-            additionalInfo={actualInvitationData.additionalInfo || ''}
-          />
-        );
-      case "funeral":
-        return (
-          <FuneralTemplate
-            style={currentTemplateId}
-            firstName={actualInvitationData.firstName}
-            date={actualInvitationData.date}
-            time={actualInvitationData.time}
-            location={actualInvitationData.location}
-            additionalInfo={actualInvitationData.additionalInfo}
-          />
-        );
-      case "jubilee":
-        return (
-          <JubileeTemplate
-            style={currentTemplateId}
-            firstName={actualInvitationData.firstName}
-            age={actualInvitationData.age || ""}
-            date={actualInvitationData.date}
-            time={actualInvitationData.time}
-            location={actualInvitationData.location}
-            additionalInfo={actualInvitationData.additionalInfo}
-          />
-        );
-      case "engagement":
-        return (
-          <EngagementTemplate
-            style={currentTemplateId}
-            firstName={actualInvitationData.firstName}
-            parents={actualInvitationData.parents}
-            date={actualInvitationData.date}
-            time={actualInvitationData.time}
-            location={actualInvitationData.location}
-            additionalInfo={actualInvitationData.additionalInfo}
-          />
-        );
-      default:
-        return <p>Noma'lum taklifnoma turi</p>;
+
+    // Taklifnoma shablonini render qilish
+    const renderInvitationTemplate = () => {
+      switch (templateType) {
+        case "wedding":
+          return (
+            <WeddingTemplate
+              style={currentTemplateId}
+              firstName={actualInvitationData.firstName}
+              secondName={actualInvitationData.secondName}
+              date={actualInvitationData.date}
+              time={actualInvitationData.time}
+              location={actualInvitationData.location}
+              additionalInfo={actualInvitationData.additionalInfo}
+            />
+          );
+        case "birthday":
+          return (
+            <BirthdayTemplate
+              style={currentTemplateId}
+              firstName={actualInvitationData.firstName || ''}
+              date={actualInvitationData.date || ''}
+              age={actualInvitationData.age || ''}
+              time={actualInvitationData.time || ''}
+              location={actualInvitationData.location || ''}
+              additionalInfo={actualInvitationData.additionalInfo || ''}
+            />
+          );
+        case "funeral":
+          return (
+            <FuneralTemplate
+              style={currentTemplateId}
+              firstName={actualInvitationData.firstName}
+              date={actualInvitationData.date}
+              time={actualInvitationData.time}
+              location={actualInvitationData.location}
+              additionalInfo={actualInvitationData.additionalInfo}
+            />
+          );
+        case "jubilee":
+          return (
+            <JubileeTemplate
+              style={currentTemplateId}
+              firstName={actualInvitationData.firstName}
+              age={actualInvitationData.age || ""}
+              date={actualInvitationData.date}
+              time={actualInvitationData.time}
+              location={actualInvitationData.location}
+              additionalInfo={actualInvitationData.additionalInfo}
+            />
+          );
+        case "engagement":
+          return (
+            <EngagementTemplate
+              style={currentTemplateId}
+              firstName={actualInvitationData.firstName}
+              parents={actualInvitationData.parents}
+              date={actualInvitationData.date}
+              time={actualInvitationData.time}
+              location={actualInvitationData.location}
+              additionalInfo={actualInvitationData.additionalInfo}
+            />
+          );
+        default:
+          return <p>Noma'lum taklifnoma turi</p>;
+      }
+    };
+
+    // To'lov qilinmagan taklifnoma uchun blur va to'lov tugmasi
+    if (paymentStatus === 'unpaid') {
+      return (
+        <div className="relative">
+          <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/50 backdrop-blur-sm rounded-lg">
+            <div className="bg-white p-6 rounded-lg shadow-lg max-w-md mx-auto text-center mb-4">
+              <AlertTriangle className="h-12 w-12 text-yellow-500 mx-auto mb-4" />
+              <h2 className="text-2xl font-bold text-red-600 mb-2">TO'LANMAGAN</h2>
+              <p className="mb-4">Bu taklifnoma hali to'lanmagan. To'lovni amalga oshirish uchun quyidagi tugmani bosing.</p>
+              <div className="mb-4 p-3 bg-gray-100 rounded-lg">
+                <p className="font-medium text-gray-800">Taklifnoma narxi:</p>
+                <p className="text-2xl font-bold text-green-600">50,000 so'm</p>
+              </div>
+              <Button
+                onClick={() => setShowPaymentModal(true)}
+                className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-full"
+              >
+                To'lovni amalga oshirish
+              </Button>
+              <p className="mt-4 text-sm text-gray-500">To'lov qilganingizdan so'ng taklifnoma to'liq ko'rinadi</p>
+              <p className="mt-2 text-xs text-gray-400">To'lov so'rovingiz yuborilgandan so'ng, 24 soat ichida tekshiriladi va faollashtiriladi</p>
+            </div>
+          </div>
+          <div className="filter blur-sm">
+            {renderInvitationTemplate()}
+          </div>
+        </div>
+      );
+    } else if (paymentStatus === 'pending') {
+      return (
+        <div className="relative">
+          <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/50 backdrop-blur-sm rounded-lg">
+            <div className="bg-white p-6 rounded-lg shadow-lg max-w-md mx-auto text-center mb-4">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-yellow-500 mx-auto mb-4"></div>
+              <h2 className="text-2xl font-bold text-yellow-600 mb-2">TO'LOV TEKSHIRILMOQDA</h2>
+              <p className="mb-4">To'lov so'rovingiz ko'rib chiqilmoqda. Bu jarayon bir necha daqiqa davom etishi mumkin.</p>
+            </div>
+          </div>
+          <div className="filter blur-sm">
+            {renderInvitationTemplate()}
+          </div>
+        </div>
+      );
     }
+
+    // To'langan taklifnoma uchun normal ko'rinish
+    return renderInvitationTemplate();
   };
   const imageUrl = `${siteUrl}/invitation/${type}/${templateId}/${uniqueId}/opengraph-image.png`;
   return (
@@ -312,6 +456,39 @@ export default function InvitationClientComponent({
         <meta property="telegram:image" content={imageUrl} />
       </Head>
       <div>{renderTemplate()}</div>
+
+      {/* To'lov modal oynasi */}
+      {showPaymentModal && (
+        <PaymentModal
+          onClose={() => setShowPaymentModal(false)}
+          onSubmit={submitPaymentRequest}
+          cardNumber="4073 4200 2379 1357"
+          cardOwner="Niyatov Shohjahon"
+          isSubmitting={isSubmitting}
+        />
+      )}
+
+      {/* Muvaffaqiyatli to'lov so'rovi modali */}
+      {showSuccessModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full mx-4 text-center">
+            <div className="text-green-500 mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <h2 className="text-2xl font-bold text-gray-800 mb-2">To'lov so'rovi yuborildi!</h2>
+            <p className="mb-4">Sizning to'lov so'rovingiz muvaffaqiyatli yuborildi va tez orada ko'rib chiqiladi.</p>
+            <p className="mb-4 text-sm text-gray-600">To'lov tasdiqlangandan so'ng taklifnomangiz to'liq faollashtiriladi va elektron pochtangizga yuboriladi.</p>
+            <button
+              className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded w-full"
+              onClick={() => setShowSuccessModal(false)}
+            >
+              Yopish
+            </button>
+          </div>
+        </div>
+      )}
     </>
   );
 }

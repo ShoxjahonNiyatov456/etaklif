@@ -29,27 +29,19 @@ export function ShareModal({ isOpen, onClose, url, title }: ShareModalProps) {
 
     if (isBrowser && isOpen) {
       if (url && url.trim() !== "") {
-        setIsLoading(true); 
-        loadingTimerId = setTimeout(async () => {
-          try {
-            await navigator.clipboard.writeText(url);
-            setCopied(true);
-            copiedTimerId = setTimeout(() => {
-              setCopied(false);
-            }, 2000);
-          } catch (error) {
-            console.error("Failed to copy to clipboard automatically: ", error);
-          } finally {
-            setIsLoading(false); 
-          }
+        setIsLoading(true);
+        loadingTimerId = setTimeout(() => {
+          // Don't attempt automatic clipboard write on modal open
+          // Just show the URL for manual copying
+          setIsLoading(false);
         }, 1500);
       } else {
-        setIsLoading(false); 
+        setIsLoading(false);
       }
     } else {
-      setIsLoading(false); 
+      setIsLoading(false);
       if (!isOpen) {
-        setCopied(false); 
+        setCopied(false);
       }
     }
 
@@ -85,14 +77,37 @@ export function ShareModal({ isOpen, onClose, url, title }: ShareModalProps) {
     safeWindowOpen("https://www.instagram.com/")
   }
 
-  const safeCopyToClipboard = () => {
+  const safeCopyToClipboard = async () => {
     if (isBrowser) {
       try {
-        navigator.clipboard.writeText(url)
-        setCopied(true)
-        setTimeout(() => setCopied(false), 2000)
+        // Create a temporary textarea element
+        const textarea = document.createElement('textarea');
+        textarea.value = url;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+
+        // Select and copy the text
+        textarea.select();
+        document.execCommand('copy');
+
+        // Clean up
+        document.body.removeChild(textarea);
+
+        // Update state
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
       } catch (error) {
-        console.error("Failed to copy: ", error)
+        console.error("Failed to copy: ", error);
+
+        // Fallback to clipboard API if available
+        try {
+          await navigator.clipboard.writeText(url);
+          setCopied(true);
+          setTimeout(() => setCopied(false), 2000);
+        } catch (clipboardError) {
+          console.error("Clipboard fallback also failed: ", clipboardError);
+        }
       }
     }
   }
