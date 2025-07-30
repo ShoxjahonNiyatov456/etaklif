@@ -33,68 +33,265 @@ export default function Home() {
     { id: "wedding", name: "To'y" },
     { id: "birthday", name: "Tug'ilgan Kun" },
     { id: "jubilee", name: "Yubiley" },
+    { id: "engagement", name: "Qiz uzatish" },
+    { id: "funeral", name: "El oshi" },
   ]
 
   const templates = [
+    // To'y shablonlari
     {
       id: "wedding-1",
-      title: "Elegant To'y",
+      title: "Burgundy Roses",
       category: "wedding",
-      image: "/tuy.webp",
-      color: "from-purple-500 to-pink-500",
+      image: "/images/gul1.jpg",
+      color: "from-rose-500 to-pink-500",
       icon: <Sparkles className="h-5 w-5" />,
-    },
-    {
-      id: "birthday-1",
-      title: "Modern Tug'ilgan Kun",
-      category: "birthday",
-      image: "/tugulgankun.jpg",
-      color: "from-blue-500 to-cyan-400",
-      icon: <Calendar className="h-5 w-5" />,
-    },
-    {
-      id: "jubilee-1",
-      title: "Premium Yubiley",
-      category: "jubilee",
-      image: "/yubiley.avif",
-      color: "from-amber-500 to-yellow-400",
-      icon: <Crown className="h-5 w-5" />,
+      style: "burgundy-roses"
     },
     {
       id: "wedding-2",
-      title: "Zamonaviy To'y",
+      title: "Peach Floral",
       category: "wedding",
-      image: "https://daryo.uz/static/c9fe7123a518b8b6df3ae09bb01c6b84.jpg",
-      color: "from-rose-500 to-red-500",
+      image: "/images/gul8.jpg",
+      color: "from-amber-500 to-orange-400",
       icon: <Sparkles className="h-5 w-5" />,
+      style: "peach-floral"
+    },
+    {
+      id: "wedding-3",
+      title: "Golden Frame",
+      category: "wedding",
+      image: "/images/gul6.jpg",
+      color: "from-amber-500 to-yellow-400",
+      icon: <Sparkles className="h-5 w-5" />,
+      style: "golden-frame"
+    },
+
+    // Tug'ilgan kun shablonlari
+    {
+      id: "birthday-1",
+      title: "Colorful",
+      category: "birthday",
+      image: "/birthdayimages/b1.jpg",
+      color: "from-blue-500 to-cyan-400",
+      icon: <Calendar className="h-5 w-5" />,
+      style: "colorful"
     },
     {
       id: "birthday-2",
-      title: "Bolalar Tug'ilgan Kuni",
+      title: "Kids",
       category: "birthday",
-      image: "/t.jpg",
+      image: "/birthdayimages/b2.jpg",
       color: "from-green-500 to-emerald-400",
       icon: <Gift className="h-5 w-5" />,
+      style: "kids"
+    },
+    {
+      id: "birthday-3",
+      title: "Floral Frame",
+      category: "birthday",
+      image: "/birthdayimages/b3.jpg",
+      color: "from-blue-500 to-cyan-400",
+      icon: <Calendar className="h-5 w-5" />,
+      style: "floral-frame"
+    },
+    {
+      id: "birthday-4",
+      title: "Butterfly",
+      category: "birthday",
+      image: "/birthdayimages/b4.jpg",
+      color: "from-amber-500 to-yellow-400",
+      icon: <Gift className="h-5 w-5" />,
+      style: "butterfly"
+    },
+    {
+      id: "birthday-5",
+      title: "Kids Photo",
+      category: "birthday",
+      image: "/birthdayimages/b5.jpg",
+      color: "from-orange-500 to-pink-400",
+      icon: <Calendar className="h-5 w-5" />,
+      style: "kids-photo"
+    },
+    {
+      id: "birthday-6",
+      title: "Unicorn",
+      category: "birthday",
+      image: "/birthdayimages/b6.jpg",
+      color: "from-amber-500 to-yellow-400",
+      icon: <Gift className="h-5 w-5" />,
+      style: "unicorn"
+    },
+
+    // Yubiley shablonlari
+    {
+      id: "jubilee-1",
+      title: "Classic",
+      category: "jubilee",
+      image: "/jubilee/j7.jpg",
+      color: "from-amber-500 to-yellow-400",
+      icon: <Crown className="h-5 w-5" />,
+      style: "classic"
     },
     {
       id: "jubilee-2",
-      title: "Classic Yubiley",
+      title: "Modern",
       category: "jubilee",
-      image: "/y.jpg",
+      image: "/jubilee/j8.jpg",
       color: "from-indigo-500 to-violet-400",
       icon: <Crown className="h-5 w-5" />,
+      style: "modern"
+    },
+    {
+      id: "jubilee-3",
+      title: "Ornate",
+      category: "jubilee",
+      image: "/jubilee/j6.jpg",
+      color: "from-amber-500 to-yellow-400",
+      icon: <Crown className="h-5 w-5" />,
+      style: "ornate"
+    },
+    {
+      id: "jubilee-4",
+      title: "Minimalist",
+      category: "jubilee",
+      image: "/jubilee/j5.jpg",
+      color: "from-gray-500 to-gray-400",
+      icon: <Crown className="h-5 w-5" />,
+      style: "minimalist"
+    },
+    {
+      id: "jubilee-5",
+      title: "Traditional",
+      category: "jubilee",
+      image: "/jubilee/j4.jpg",
+      color: "from-amber-500 to-yellow-400",
+      icon: <Crown className="h-5 w-5" />,
+      style: "traditional"
+    },
+
+    // Qiz uzatish shablonlari
+    {
+      id: "engagement-1",
+      title: "Romantic",
+      category: "engagement",
+      image: "/qizimages/q1.jpg",
+      color: "from-pink-500 to-rose-400",
+      icon: <Sparkles className="h-5 w-5" />,
+      style: "romantic"
+    },
+    {
+      id: "engagement-2",
+      title: "National",
+      category: "engagement",
+      image: "/qizimages/q2.jpg",
+      color: "from-pink-500 to-rose-400",
+      icon: <Sparkles className="h-5 w-5" />,
+      style: "national"
+    },
+    {
+      id: "engagement-3",
+      title: "Floral Engagement",
+      category: "engagement",
+      image: "/qizimages/q3.jpg",
+      color: "from-pink-500 to-rose-400",
+      icon: <Sparkles className="h-5 w-5" />,
+      style: "floral-engagement"
+    },
+    {
+      id: "engagement-4",
+      title: "Modern Engagement",
+      category: "engagement",
+      image: "/qizimages/q4.jpg",
+      color: "from-amber-500 to-orange-400",
+      icon: <Sparkles className="h-5 w-5" />,
+      style: "modern-engagement"
+    },
+    {
+      id: "engagement-5",
+      title: "Traditional Engagement",
+      category: "engagement",
+      image: "/qizimages/q5.jpg",
+      color: "from-pink-500 to-rose-400",
+      icon: <Sparkles className="h-5 w-5" />,
+      style: "traditional-engagement"
+    },
+
+    // El oshi shablonlari
+    {
+      id: "funeral-1",
+      title: "Traditional",
+      category: "funeral",
+      image: "/placeholder.jpg",
+      color: "from-amber-500 to-amber-400",
+      icon: <Calendar className="h-5 w-5" />,
+      style: "traditional"
+    },
+    {
+      id: "funeral-2",
+      title: "Calm",
+      category: "funeral",
+      image: "/placeholder.jpg",
+      color: "from-blue-500 to-blue-400",
+      icon: <Calendar className="h-5 w-5" />,
+      style: "calm"
+    },
+    {
+      id: "funeral-3",
+      title: "Photo Memorial",
+      category: "funeral",
+      image: "/placeholder.jpg",
+      color: "from-gray-500 to-gray-400",
+      icon: <Calendar className="h-5 w-5" />,
+      style: "photo-memorial"
+    },
+    {
+      id: "funeral-4",
+      title: "Elegant Memorial",
+      category: "funeral",
+      image: "/placeholder.jpg",
+      color: "from-gray-500 to-gray-400",
+      icon: <Calendar className="h-5 w-5" />,
+      style: "elegant-memorial"
+    },
+    {
+      id: "funeral-5",
+      title: "Islamic Memorial",
+      category: "funeral",
+      image: "/placeholder.jpg",
+      color: "from-green-500 to-green-400",
+      icon: <Calendar className="h-5 w-5" />,
+      style: "islamic-memorial"
     },
   ]
+
+  const [currentPage, setCurrentPage] = useState(1)
+  const templatesPerPage = 6
 
   const filteredTemplates =
     activeCategory === "all" ? templates : templates.filter((template) => template.category === activeCategory)
 
+  // Pagination logic
+  const indexOfLastTemplate = currentPage * templatesPerPage
+  const indexOfFirstTemplate = indexOfLastTemplate - templatesPerPage
+  const currentTemplates = filteredTemplates.slice(indexOfFirstTemplate, indexOfLastTemplate)
+  const totalPages = Math.ceil(filteredTemplates.length / templatesPerPage)
+
+  const handlePageChange = (pageNumber: number) => {
+    setCurrentPage(pageNumber)
+  }
+
   const handleTemplateClick = (templateId: string) => {
     const template = templates.find((t) => t.id === templateId)
     if (template) {
-      router.push(`/create/${template.category}?template=${templateId}`)
+      router.push(`/create/${template.category}?template=${templateId}&style=${template.style}`)
     }
   }
+
+  // Reset to first page when category changes
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [activeCategory])
   const scrollCategoriesLeft = () => {
     if (categoriesSliderRef.current) {
       categoriesSliderRef.current.scrollBy({ left: -200, behavior: "smooth" })
@@ -193,11 +390,11 @@ export default function Home() {
           >
             <h2 className="text-4xl font-bold mb-4">
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600">
-                Taklifnoma Turlari
+                Taklifnoma Shablonlari
               </span>
             </h2>
             <p className="text-gray-400 max-w-2xl mx-auto">
-              Turli marosimlar uchun mo'ljallangan zamonaviy taklifnoma namunalari bilan tanishing
+              Turli marosimlar uchun mo'ljallangan zamonaviy taklifnoma shablonlari bilan tanishing
             </p>
           </motion.div>
 
@@ -266,7 +463,7 @@ export default function Home() {
 
           {/* Templates Grid */}
           <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
-            {filteredTemplates.map((template, index) => (
+            {currentTemplates.map((template, index) => (
               <motion.div
                 key={template.id}
                 initial={{ opacity: 0, y: 20 }}
@@ -312,19 +509,46 @@ export default function Home() {
             ))}
           </div>
 
-          <div className="mt-16 text-center">
-            <Button
-              size="lg"
-              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white border-0 rounded-full px-8"
-              onClick={() => router.push("/select-type")}
-            >
-              Barcha turlarni ko'rish
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          </div>
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex justify-center mt-10 gap-2">
+              <Button
+                variant="outline"
+                size="icon"
+                className="w-10 h-10 rounded-full border-gray-700 text-white hover:bg-purple-600 hover:text-white bg-transparent disabled:opacity-50 disabled:pointer-events-none"
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                <Button
+                  key={page}
+                  variant={currentPage === page ? "default" : "outline"}
+                  className={`w-10 h-10 rounded-full ${currentPage === page
+                    ? "bg-gradient-to-r from-purple-600 to-pink-600 border-0 text-white"
+                    : "border-gray-700 text-white hover:bg-purple-600 hover:text-white bg-transparent"
+                    }`}
+                  onClick={() => handlePageChange(page)}
+                >
+                  {page}
+                </Button>
+              ))}
+
+              <Button
+                variant="outline"
+                size="icon"
+                className="w-10 h-10 rounded-full border-gray-700 text-white hover:bg-purple-600 hover:text-white bg-transparent disabled:opacity-50 disabled:pointer-events-none"
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+              >
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
+          )}
         </div>
       </section>
-
       <section className="py-20 bg-gray-900/50 relative">
         <div className="absolute inset-0 z-0 opacity-20">
           <div className="absolute top-1/3 left-1/4 w-64 h-64 bg-blue-600 rounded-full filter blur-[100px]"></div>
