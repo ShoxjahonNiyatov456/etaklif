@@ -312,7 +312,7 @@ export default function CreatePage() {
     const { name, value } = e.target;
 
     if (name === "firstName" || name === "secondName" || name === "parents") {
-      if (value.length > 20) {
+      if (value.length > 30) {
         return;
       }
     } else if (name === "age") {
@@ -326,8 +326,8 @@ export default function CreatePage() {
         setDateError(null);
       }
     } else if (name === "location" || name === "additionalInfo") {
-      if (value.length > 30) {
-        const limitedText = value.substring(0, 30);
+      if (value.length > 50) {
+        const limitedText = value.substring(0, 50);
         setFormData((prev) => ({ ...prev, [name]: limitedText }));
         return;
       }
@@ -386,15 +386,6 @@ export default function CreatePage() {
       setFormCompleted(isComplete);
     }
   };
-
-  useEffect(() => {
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    setDay(tomorrow.getDate().toString());
-    setMonth(tomorrow.getMonth().toString());
-    setHours("12");
-    setMinutes("00");
-  }, []);
 
   useEffect(() => {
     const newFormData = { ...formData };
@@ -502,7 +493,7 @@ export default function CreatePage() {
             variants={fadeIn}
             className="space-y-6"
           >
-            <h1 className="text-3xl font-bold text-center mt-8 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
+            <h1 className="text-3xl font-bold text-center mt-4 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
               {getInvitationTypeName()} taklifnomasi
             </h1>
 
