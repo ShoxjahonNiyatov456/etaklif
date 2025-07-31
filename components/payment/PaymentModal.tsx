@@ -1,7 +1,6 @@
 "use client";
 
 import type React from "react";
-
 import { useState, useRef } from "react";
 import {
   X,
@@ -12,6 +11,7 @@ import {
   Camera,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { toast } from "@/hooks/use-toast";
 
 interface PaymentModalProps {
   isOpen: boolean;
@@ -32,13 +32,14 @@ export function PaymentModal({
   onClose,
   onSubmit,
   isSubmitting = false,
-  cardNumber = "8600 1234 5678 9012",
-  cardOwner = "INVITATION SYSTEM",
+  cardNumber = "4073 4200 2379 1357",
+  cardOwner = "Niyatoc Shohjahon",
 }: PaymentModalProps) {
   const [screenshot, setScreenshot] = useState<File | null>(null);
   const [screenshotPreview, setScreenshotPreview] = useState<string | null>(
     null
   );
+  const [copied, setCopied] = useState(false);
   const [error, setError] = useState<string>("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -101,11 +102,22 @@ export function PaymentModal({
       setError("To'lov so'rovini yuborishda xatolik yuz berdi");
     }
   };
-
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(cardNumber);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500); // 1.5 sekundda "Copied!" ni yo‘qotish
+    } catch (err) {
+      console.error("Copy failed:", err);
+    }
+  };
   if (!isOpen) return null;
+  {
+    copied && alert("Karta raqami nusxalandi!");
+  }
 
   return (
-    <div className="absolute inset-0 z-50 flex items-start justify-center bg-black/90">
+    <div className="fixed pt-24 inset-0 z-50 flex items-start justify-center bg-black">
       <div className="bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-2xl shadow-2xl max-w-md w-full mx-4 overflow-hidden relative">
         {/* Header */}
         <div className="relative bg-gradient-to-r from-purple-600 to-pink-600 p-6 text-white">
@@ -123,7 +135,7 @@ export function PaymentModal({
             <div>
               <h2 className="text-xl font-bold">To'lov amalga oshirish</h2>
               <p className="text-white/80 text-sm">
-                Quyidagi ma'lumotlarga pul o'tkazing
+                Quyidagi karta raqamiga pul o'tkazing
               </p>
             </div>
           </div>
@@ -134,7 +146,7 @@ export function PaymentModal({
           <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-4 text-white mb-4">
             <div className="flex justify-between items-start mb-3">
               <div className="text-xs opacity-80">KARTA RAQAMI</div>
-              <div className="text-xs opacity-80">UZCARD</div>
+              <div className="text-xs opacity-80">HUMO</div>
             </div>
             <div className="text-lg font-mono tracking-wider mb-3 select-all">
               {cardNumber}
@@ -146,8 +158,14 @@ export function PaymentModal({
                   {cardOwner}
                 </div>
               </div>
-              <div className="w-8 h-8 bg-white/20 rounded flex items-center justify-center">
-                <CreditCard className="h-4 w-4" />
+              <div className="flex flex-col items-end justify-end">
+                <div
+                  className="w-8 h-8 bg-white/20 rounded flex flex-col items-center justify-center"
+                  onClick={handleCopy}
+                >
+                  <CreditCard className="h-4 w-4" />
+                </div>
+                <h6 className="text-[10px]">Nusxa Olish!!!</h6>
               </div>
             </div>
           </div>

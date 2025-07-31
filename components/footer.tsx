@@ -1,5 +1,5 @@
-import Link from "next/link"
-import { Mail, Phone, MapPin, Facebook, Send, Instagram } from "lucide-react"
+import Link from "next/link";
+import { Mail, Phone, MapPin, Facebook, Send, Instagram } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -8,13 +8,15 @@ export default function Footer() {
         <div className="absolute top-0 left-1/4 w-64 h-64 bg-purple-600 rounded-full filter blur-[100px]"></div>
         <div className="absolute bottom-0 right-1/4 w-64 h-64 bg-blue-600 rounded-full filter blur-[100px]"></div>
       </div>
-      <div className="container mx-auto px-4 py-12 relative z-10">
+      <div className="container mx-auto px-4 py-12 relative">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
           <div>
             <h3 className="text-xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
               Taklifnoma
             </h3>
-            <p className="text-gray-400 mb-6">Zamonaviy va chiroyli taklifnomalar yaratish platformasi.</p>
+            <p className="text-gray-400 mb-6">
+              Zamonaviy va chiroyli taklifnomalar yaratish platformasi.
+            </p>
             <div className="flex space-x-4">
               <a
                 href="https://www.facebook.com/profile.php?id=61563008766338&locale=ru_RU"
@@ -38,10 +40,15 @@ export default function Footer() {
           </div>
 
           <div>
-            <h3 className="text-lg font-semibold mb-6 text-white">Foydali havolalar</h3>
+            <h3 className="text-lg font-semibold mb-6 text-white">
+              Foydali havolalar
+            </h3>
             <ul className="space-y-3">
               <li>
-                <Link href="/about" className="text-gray-400 hover:text-purple-400 transition-colors flex items-center">
+                <Link
+                  href="/about"
+                  className="text-gray-400 hover:text-purple-400 transition-colors flex items-center"
+                >
                   <span className="w-1.5 h-1.5 bg-purple-500 rounded-full mr-2"></span>
                   Biz haqimizda
                 </Link>
@@ -65,7 +72,10 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="https://t.me/Popo_1302" className="text-gray-400 hover:text-purple-400 transition-colors flex items-center">
+                <Link
+                  href="https://t.me/Popo_1302"
+                  className="text-gray-400 hover:text-purple-400 transition-colors flex items-center"
+                >
                   <span className="w-1.5 h-1.5 bg-purple-500 rounded-full mr-2"></span>
                   Ko'p so'raladigan savollar
                 </Link>
@@ -74,13 +84,17 @@ export default function Footer() {
           </div>
 
           <div>
-            <h3 className="text-lg font-semibold mb-6 text-white">Bog'lanish</h3>
+            <h3 className="text-lg font-semibold mb-6 text-white">
+              Bog'lanish
+            </h3>
             <ul className="space-y-4">
               <li className="flex items-start">
                 <div className="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center mr-3 mt-0.5">
                   <MapPin className="h-4 w-4 text-purple-400" />
                 </div>
-                <span className="text-gray-400">Jizzax shahri, Sharof Rashidov tumani</span>
+                <span className="text-gray-400">
+                  Jizzax shahri, Sharof Rashidov tumani
+                </span>
               </li>
               <li className="flex items-center">
                 <div className="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center mr-3">
@@ -98,9 +112,12 @@ export default function Footer() {
           </div>
         </div>
         <div className="border-t border-gray-800 mt-12 pt-8 text-center text-gray-500 text-sm">
-          <p>© {new Date().getFullYear()} Taklifnoma. Barcha huquqlar himoyalangan.</p>
+          <p>
+            © {new Date().getFullYear()} Taklifnoma. Barcha huquqlar
+            himoyalangan.
+          </p>
         </div>
       </div>
     </footer>
-  )
+  );
 }
