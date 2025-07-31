@@ -1,62 +1,73 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { useState, useEffect } from "react"
-import { Menu, X, User, LogOut, Sparkles } from "lucide-react"
-import { onAuthStateChanged } from "firebase/auth"
-import { auth } from "../app/firebase"
-import { logoutUser } from "../app/services/auth"
-import Image from "next/image"
+import Link from "next/link";
+import { useState, useEffect } from "react";
+import { Menu, X, User, LogOut, Sparkles } from "lucide-react";
+// import { onAuthStateChanged } from "firebase/auth";
+// import { auth } from "../app/firebase";
+// import { logoutUser } from "../app/services/auth";
 
 export default function Header() {
-  const [isScrolled, setIsScrolled] = useState(false)
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [currentUser, setCurrentUser] = useState<any>(null)
-  const [userMenuOpen, setUserMenuOpen] = useState(false)
-  const [authChecked, setAuthChecked] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  // const [currentUser, setCurrentUser] = useState<any>(null);
+  // const [userMenuOpen, setUserMenuOpen] = useState(false);
+  // const [authChecked, setAuthChecked] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10)
-    }
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
+      setIsScrolled(window.scrollY > 10);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setCurrentUser(user)
-      } else {
-        setCurrentUser(null)
-      }
-      setAuthChecked(true)
-    })
+  // useEffect(() => {
+  //   const unsubscribe = onAuthStateChanged(auth, (user) => {
+  //     if (user) {
+  //       setCurrentUser(user);
+  //     } else {
+  //       setCurrentUser(null);
+  //     }
+  //     setAuthChecked(true);
+  //   });
 
-    return () => unsubscribe()
-  }, [])
+  //   return () => unsubscribe();
+  // }, []);
 
   return (
     <header
-      className={`fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled ? "bg-gray-900/80 backdrop-blur-md border-b border-gray-800" : "bg-transparent"
-        }`}
+      className={`fixed top-0 w-full z-50 transition-all duration-300 ${
+        isScrolled
+          ? "bg-gray-900/80 backdrop-blur-md border-b border-gray-800"
+          : "bg-transparent"
+      }`}
     >
       <div className="flex items-center justify-between pt-4 mb-4 container mx-auto px-4">
-        <Link href="/" className="flex items-center -space-x-6 bg-none bg-transparent">
+        <Link
+          href="/"
+          className="flex items-center -space-x-6 bg-none bg-transparent"
+        >
           <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-500">
             QADRDONLAR
           </span>
         </Link>
 
         <div className="hidden md:flex items-center space-x-6">
-          <Link href="/about" className="text-gray-300 hover:text-purple-400 transition-colors">
+          <Link
+            href="/about"
+            className="text-gray-300 hover:text-purple-400 transition-colors"
+          >
             Biz haqimizda
           </Link>
-          <Link href="/contact" className="text-gray-300 hover:text-purple-400 transition-colors">
+          <Link
+            href="/contact"
+            className="text-gray-300 hover:text-purple-400 transition-colors"
+          >
             Bog'lanish
           </Link>
 
-          {authChecked &&
+          {/* {authChecked &&
             (currentUser ? (
               <div className="relative">
                 <button
@@ -71,7 +82,9 @@ export default function Header() {
                 {userMenuOpen && (
                   <div className="absolute right-0 mt-2 min-w-48 bg-gray-900 rounded-xl shadow-lg py-1 z-50 border border-gray-800 backdrop-blur-sm">
                     <div className="px-4 py-2 border-b border-gray-800">
-                      <p className="text-sm font-medium text-gray-300">{currentUser.email}</p>
+                      <p className="text-sm font-medium text-gray-300">
+                        {currentUser.email}
+                      </p>
                     </div>
                     <Link
                       href="/my-proposals"
@@ -81,8 +94,8 @@ export default function Header() {
                     </Link>
                     <button
                       onClick={async () => {
-                        await logoutUser()
-                        setUserMenuOpen(false)
+                        await logoutUser();
+                        setUserMenuOpen(false);
                       }}
                       className="w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-gray-800 flex items-center"
                     >
@@ -105,10 +118,13 @@ export default function Header() {
                   </button>
                 </Link>
               </>
-            ))}
+            ))} */}
         </div>
 
-        <button className="md:hidden text-white" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+        <button
+          className="md:hidden text-white"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+        >
           {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
@@ -130,7 +146,7 @@ export default function Header() {
               Bog'lanish
             </Link>
 
-            {authChecked &&
+            {/* {authChecked &&
               (currentUser ? (
                 <>
                   <div className="border-t border-gray-800 pt-2">
@@ -138,11 +154,16 @@ export default function Header() {
                       <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 flex items-center justify-center">
                         <User size={18} className="text-white" />
                       </div>
-                      <p className="text-sm font-medium text-gray-300">{currentUser.email}</p>
+                      <p className="text-sm font-medium text-gray-300">
+                        {currentUser.email}
+                      </p>
                     </div>
                   </div>
 
-                  <Link href="/my-proposals" onClick={() => setMobileMenuOpen(false)}>
+                  <Link
+                    href="/my-proposals"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
                     <button className="w-full text-left px-4 py-2 text-gray-300 hover:bg-gray-800 hover:text-purple-400 transition-colors rounded-md">
                       Mening taklifnomalarim
                     </button>
@@ -150,8 +171,8 @@ export default function Header() {
 
                   <button
                     onClick={async () => {
-                      await logoutUser()
-                      setMobileMenuOpen(false)
+                      await logoutUser();
+                      setMobileMenuOpen(false);
                     }}
                     className="w-full flex items-center px-4 py-2 text-red-400 hover:bg-gray-800 transition-colors rounded-md"
                   >
@@ -166,16 +187,19 @@ export default function Header() {
                       Kirish
                     </button>
                   </Link>
-                  <Link href="/register" onClick={() => setMobileMenuOpen(false)}>
+                  <Link
+                    href="/register"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
                     <button className="w-full px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-md transition-colors">
                       Ro'yxatdan o'tish
                     </button>
                   </Link>
                 </>
-              ))}
+              ))} */}
           </div>
         </div>
       )}
     </header>
-  )
+  );
 }

@@ -1,32 +1,32 @@
-"use client"
-import { motion } from "framer-motion"
-import { useRouter } from "next/navigation"
-import { ProposalCard } from "@/components/ui/proposal-card"
-import { useEffect, useState } from "react"
-import { onAuthStateChanged } from "firebase/auth"
-import { auth } from "../firebase"
+"use client";
+import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
+import { ProposalCard } from "@/components/ui/proposal-card";
+import { useEffect, useState } from "react";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../firebase";
 
 export default function SelectTypePage() {
-  const router = useRouter()
-  const [hasMounted, setHasMounted] = useState(false)
-  const [currentUser, setCurrentUser] = useState<any>(null)
-  const [authChecked, setAuthChecked] = useState(false)
+  const router = useRouter();
+  const [hasMounted, setHasMounted] = useState(false);
+  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [authChecked, setAuthChecked] = useState(false);
 
   useEffect(() => {
-    setHasMounted(true)
-  }, [])
+    setHasMounted(true);
+  }, []);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        setCurrentUser(user)
+        setCurrentUser(user);
       } else {
-        setCurrentUser(null)
+        setCurrentUser(null);
       }
-      setAuthChecked(true)
-    })
-    return () => unsubscribe()
-  }, [])
+      setAuthChecked(true);
+    });
+    return () => unsubscribe();
+  }, []);
 
   const invitationTypes = [
     {
@@ -59,7 +59,7 @@ export default function SelectTypePage() {
       description: "Qiz uzatish marosimi uchun taklifnomalar",
       image: "/qizuzatish.jpg",
     },
-  ]
+  ];
 
   const fadeIn = {
     hidden: { opacity: 0, y: 20 },
@@ -68,7 +68,7 @@ export default function SelectTypePage() {
       y: 0,
       transition: { duration: 0.6 },
     },
-  }
+  };
 
   const staggerContainer = {
     hidden: { opacity: 0 },
@@ -78,18 +78,11 @@ export default function SelectTypePage() {
         staggerChildren: 0.1,
       },
     },
-  }
+  };
 
   const handleTypeSelect = (typeId: string) => {
-    if (currentUser) {
-      router.push(`/create/${typeId}`)
-    } else {
-      // Ogohlantirish va ro'yxatdan o'tish sahifasiga yo'naltirish
-      if (confirm("Taklifnoma yaratish uchun avval ro'yxatdan o'tishingiz kerak. Ro'yxatdan o'tish sahifasiga o'tishni istaysizmi?")) {
-        router.push("/register")
-      }
-    }
-  }
+    router.push(`/create/${typeId}`);
+  };
 
   return (
     <div className="pt-16 min-h-screen bg-gradient-to-b from-gray-900 to-black text-white">
@@ -101,9 +94,12 @@ export default function SelectTypePage() {
             variants={fadeIn}
             className="text-center max-w-3xl mx-auto"
           >
-            <h1 className="text-3xl md:text-4xl font-bold mb-4">Taklifnoma turini tanlang</h1>
+            <h1 className="text-3xl md:text-4xl font-bold mb-4">
+              Taklifnoma turini tanlang
+            </h1>
             <p className="text-lg text-gray-600 mb-12">
-              Yaratmoqchi bo'lgan taklifnoma turini tanlang va keyingi bosqichga o'ting
+              Yaratmoqchi bo'lgan taklifnoma turini tanlang va keyingi bosqichga
+              o'ting
             </p>
           </motion.div>
           <motion.div
@@ -128,5 +124,5 @@ export default function SelectTypePage() {
         </div>
       </section>
     </div>
-  )
+  );
 }

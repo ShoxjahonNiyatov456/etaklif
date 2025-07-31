@@ -27,25 +27,13 @@ const DEFAULT_IMAGES = {
 export default async function Image({ params }) {
   try {
     const { uniqueId, type, templateId } = params;
-    console.log(
-      `Generating OG image for invitation: ${uniqueId}, type: ${type}, template: ${templateId}`
-    );
-
     let invitationData = null;
     let rawData = null;
 
     let actualInvitationData = {};
     try {
       const rawDbData = await getInvitationByUniqueId(uniqueId);
-      console.log(
-        "Raw data received for OG Image:",
-        JSON.stringify(rawDbData).substring(0, 200) + "..."
-      );
       actualInvitationData = rawDbData?.invitationData || rawDbData || {};
-      console.log(
-        "Parsed invitation data for OG Image:",
-        JSON.stringify(actualInvitationData).substring(0, 200) + "..."
-      );
     } catch (fetchError) {
       console.error("Error fetching invitation data for OG Image:", fetchError);
       actualInvitationData = {}; // Fallback to empty object on error

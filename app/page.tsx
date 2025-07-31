@@ -1,32 +1,41 @@
-"use client"
-import { useState, useEffect, useRef } from "react"
-import { motion } from "framer-motion"
-import Image from "next/image"
-import { onAuthStateChanged } from "firebase/auth"
-import { auth } from "../app/firebase"
-import { useRouter } from "next/navigation"
-import { Sparkles, Calendar, Gift, Crown, ChevronRight, User, ArrowRight, ChevronLeft } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
+"use client";
+import { useState, useEffect, useRef } from "react";
+import { motion } from "framer-motion";
+import Image from "next/image";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../app/firebase";
+import { useRouter } from "next/navigation";
+import {
+  Sparkles,
+  Calendar,
+  Gift,
+  Crown,
+  ChevronRight,
+  User,
+  ArrowRight,
+  ChevronLeft,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 
 export default function Home() {
-  const router = useRouter()
-  const [currentUser, setCurrentUser] = useState<any>(null)
-  const [authChecked, setAuthChecked] = useState(false)
-  const [activeCategory, setActiveCategory] = useState("all")
-  const categoriesSliderRef = useRef<HTMLDivElement>(null)
+  const router = useRouter();
+  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [authChecked, setAuthChecked] = useState(false);
+  const [activeCategory, setActiveCategory] = useState("all");
+  const categoriesSliderRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        setCurrentUser(user)
+        setCurrentUser(user);
       } else {
-        setCurrentUser(null)
+        setCurrentUser(null);
       }
-      setAuthChecked(true)
-    })
-    return () => unsubscribe()
-  }, [])
+      setAuthChecked(true);
+    });
+    return () => unsubscribe();
+  }, []);
 
   const categories = [
     { id: "all", name: "Barchasi" },
@@ -35,7 +44,7 @@ export default function Home() {
     { id: "jubilee", name: "Yubiley" },
     { id: "engagement", name: "Qiz uzatish" },
     { id: "funeral", name: "El oshi" },
-  ]
+  ];
 
   const templates = [
     // To'y shablonlari
@@ -46,7 +55,7 @@ export default function Home() {
       image: "/images/gul1.jpg",
       color: "from-rose-500 to-pink-500",
       icon: <Sparkles className="h-5 w-5" />,
-      style: "burgundy-roses"
+      style: "burgundy-roses",
     },
     {
       id: "wedding-2",
@@ -55,7 +64,7 @@ export default function Home() {
       image: "/images/gul8.jpg",
       color: "from-amber-500 to-orange-400",
       icon: <Sparkles className="h-5 w-5" />,
-      style: "peach-floral"
+      style: "peach-floral",
     },
     {
       id: "wedding-3",
@@ -64,7 +73,7 @@ export default function Home() {
       image: "/images/gul6.jpg",
       color: "from-amber-500 to-yellow-400",
       icon: <Sparkles className="h-5 w-5" />,
-      style: "golden-frame"
+      style: "golden-frame",
     },
 
     // Tug'ilgan kun shablonlari
@@ -75,7 +84,7 @@ export default function Home() {
       image: "/birthdayimages/b1.jpg",
       color: "from-blue-500 to-cyan-400",
       icon: <Calendar className="h-5 w-5" />,
-      style: "colorful"
+      style: "colorful",
     },
     {
       id: "birthday-2",
@@ -84,7 +93,7 @@ export default function Home() {
       image: "/birthdayimages/b2.jpg",
       color: "from-green-500 to-emerald-400",
       icon: <Gift className="h-5 w-5" />,
-      style: "kids"
+      style: "kids",
     },
     {
       id: "birthday-3",
@@ -93,7 +102,7 @@ export default function Home() {
       image: "/birthdayimages/b3.jpg",
       color: "from-blue-500 to-cyan-400",
       icon: <Calendar className="h-5 w-5" />,
-      style: "floral-frame"
+      style: "floral-frame",
     },
     {
       id: "birthday-4",
@@ -102,7 +111,7 @@ export default function Home() {
       image: "/birthdayimages/b4.jpg",
       color: "from-amber-500 to-yellow-400",
       icon: <Gift className="h-5 w-5" />,
-      style: "butterfly"
+      style: "butterfly",
     },
     {
       id: "birthday-5",
@@ -111,7 +120,7 @@ export default function Home() {
       image: "/birthdayimages/b5.jpg",
       color: "from-orange-500 to-pink-400",
       icon: <Calendar className="h-5 w-5" />,
-      style: "kids-photo"
+      style: "kids-photo",
     },
     {
       id: "birthday-6",
@@ -120,7 +129,7 @@ export default function Home() {
       image: "/birthdayimages/b6.jpg",
       color: "from-amber-500 to-yellow-400",
       icon: <Gift className="h-5 w-5" />,
-      style: "unicorn"
+      style: "unicorn",
     },
 
     // Yubiley shablonlari
@@ -131,7 +140,7 @@ export default function Home() {
       image: "/jubilee/j7.jpg",
       color: "from-amber-500 to-yellow-400",
       icon: <Crown className="h-5 w-5" />,
-      style: "classic"
+      style: "classic",
     },
     {
       id: "jubilee-2",
@@ -140,7 +149,7 @@ export default function Home() {
       image: "/jubilee/j8.jpg",
       color: "from-indigo-500 to-violet-400",
       icon: <Crown className="h-5 w-5" />,
-      style: "modern"
+      style: "modern",
     },
     {
       id: "jubilee-3",
@@ -149,7 +158,7 @@ export default function Home() {
       image: "/jubilee/j6.jpg",
       color: "from-amber-500 to-yellow-400",
       icon: <Crown className="h-5 w-5" />,
-      style: "ornate"
+      style: "ornate",
     },
     {
       id: "jubilee-4",
@@ -158,7 +167,7 @@ export default function Home() {
       image: "/jubilee/j5.jpg",
       color: "from-gray-500 to-gray-400",
       icon: <Crown className="h-5 w-5" />,
-      style: "minimalist"
+      style: "minimalist",
     },
     {
       id: "jubilee-5",
@@ -167,7 +176,7 @@ export default function Home() {
       image: "/jubilee/j4.jpg",
       color: "from-amber-500 to-yellow-400",
       icon: <Crown className="h-5 w-5" />,
-      style: "traditional"
+      style: "traditional",
     },
 
     // Qiz uzatish shablonlari
@@ -178,7 +187,7 @@ export default function Home() {
       image: "/qizimages/q1.jpg",
       color: "from-pink-500 to-rose-400",
       icon: <Sparkles className="h-5 w-5" />,
-      style: "romantic"
+      style: "romantic",
     },
     {
       id: "engagement-2",
@@ -187,7 +196,7 @@ export default function Home() {
       image: "/qizimages/q2.jpg",
       color: "from-pink-500 to-rose-400",
       icon: <Sparkles className="h-5 w-5" />,
-      style: "national"
+      style: "national",
     },
     {
       id: "engagement-3",
@@ -196,7 +205,7 @@ export default function Home() {
       image: "/qizimages/q3.jpg",
       color: "from-pink-500 to-rose-400",
       icon: <Sparkles className="h-5 w-5" />,
-      style: "floral-engagement"
+      style: "floral-engagement",
     },
     {
       id: "engagement-4",
@@ -205,7 +214,7 @@ export default function Home() {
       image: "/qizimages/q4.jpg",
       color: "from-amber-500 to-orange-400",
       icon: <Sparkles className="h-5 w-5" />,
-      style: "modern-engagement"
+      style: "modern-engagement",
     },
     {
       id: "engagement-5",
@@ -214,7 +223,7 @@ export default function Home() {
       image: "/qizimages/q5.jpg",
       color: "from-pink-500 to-rose-400",
       icon: <Sparkles className="h-5 w-5" />,
-      style: "traditional-engagement"
+      style: "traditional-engagement",
     },
 
     // El oshi shablonlari
@@ -225,7 +234,7 @@ export default function Home() {
       image: "/placeholder.jpg",
       color: "from-amber-500 to-amber-400",
       icon: <Calendar className="h-5 w-5" />,
-      style: "traditional"
+      style: "traditional",
     },
     {
       id: "funeral-2",
@@ -234,7 +243,7 @@ export default function Home() {
       image: "/placeholder.jpg",
       color: "from-blue-500 to-blue-400",
       icon: <Calendar className="h-5 w-5" />,
-      style: "calm"
+      style: "calm",
     },
     {
       id: "funeral-3",
@@ -243,7 +252,7 @@ export default function Home() {
       image: "/placeholder.jpg",
       color: "from-gray-500 to-gray-400",
       icon: <Calendar className="h-5 w-5" />,
-      style: "photo-memorial"
+      style: "photo-memorial",
     },
     {
       id: "funeral-4",
@@ -252,7 +261,7 @@ export default function Home() {
       image: "/placeholder.jpg",
       color: "from-gray-500 to-gray-400",
       icon: <Calendar className="h-5 w-5" />,
-      style: "elegant-memorial"
+      style: "elegant-memorial",
     },
     {
       id: "funeral-5",
@@ -261,55 +270,55 @@ export default function Home() {
       image: "/placeholder.jpg",
       color: "from-green-500 to-green-400",
       icon: <Calendar className="h-5 w-5" />,
-      style: "islamic-memorial"
+      style: "islamic-memorial",
     },
-  ]
+  ];
 
-  const [currentPage, setCurrentPage] = useState(1)
-  const templatesPerPage = 6
+  const [currentPage, setCurrentPage] = useState(1);
+  const templatesPerPage = 6;
 
   const filteredTemplates =
-    activeCategory === "all" ? templates : templates.filter((template) => template.category === activeCategory)
+    activeCategory === "all"
+      ? templates
+      : templates.filter((template) => template.category === activeCategory);
 
   // Pagination logic
-  const indexOfLastTemplate = currentPage * templatesPerPage
-  const indexOfFirstTemplate = indexOfLastTemplate - templatesPerPage
-  const currentTemplates = filteredTemplates.slice(indexOfFirstTemplate, indexOfLastTemplate)
-  const totalPages = Math.ceil(filteredTemplates.length / templatesPerPage)
+  const indexOfLastTemplate = currentPage * templatesPerPage;
+  const indexOfFirstTemplate = indexOfLastTemplate - templatesPerPage;
+  const currentTemplates = filteredTemplates.slice(
+    indexOfFirstTemplate,
+    indexOfLastTemplate
+  );
+  const totalPages = Math.ceil(filteredTemplates.length / templatesPerPage);
 
   const handlePageChange = (pageNumber: number) => {
-    setCurrentPage(pageNumber)
-  }
+    setCurrentPage(pageNumber);
+  };
 
   const handleTemplateClick = (templateId: string) => {
-    const template = templates.find((t) => t.id === templateId)
+    const template = templates.find((t) => t.id === templateId);
     if (template) {
-      if (currentUser) {
-        router.push(`/create/${template.category}?template=${templateId}&style=${template.style}`)
-      } else {
-        // Ogohlantirish va ro'yxatdan o'tish sahifasiga yo'naltirish
-        if (confirm("Taklifnoma yaratish uchun avval ro'yxatdan o'tishingiz kerak. Ro'yxatdan o'tish sahifasiga o'tishni istaysizmi?")) {
-          router.push("/register")
-        }
-      }
+      router.push(
+        `/create/${template.category}?template=${templateId}&style=${template.style}`
+      );
     }
-  }
+  };
 
   // Reset to first page when category changes
   useEffect(() => {
-    setCurrentPage(1)
-  }, [activeCategory])
+    setCurrentPage(1);
+  }, [activeCategory]);
   const scrollCategoriesLeft = () => {
     if (categoriesSliderRef.current) {
-      categoriesSliderRef.current.scrollBy({ left: -200, behavior: "smooth" })
+      categoriesSliderRef.current.scrollBy({ left: -200, behavior: "smooth" });
     }
-  }
+  };
 
   const scrollCategoriesRight = () => {
     if (categoriesSliderRef.current) {
-      categoriesSliderRef.current.scrollBy({ left: 200, behavior: "smooth" })
+      categoriesSliderRef.current.scrollBy({ left: 200, behavior: "smooth" });
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white">
@@ -334,22 +343,16 @@ export default function Home() {
                 <span className="text-white">Oson Yarating</span>
               </h1>
               <p className="text-gray-300 text-lg mb-8 max-w-lg hidden sm:flex">
-                Zamonaviy va ajoyib taklifnomalarni yarating. To'y, tug'ilgan kun, yubiley va boshqa marosimlar uchun
-                o'zingizning shaxsiy taklifnomangizni yarating.
+                Zamonaviy va ajoyib taklifnomalarni yarating. To'y, tug'ilgan
+                kun, yubiley va boshqa marosimlar uchun o'zingizning shaxsiy
+                taklifnomangizni yarating.
               </p>
               <div className="flex flex-wrap gap-4">
                 <Button
                   size="lg"
                   className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white border-0 rounded-full px-8"
                   onClick={() => {
-                    if (currentUser) {
-                      router.push("/select-type")
-                    } else {
-                      // Ogohlantirish va ro'yxatdan o'tish sahifasiga yo'naltirish
-                      if (confirm("Taklifnoma yaratish uchun avval ro'yxatdan o'tishingiz kerak. Ro'yxatdan o'tish sahifasiga o'tishni istaysizmi?")) {
-                        router.push("/register")
-                      }
-                    }
+                    router.push("/select-type");
                   }}
                 >
                   Boshlash
@@ -410,7 +413,8 @@ export default function Home() {
               </span>
             </h2>
             <p className="text-gray-400 max-w-2xl mx-auto">
-              Turli marosimlar uchun mo'ljallangan zamonaviy taklifnoma shablonlari bilan tanishing
+              Turli marosimlar uchun mo'ljallangan zamonaviy taklifnoma
+              shablonlari bilan tanishing
             </p>
           </motion.div>
 
@@ -421,10 +425,11 @@ export default function Home() {
               <Button
                 key={category.id}
                 variant={activeCategory === category.id ? "default" : "outline"}
-                className={`rounded-full px-6 ${activeCategory === category.id
-                  ? "bg-gradient-to-r from-purple-600 to-pink-600 border-0 text-white"
-                  : "border-gray-700 text-white hover:bg-purple-600 hover:text-white bg-transparent"
-                  }`}
+                className={`rounded-full px-6 ${
+                  activeCategory === category.id
+                    ? "bg-gradient-to-r from-purple-600 to-pink-600 border-0 text-white"
+                    : "border-gray-700 text-white hover:bg-purple-600 hover:text-white bg-transparent"
+                }`}
                 onClick={() => setActiveCategory(category.id)}
               >
                 {category.name}
@@ -464,11 +469,14 @@ export default function Home() {
               {categories.map((category) => (
                 <Button
                   key={category.id}
-                  variant={activeCategory === category.id ? "default" : "outline"}
-                  className={`rounded-full px-6 py-2 whitespace-nowrap flex-shrink-0 ${activeCategory === category.id
-                    ? "bg-gradient-to-r from-purple-600 to-pink-600 border-0 text-white"
-                    : "border-gray-700 text-white hover:bg-purple-600 hover:text-white bg-transparent"
-                    }`}
+                  variant={
+                    activeCategory === category.id ? "default" : "outline"
+                  }
+                  className={`rounded-full px-6 py-2 whitespace-nowrap flex-shrink-0 ${
+                    activeCategory === category.id
+                      ? "bg-gradient-to-r from-purple-600 to-pink-600 border-0 text-white"
+                      : "border-gray-700 text-white hover:bg-purple-600 hover:text-white bg-transparent"
+                  }`}
                   onClick={() => setActiveCategory(category.id)}
                 >
                   {category.name}
@@ -506,25 +514,23 @@ export default function Home() {
                     <div className="absolute top-2 left-2 md:top-3 md:left-3 bg-black/70 backdrop-blur-sm px-2 py-1 md:px-3 md:py-1 rounded-full flex items-center">
                       {template.icon}
                       <span className="ml-1 md:ml-2 text-xs md:text-sm font-medium">
-                        {categories.find((c) => c.id === template.category)?.name}
+                        {
+                          categories.find((c) => c.id === template.category)
+                            ?.name
+                        }
                       </span>
                     </div>
                   </div>
                   <div className="p-3 md:p-5 flex justify-between items-center">
-                    <h3 className="font-semibold text-sm md:text-lg">{template.title}</h3>
+                    <h3 className="font-semibold text-sm md:text-lg">
+                      {template.title}
+                    </h3>
                     <Button
                       size="sm"
                       className="rounded-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 border-0 text-xs md:text-sm px-2 md:px-3"
                       onClick={(e) => {
                         e.stopPropagation();
-                        if (!currentUser) {
-                          // Ogohlantirish va ro'yxatdan o'tish sahifasiga yo'naltirish
-                          if (confirm("Taklifnoma yaratish uchun avval ro'yxatdan o'tishingiz kerak. Ro'yxatdan o'tish sahifasiga o'tishni istaysizmi?")) {
-                            router.push("/register");
-                          }
-                        } else {
-                          handleTemplateClick(template.id);
-                        }
+                        handleTemplateClick(template.id);
                       }}
                     >
                       Yaratish
@@ -549,19 +555,22 @@ export default function Home() {
                 <ChevronLeft className="h-4 w-4" />
               </Button>
 
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                <Button
-                  key={page}
-                  variant={currentPage === page ? "default" : "outline"}
-                  className={`w-10 h-10 rounded-full ${currentPage === page
-                    ? "bg-gradient-to-r from-purple-600 to-pink-600 border-0 text-white"
-                    : "border-gray-700 text-white hover:bg-purple-600 hover:text-white bg-transparent"
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                (page) => (
+                  <Button
+                    key={page}
+                    variant={currentPage === page ? "default" : "outline"}
+                    className={`w-10 h-10 rounded-full ${
+                      currentPage === page
+                        ? "bg-gradient-to-r from-purple-600 to-pink-600 border-0 text-white"
+                        : "border-gray-700 text-white hover:bg-purple-600 hover:text-white bg-transparent"
                     }`}
-                  onClick={() => handlePageChange(page)}
-                >
-                  {page}
-                </Button>
-              ))}
+                    onClick={() => handlePageChange(page)}
+                  >
+                    {page}
+                  </Button>
+                )
+              )}
 
               <Button
                 variant="outline"
@@ -595,26 +604,30 @@ export default function Home() {
               </span>
             </h2>
             <p className="text-gray-400 max-w-2xl mx-auto">
-              Taklifnoma yaratish jarayonini oson va qiziqarli qiladigan xususiyatlar
+              Taklifnoma yaratish jarayonini oson va qiziqarli qiladigan
+              xususiyatlar
             </p>
           </motion.div>
           <div className="grid md:grid-cols-3 gap-8">
             {[
               {
                 title: "Zamonaviy dizayn",
-                description: "Eng so'nggi dizayn tendentsiyalariga asoslangan zamonaviy taklifnomalar",
+                description:
+                  "Eng so'nggi dizayn tendentsiyalariga asoslangan zamonaviy taklifnomalar",
                 icon: <Sparkles className="h-10 w-10 text-purple-400" />,
                 color: "from-purple-600 to-pink-600",
               },
               {
                 title: "Oson foydalanish",
-                description: "Hech qanday dizayn ko'nikmalarsiz ham chiroyli taklifnomalar yarating",
+                description:
+                  "Hech qanday dizayn ko'nikmalarsiz ham chiroyli taklifnomalar yarating",
                 icon: <Gift className="h-10 w-10 text-blue-400" />,
                 color: "from-blue-600 to-cyan-600",
               },
               {
                 title: "Tezkor yaratish",
-                description: "Bir necha daqiqada professional ko'rinishdagi taklifnomalarni yarating",
+                description:
+                  "Bir necha daqiqada professional ko'rinishdagi taklifnomalarni yarating",
                 icon: <Calendar className="h-10 w-10 text-cyan-400" />,
                 color: "from-cyan-600 to-green-600",
               },
@@ -655,10 +668,12 @@ export default function Home() {
             </div>
             <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
               <div>
-                <h2 className="text-3xl md:text-4xl font-bold mb-4">Hoziroq o'z taklifnomangizni yarating</h2>
+                <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                  Hoziroq o'z taklifnomangizni yarating
+                </h2>
                 <p className="text-gray-300 max-w-xl">
-                  Bir necha daqiqada professional ko'rinishdagi taklifnomalarni yarating va do'stlaringizni hayratda
-                  qoldiring
+                  Bir necha daqiqada professional ko'rinishdagi taklifnomalarni
+                  yarating va do'stlaringizni hayratda qoldiring
                 </p>
               </div>
               <Button
@@ -684,5 +699,5 @@ export default function Home() {
         }
       `}</style>
     </div>
-  )
+  );
 }

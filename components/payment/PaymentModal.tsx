@@ -1,95 +1,123 @@
-"use client"
+"use client";
 
-import type React from "react"
-
-import { useState, useRef } from "react"
-import { X, Upload, Check, AlertCircle, CreditCard, Camera } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import type React from "react";
+import { useState, useRef } from "react";
+import {
+  X,
+  Upload,
+  Check,
+  AlertCircle,
+  CreditCard,
+  Camera,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { toast } from "@/hooks/use-toast";
 
 interface PaymentModalProps {
-  isOpen: boolean
-  onClose: () => void
-  onSubmit: (data: PaymentFormData) => void
-  isSubmitting?: boolean
-  cardNumber?: string
-  cardOwner?: string
+  isOpen: boolean;
+  onClose: () => void;
+  onSubmit: (data: PaymentFormData) => void;
+  isSubmitting?: boolean;
+  cardNumber?: string;
+  cardOwner?: string;
 }
 
 export interface PaymentFormData {
-  screenshot?: File | null
-  screenshotBase64?: string
+  screenshot?: File | null;
+  screenshotBase64?: string;
 }
 
-export function PaymentModal({ isOpen, onClose, onSubmit, isSubmitting = false, cardNumber = "8600 1234 5678 9012", cardOwner = "INVITATION SYSTEM" }: PaymentModalProps) {
-  const [screenshot, setScreenshot] = useState<File | null>(null)
-  const [screenshotPreview, setScreenshotPreview] = useState<string | null>(null)
-  const [error, setError] = useState<string>("")
-  const fileInputRef = useRef<HTMLInputElement>(null)
+export function PaymentModal({
+  isOpen,
+  onClose,
+  onSubmit,
+  isSubmitting = false,
+  cardNumber = "4073 4200 2379 1357",
+  cardOwner = "Niyatoc Shohjahon",
+}: PaymentModalProps) {
+  const [screenshot, setScreenshot] = useState<File | null>(null);
+  const [screenshotPreview, setScreenshotPreview] = useState<string | null>(
+    null
+  );
+  const [copied, setCopied] = useState(false);
+  const [error, setError] = useState<string>("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null
-    setScreenshot(file)
-    setError("")
+    const file = e.target.files?.[0] || null;
+    setScreenshot(file);
+    setError("");
 
     if (file) {
       // Validate file size (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
-        setError("Fayl hajmi 5MB dan oshmasligi kerak")
-        return
+        setError("Fayl hajmi 5MB dan oshmasligi kerak");
+        return;
       }
 
-      const reader = new FileReader()
+      const reader = new FileReader();
       reader.onloadend = () => {
-        setScreenshotPreview(reader.result as string)
-      }
-      reader.readAsDataURL(file)
+        setScreenshotPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
     } else {
-      setScreenshotPreview(null)
+      setScreenshotPreview(null);
     }
-  }
+  };
 
   const triggerFileInput = () => {
-    fileInputRef.current?.click()
-  }
+    fileInputRef.current?.click();
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
     if (!screenshot) {
-      setError("Iltimos, to'lov skrinshotini yuklang")
-      return
+      setError("Iltimos, to'lov skrinshotini yuklang");
+      return;
     }
 
     try {
       // Convert screenshot to base64
-      let screenshotBase64 = ""
+      let screenshotBase64 = "";
       if (screenshot) {
-        const reader = new FileReader()
+        const reader = new FileReader();
         screenshotBase64 = await new Promise((resolve) => {
-          reader.onloadend = () => resolve(reader.result as string)
-          reader.readAsDataURL(screenshot)
-        })
+          reader.onloadend = () => resolve(reader.result as string);
+          reader.readAsDataURL(screenshot);
+        });
       }
 
       await onSubmit({
         screenshot,
         screenshotBase64,
-      })
+      });
 
       // Reset form on success
-      setScreenshot(null)
-      setScreenshotPreview(null)
-      setError("")
+      setScreenshot(null);
+      setScreenshotPreview(null);
+      setError("");
     } catch (error) {
-      console.error("Payment submission error:", error)
-      setError("To'lov so'rovini yuborishda xatolik yuz berdi")
+      console.error("Payment submission error:", error);
+      setError("To'lov so'rovini yuborishda xatolik yuz berdi");
     }
+  };
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(cardNumber);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500); // 1.5 sekundda "Copied!" ni yo‘qotish
+    } catch (err) {
+      console.error("Copy failed:", err);
+    }
+  };
+  if (!isOpen) return null;
+  {
+    copied && alert("Karta raqami nusxalandi!");
   }
 
-  if (!isOpen) return null
-
   return (
-    <div className="absolute inset-0 z-50 flex items-start justify-center bg-black/90">
+    <div className="fixed pt-24 inset-0 z-50 flex items-start justify-center bg-black">
       <div className="bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-2xl shadow-2xl max-w-md w-full mx-4 overflow-hidden relative">
         {/* Header */}
         <div className="relative bg-gradient-to-r from-purple-600 to-pink-600 p-6 text-white">
@@ -106,7 +134,9 @@ export function PaymentModal({ isOpen, onClose, onSubmit, isSubmitting = false, 
             </div>
             <div>
               <h2 className="text-xl font-bold">To'lov amalga oshirish</h2>
-              <p className="text-white/80 text-sm">Quyidagi ma'lumotlarga pul o'tkazing</p>
+              <p className="text-white/80 text-sm">
+                Quyidagi karta raqamiga pul o'tkazing
+              </p>
             </div>
           </div>
         </div>
@@ -116,16 +146,26 @@ export function PaymentModal({ isOpen, onClose, onSubmit, isSubmitting = false, 
           <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-4 text-white mb-4">
             <div className="flex justify-between items-start mb-3">
               <div className="text-xs opacity-80">KARTA RAQAMI</div>
-              <div className="text-xs opacity-80">UZCARD</div>
+              <div className="text-xs opacity-80">HUMO</div>
             </div>
-            <div className="text-lg font-mono tracking-wider mb-3 select-all">{cardNumber}</div>
+            <div className="text-lg font-mono tracking-wider mb-3 select-all">
+              {cardNumber}
+            </div>
             <div className="flex justify-between items-end">
               <div>
                 <div className="text-xs opacity-80">KARTA EGASI</div>
-                <div className="text-sm font-medium select-all">{cardOwner}</div>
+                <div className="text-sm font-medium select-all">
+                  {cardOwner}
+                </div>
               </div>
-              <div className="w-8 h-8 bg-white/20 rounded flex items-center justify-center">
-                <CreditCard className="h-4 w-4" />
+              <div className="flex flex-col items-end justify-end">
+                <div
+                  className="w-8 h-8 bg-white/20 rounded flex flex-col items-center justify-center"
+                  onClick={handleCopy}
+                >
+                  <CreditCard className="h-4 w-4" />
+                </div>
+                <h6 className="text-[10px]">Nusxa Olish!!!</h6>
               </div>
             </div>
           </div>
@@ -148,7 +188,9 @@ export function PaymentModal({ isOpen, onClose, onSubmit, isSubmitting = false, 
           {/* Screenshot Upload */}
           <form onSubmit={handleSubmit}>
             <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-300 mb-3">To'lov skrinshotini yuklang</label>
+              <label className="block text-sm font-medium text-gray-300 mb-3">
+                To'lov skrinshotini yuklang
+              </label>
 
               <input
                 ref={fileInputRef}
@@ -161,10 +203,11 @@ export function PaymentModal({ isOpen, onClose, onSubmit, isSubmitting = false, 
 
               <div
                 onClick={triggerFileInput}
-                className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-all duration-200 ${error
-                  ? "border-red-500/50 bg-red-500/5"
-                  : "border-gray-600 hover:border-purple-500/50 hover:bg-purple-500/5"
-                  }`}
+                className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-all duration-200 ${
+                  error
+                    ? "border-red-500/50 bg-red-500/5"
+                    : "border-gray-600 hover:border-purple-500/50 hover:bg-purple-500/5"
+                }`}
               >
                 {screenshotPreview ? (
                   <div className="space-y-3">
@@ -195,8 +238,12 @@ export function PaymentModal({ isOpen, onClose, onSubmit, isSubmitting = false, 
                       </div>
                     </div>
                     <div>
-                      <p className="text-gray-300 font-medium">Skrinshot yuklash</p>
-                      <p className="text-gray-500 text-sm mt-1">JPG, PNG (max: 5MB)</p>
+                      <p className="text-gray-300 font-medium">
+                        Skrinshot yuklash
+                      </p>
+                      <p className="text-gray-500 text-sm mt-1">
+                        JPG, PNG (max: 5MB)
+                      </p>
                     </div>
                   </div>
                 )}
@@ -243,5 +290,5 @@ export function PaymentModal({ isOpen, onClose, onSubmit, isSubmitting = false, 
         </div>
       </div>
     </div>
-  )
+  );
 }
