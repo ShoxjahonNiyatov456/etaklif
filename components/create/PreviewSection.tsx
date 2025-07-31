@@ -33,6 +33,13 @@ export default function PreviewSection({
   uploadedImage,
 }: PreviewSectionProps) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [currentTemplate, setCurrentTemplate] = useState(selectedTemplate);
+
+  // Shablon o'zgarganda yangilash
+  useEffect(() => {
+    // Shablon o'zgartirilganda, uni darhol yangilash
+    setCurrentTemplate(selectedTemplate);
+  }, [selectedTemplate]);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -61,7 +68,7 @@ export default function PreviewSection({
         <div className="max-w-md w-full bg-white rounded-lg overflow-hidden shadow-xl">
           {type === "wedding" ? (
             <WeddingTemplate
-              style={selectedTemplate}
+              style={currentTemplate}
               firstName={formData.firstName}
               secondName={formData.secondName}
               date={formattedDate}
@@ -71,7 +78,7 @@ export default function PreviewSection({
             />
           ) : type === "birthday" ? (
             <BirthdayTemplate
-              style={selectedTemplate}
+              style={currentTemplate}
               firstName={formData.firstName}
               date={formattedDate}
               age={formData.age}
@@ -81,7 +88,7 @@ export default function PreviewSection({
             />
           ) : type === "funeral" ? (
             <FuneralTemplate
-              style={selectedTemplate}
+              style={currentTemplate}
               firstName={formData.firstName}
               date={formattedDate}
               time={formData.time}
@@ -90,7 +97,7 @@ export default function PreviewSection({
             />
           ) : type === "jubilee" ? (
             <JubileeTemplate
-              style={selectedTemplate}
+              style={currentTemplate}
               firstName={formData.firstName}
               age={formData.age}
               date={formattedDate}
@@ -100,7 +107,7 @@ export default function PreviewSection({
             />
           ) : type === "engagement" ? (
             <EngagementTemplate
-              style={selectedTemplate}
+              style={currentTemplate}
               firstName={formData.firstName}
               parents={formData.parents}
               date={formattedDate}

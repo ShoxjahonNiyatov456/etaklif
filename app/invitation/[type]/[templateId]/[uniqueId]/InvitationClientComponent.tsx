@@ -37,7 +37,6 @@ export default function InvitationClientComponent({
   const [paymentStatus, setPaymentStatus] = useState<
     "paid" | "unpaid" | "pending"
   >(initialPaymentStatus || "unpaid");
-  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState<boolean>(false);
   const siteUrl =
     process.env.NEXT_PUBLIC_API_URL || "https://etaklif.vercel.app";
   const updateMetaData = (rawData: any) => {
@@ -440,7 +439,7 @@ export default function InvitationClientComponent({
     } else if (paymentStatus === "pending") {
       return (
         <div className="relative">
-          <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/50 backdrop-blur-sm rounded-lg">
+          <div className="absolute  inset-0 z-20 flex flex-col items-center justify-center bg-black/50 backdrop-blur-sm rounded-lg">
             <div className="bg-white p-6 rounded-lg shadow-lg max-w-md mx-auto text-center mb-4">
               <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-yellow-500 mx-auto mb-4"></div>
               <h2 className="text-2xl font-bold text-yellow-600 mb-2">
@@ -493,12 +492,13 @@ export default function InvitationClientComponent({
           cardNumber="4073 4200 2379 1357"
           cardOwner="Niyatov Shohjahon"
           isSubmitting={isSubmitting}
+          invitationLink={`${siteUrl}/invitation/${type}/${templateId}/${uniqueId}`}
         />
       )}
 
       {/* Muvaffaqiyatli to'lov so'rovi modali */}
       {showSuccessModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
+        <div className="fixed inset-0  z-50 flex items-center justify-center bg-black/70">
           <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full mx-4 text-center">
             <div className="text-green-500 mb-4">
               <svg

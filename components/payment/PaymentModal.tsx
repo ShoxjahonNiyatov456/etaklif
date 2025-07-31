@@ -9,6 +9,7 @@ import {
   AlertCircle,
   CreditCard,
   Camera,
+  Copy,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
@@ -20,6 +21,7 @@ interface PaymentModalProps {
   isSubmitting?: boolean;
   cardNumber?: string;
   cardOwner?: string;
+  invitationLink?: string;
 }
 
 export interface PaymentFormData {
@@ -33,13 +35,15 @@ export function PaymentModal({
   onSubmit,
   isSubmitting = false,
   cardNumber = "4073 4200 2379 1357",
-  cardOwner = "Niyatoc Shohjahon",
+  cardOwner = "Niyatov Shohjahon",
+  invitationLink,
 }: PaymentModalProps) {
   const [screenshot, setScreenshot] = useState<File | null>(null);
   const [screenshotPreview, setScreenshotPreview] = useState<string | null>(
     null
   );
   const [copied, setCopied] = useState(false);
+  const [linkCopied, setLinkCopied] = useState(false);
   const [error, setError] = useState<string>("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -106,9 +110,20 @@ export function PaymentModal({
     try {
       await navigator.clipboard.writeText(cardNumber);
       setCopied(true);
-      setTimeout(() => setCopied(false), 1500); // 1.5 sekundda "Copied!" ni yo‘qotish
+      setTimeout(() => setCopied(false), 1500); // 1.5 sekundda "Copied!" ni yo'qotish
     } catch (err) {
       console.error("Copy failed:", err);
+    }
+  };
+
+  const handleCopyLink = async () => {
+    if (!invitationLink) return;
+    try {
+      await navigator.clipboard.writeText(invitationLink);
+      setLinkCopied(true);
+      setTimeout(() => setLinkCopied(false), 1500); // 1.5 sekundda "Copied!" ni yo'qotish
+    } catch (err) {
+      console.error("Copy link failed:", err);
     }
   };
   if (!isOpen) return null;
@@ -117,7 +132,7 @@ export function PaymentModal({
   }
 
   return (
-    <div className="fixed pt-24 inset-0 z-50 flex items-start justify-center bg-black">
+    <div className="absolute pt-24 inset-0 z-50 flex items-start justify-center bg-black">
       <div className="bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-2xl shadow-2xl max-w-md w-full mx-4 overflow-hidden relative">
         {/* Header */}
         <div className="relative bg-gradient-to-r from-purple-600 to-pink-600 p-6 text-white">
@@ -143,6 +158,32 @@ export function PaymentModal({
 
         {/* Card Info */}
         <div className="p-6 bg-gray-800/50">
+          {invitationLink && (
+            <div className="bg-gray-700/50 rounded-xl p-4 mb-4">
+              <div className="flex justify-between items-center mb-2">
+                <div className="text-xs text-white/80">TAKLIFNOMA HAVOLASI</div>
+              </div>
+              <div className="flex items-center justify-between bg-gray-800/70 rounded-lg p-2 mb-2">
+                <div className="text-sm text-white/90 truncate mr-2">
+                  {invitationLink}
+                </div>
+                <button
+                  onClick={handleCopyLink}
+                  className="p-2 bg-gray-700 hover:bg-gray-600 rounded-md transition-colors"
+                >
+                  {linkCopied ? (
+                    <Check className="h-4 w-4 text-green-400" />
+                  ) : (
+                    <Copy className="h-4 w-4 text-white/80" />
+                  )}
+                </button>
+              </div>
+              {linkCopied && (
+                <div className="text-xs text-green-400 text-center">Havola nusxalandi!</div>
+              )}
+            </div>
+          )}
+
           <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-4 text-white mb-4">
             <div className="flex justify-between items-start mb-3">
               <div className="text-xs opacity-80">KARTA RAQAMI</div>
@@ -203,11 +244,10 @@ export function PaymentModal({
 
               <div
                 onClick={triggerFileInput}
-                className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-all duration-200 ${
-                  error
-                    ? "border-red-500/50 bg-red-500/5"
-                    : "border-gray-600 hover:border-purple-500/50 hover:bg-purple-500/5"
-                }`}
+                className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-all duration-200 ${error
+                  ? "border-red-500/50 bg-red-500/5"
+                  : "border-gray-600 hover:border-purple-500/50 hover:bg-purple-500/5"
+                  }`}
               >
                 {screenshotPreview ? (
                   <div className="space-y-3">

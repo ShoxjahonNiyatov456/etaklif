@@ -3,7 +3,7 @@
 import type React from "react";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import { Button } from "@/components/ui/button";
@@ -263,8 +263,6 @@ export default function CreatePage() {
   };
 
   const availableTemplates = getAvailableTemplates();
-
-  // URL parametrlarni tekshirish
   useEffect(() => {
     const templateParam = searchParams.get("template");
     const styleParam = searchParams.get("style");
@@ -444,23 +442,10 @@ export default function CreatePage() {
     }
   };
 
-  const handlePreviousTemplate = () => {
-    const newIndex =
-      currentTemplateIndex > 0
-        ? currentTemplateIndex - 1
-        : availableTemplates.length - 1;
-    setCurrentTemplateIndex(newIndex);
-    setSelectedTemplate(availableTemplates[newIndex].id);
-  };
+  // Shablon o'zgartirilganda PreviewSection komponentini qayta renderlash uchun
+  const previewKey = selectedTemplate; // Shablon o'zgarganda key ham o'zgaradi
 
-  const handleNextTemplate = () => {
-    const newIndex =
-      currentTemplateIndex < availableTemplates.length - 1
-        ? currentTemplateIndex + 1
-        : 0;
-    setCurrentTemplateIndex(newIndex);
-    setSelectedTemplate(availableTemplates[newIndex].id);
-  };
+  // Template selection is now handled by the dropdown
 
   const fadeIn = {
     hidden: { opacity: 0, y: 20 },
@@ -540,11 +525,10 @@ export default function CreatePage() {
                   <Button
                     onClick={() => setActiveTab("preview")}
                     disabled={!formCompleted}
-                    className={`bg-gradient-to-r from-purple-600 to-pink-600 text-white border-0 ${
-                      !formCompleted
-                        ? "opacity-50 cursor-not-allowed"
-                        : "hover:from-purple-700 hover:to-pink-700"
-                    }`}
+                    className={`bg-gradient-to-r from-purple-600 to-pink-600 text-white border-0 ${!formCompleted
+                      ? "opacity-50 cursor-not-allowed"
+                      : "hover:from-purple-700 hover:to-pink-700"
+                      }`}
                   >
                     Keyingisi
                     <ArrowRight className="ml-2 h-4 w-4" />
@@ -562,64 +546,50 @@ export default function CreatePage() {
                 ) : (
                   <div className="space-y-6">
                     {/* Preview Container with Black Frame */}
-                    <div className="bg-black rounded-lg p-4 md:p-6">
-                      {/* Header with Navigation */}
-                      <div className="flex items-center justify-between sm:flex-row sm:items-center sm:justify-between mb-6 text-white sm:space-y-0">
+                    <div className="p-4 md:p-6">
+                      {/* Header with Template Selection */}
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 text-white sm:space-y-0 space-y-4">
                         <h3 className="text-lg font-medium">
                           Taklifnoma ko'rinishi
                         </h3>
-                        <h4 className="text-lg font-medium text-center sm:text-right">
-                          {availableTemplates[currentTemplateIndex]?.name}
-                        </h4>
-                      </div>
-
-                      {/* Preview Area with Side Navigation */}
-                      <div className="relative">
-                        {/* Left Arrow */}
-                        <button
-                          onClick={handlePreviousTemplate}
-                          className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-10 text-white hover:text-gray-300 transition-colors bg-black/50 rounded-full p-2"
-                        >
-                          <ChevronLeft className="h-6 w-6 md:h-8 md:w-8" />
-                        </button>
-
-                        {/* Right Arrow */}
-                        <button
-                          onClick={handleNextTemplate}
-                          className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-10 text-white hover:text-gray-300 transition-colors bg-black/50 rounded-full p-2"
-                        >
-                          <ChevronRight className="h-6 w-6 md:h-8 md:w-8" />
-                        </button>
-
-                        {/* Preview Content - Full Width and Responsive */}
-                        <div className="rounded-lg min-h-[400px] md:min-h-[600px] md:mx-8 overflow-hidden">
-                          <div className="w-full h-full">
-                            <PreviewSection
-                              type={type as string}
-                              selectedTemplate={selectedTemplate}
-                              formData={formData}
-                              uploadedImage={null}
-                            />
-                          </div>
+                        <div className="relative w-full sm:w-64">
+                          <select
+                            value={selectedTemplate}
+                            onChange={(e) => {
+                              const newTemplateId = e.target.value;
+                              setSelectedTemplate(newTemplateId);
+                              const newIndex = availableTemplates.findIndex(template => template.id === newTemplateId);
+                              if (newIndex !== -1) {
+                                setCurrentTemplateIndex(newIndex);
+                                // URL parametrlarini yangilash
+                                const url = new URL(window.location.href);
+                                url.searchParams.set('template', type as string);
+                                url.searchParams.set('style', newTemplateId);
+                                window.history.pushState({}, '', url.toString());
+                              }
+                            }}
+                            className="w-full bg-gray-800 border border-gray-700 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                          >
+                            {availableTemplates.map((template) => (
+                              <option key={template.id} value={template.id}>
+                                {template.name}
+                              </option>
+                            ))}
+                          </select>
                         </div>
                       </div>
 
-                      {/* Template indicators */}
-                      <div className="flex justify-center space-x-2 mt-6 overflow-x-auto pb-2">
-                        {availableTemplates.map((_, index) => (
-                          <button
-                            key={index}
-                            onClick={() => {
-                              setCurrentTemplateIndex(index);
-                              setSelectedTemplate(availableTemplates[index].id);
-                            }}
-                            className={`w-3 h-3 rounded-full transition-colors flex-shrink-0 ${
-                              index === currentTemplateIndex
-                                ? "bg-purple-500"
-                                : "bg-gray-600 hover:bg-gray-500"
-                            }`}
+                      {/* Preview Content */}
+                      <div className="rounded-lg min-h-[400px] md:min-h-[600px] overflow-hidden">
+                        <div className="w-full h-full">
+                          <PreviewSection
+                            key={previewKey}
+                            type={type as string}
+                            selectedTemplate={selectedTemplate}
+                            formData={formData}
+                            uploadedImage={null}
                           />
-                        ))}
+                        </div>
                       </div>
                     </div>
 

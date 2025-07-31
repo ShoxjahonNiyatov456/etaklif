@@ -358,7 +358,7 @@ export default function Home() {
                   Boshlash
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
-                <Button
+                {/* <Button
                   size="lg"
                   variant="outline"
                   className="border-purple-500 text-purple-400 hover:bg-purple-950/30 rounded-full px-8 bg-transparent"
@@ -366,7 +366,7 @@ export default function Home() {
                 >
                   <User className="mr-2 h-4 w-4" />
                   Mening taklifnomalarim
-                </Button>
+                </Button> */}
               </div>
             </motion.div>
             <motion.div
@@ -425,11 +425,10 @@ export default function Home() {
               <Button
                 key={category.id}
                 variant={activeCategory === category.id ? "default" : "outline"}
-                className={`rounded-full px-6 ${
-                  activeCategory === category.id
-                    ? "bg-gradient-to-r from-purple-600 to-pink-600 border-0 text-white"
-                    : "border-gray-700 text-white hover:bg-purple-600 hover:text-white bg-transparent"
-                }`}
+                className={`rounded-full px-6 ${activeCategory === category.id
+                  ? "bg-gradient-to-r from-purple-600 to-pink-600 border-0 text-white"
+                  : "border-gray-700 text-white hover:bg-purple-600 hover:text-white bg-transparent"
+                  }`}
                 onClick={() => setActiveCategory(category.id)}
               >
                 {category.name}
@@ -472,11 +471,10 @@ export default function Home() {
                   variant={
                     activeCategory === category.id ? "default" : "outline"
                   }
-                  className={`rounded-full px-6 py-2 whitespace-nowrap flex-shrink-0 ${
-                    activeCategory === category.id
-                      ? "bg-gradient-to-r from-purple-600 to-pink-600 border-0 text-white"
-                      : "border-gray-700 text-white hover:bg-purple-600 hover:text-white bg-transparent"
-                  }`}
+                  className={`rounded-full px-6 py-2 whitespace-nowrap flex-shrink-0 ${activeCategory === category.id
+                    ? "bg-gradient-to-r from-purple-600 to-pink-600 border-0 text-white"
+                    : "border-gray-700 text-white hover:bg-purple-600 hover:text-white bg-transparent"
+                    }`}
                   onClick={() => setActiveCategory(category.id)}
                 >
                   {category.name}
@@ -560,11 +558,10 @@ export default function Home() {
                   <Button
                     key={page}
                     variant={currentPage === page ? "default" : "outline"}
-                    className={`w-10 h-10 rounded-full ${
-                      currentPage === page
-                        ? "bg-gradient-to-r from-purple-600 to-pink-600 border-0 text-white"
-                        : "border-gray-700 text-white hover:bg-purple-600 hover:text-white bg-transparent"
-                    }`}
+                    className={`w-10 h-10 rounded-full ${currentPage === page
+                      ? "bg-gradient-to-r from-purple-600 to-pink-600 border-0 text-white"
+                      : "border-gray-700 text-white hover:bg-purple-600 hover:text-white bg-transparent"
+                      }`}
                     onClick={() => handlePageChange(page)}
                   >
                     {page}

@@ -429,15 +429,13 @@ export default function PaymentSection({ type, selectedTemplate, formData, uploa
         isSubmitting={isSubmitting}
         cardNumber="4073 4200 2379 1357"
         cardOwner="Niyatov Shohjahon"
+        invitationLink={shareableLink}
       />
       <motion.div
         initial="hidden"
         animate={hasMounted ? "visible" : "hidden"}
         variants={paymentSectionVariants}
-        className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-6 shadow-lg mt-6"
       >
-        <h3 className="text-xl font-semibold mb-6 text-white">Taklifnomani yakunlash</h3>
-
         {!paymentCompleted ? (
           <>
             {!(templateRequiresImage && !uploadedImage) && (
@@ -499,35 +497,10 @@ export default function PaymentSection({ type, selectedTemplate, formData, uploa
             </AlertDialog>
           </>
         ) : (
-          <div className="flex flex-col items-center justify-center space-y-6 mt-6">
-            <div className="flex items-center justify-center w-20 h-20 bg-gradient-to-br from-green-500/20 to-green-600/20 rounded-full border border-green-500/30">
-              <Check className="h-10 w-10 text-green-500" />
-            </div>
-            <h3 className="text-xl font-semibold text-green-500">To'lov muvaffaqiyatli yakunlandi!</h3>
-            <Button
-              onClick={shareableLink ? () => setIsShareModalOpen(true) : handleShareInvitation}
-              disabled={isGeneratingLink || !isAuthenticated}
-              className={`px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-medium rounded-lg transition-colors flex items-center justify-center ${isGeneratingLink ? "opacity-70 cursor-not-allowed" : ""
-                }`}
-            >
-              {isGeneratingLink ? (
-                <>
-                  <Loader2 className="h-5 w-5 mr-2 animate-spin" />
-                  <span>Havola tayyorlanmoqda...</span>
-                </>
-              ) : (
-                <>
-                  <Share2 className="h-5 w-5 mr-2" />
-                  Taklifnomani ulashish
-                </>
-              )}
-            </Button>
-          </div>
+          <div></div>
         )}
 
-        {shareableLink && (
-          <ShareModal isOpen={isShareModalOpen} onClose={() => setIsShareModalOpen(false)} url={shareableLink} title="" />
-        )}
+        {/* ShareModal komponenti PaymentModal komponentiga ko'chirildi */}
       </motion.div>
     </>
   )

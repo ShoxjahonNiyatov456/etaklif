@@ -3,29 +3,12 @@ import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { ProposalCard } from "@/components/ui/proposal-card";
 import { useEffect, useState } from "react";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "../firebase";
 
 export default function SelectTypePage() {
   const router = useRouter();
   const [hasMounted, setHasMounted] = useState(false);
-  const [currentUser, setCurrentUser] = useState<any>(null);
-  const [authChecked, setAuthChecked] = useState(false);
-
   useEffect(() => {
     setHasMounted(true);
-  }, []);
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setCurrentUser(user);
-      } else {
-        setCurrentUser(null);
-      }
-      setAuthChecked(true);
-    });
-    return () => unsubscribe();
   }, []);
 
   const invitationTypes = [

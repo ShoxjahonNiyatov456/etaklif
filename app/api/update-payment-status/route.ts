@@ -12,6 +12,54 @@ export async function OPTIONS() {
   return NextResponse.json({}, { headers: corsHeaders });
 }
 
+// To'lov statusini tekshirish uchun GET metodi
+export async function GET(request: NextRequest) {
+  try {
+    const headers = {
+      ...corsHeaders,
+      "Content-Type": "application/json",
+    };
+
+    const { searchParams } = new URL(request.url);
+    const uniqueId = searchParams.get("uniqueId");
+
+    if (!uniqueId) {
+      return NextResponse.json(
+        { error: "Taklifnoma ID si ko'rsatilmagan", success: false },
+        { status: 400, headers }
+      );
+    }
+
+    const invitationRef = doc(db, "invitations", uniqueId);
+    const invitationSnap = await getDoc(invitationRef);
+
+    if (!invitationSnap.exists()) {
+      return NextResponse.json(
+        { error: "Taklifnoma topilmadi", success: false },
+        { status: 404, headers }
+      );
+    }
+
+    const invitationData = invitationSnap.data();
+
+    return NextResponse.json(
+      {
+        success: true,
+        paymentStatus: invitationData.paymentStatus || "unpaid",
+        paymentAmount: invitationData.paymentAmount || 50000
+      },
+      { status: 200, headers }
+    );
+  } catch (error) {
+    console.error("To'lov statusini olishda xatolik:", error);
+    return NextResponse.json(
+      { error: "Serverda xatolik yuz berdi", success: false },
+      { status: 500, headers: corsHeaders }
+    );
+  }
+}
+
+
 export async function PUT(request: NextRequest) {
   try {
     const headers = {
@@ -62,10 +110,61 @@ export async function PUT(request: NextRequest) {
       try {
         // Admin Telegram botiga xabar yuborish
         const botToken = process.env.TELEGRAM_BOT_TOKEN;
-        const adminChatId = process.env.TELEGRAM_ADMIN_CHAT_ID || "1234567890"; // Admin chat ID
+        // Telegram chat ID ni to'g'ri olish - muhim!
+        const adminChatId = process.env.TELEGRAM_ADMIN_CHAT_ID;
+
+        // Agar chat ID mavjud bo'lmasa, xatolik qaytarish
+        if (!adminChatId) {
+          console.error("TELEGRAM_ADMIN_CHAT_ID muhit o'zgaruvchisi topilmadi");
+          // To'lov statusini yangilash davom etadi, lekin Telegram xabari yuborilmaydi
+          return;
+        }
 
         if (botToken) {
-          // Admin uchun xabar
+          // Avval skrinshot yuborish
+          let photoMessageId = null;
+
+          if (screenshotBase64) {
+            try {
+              // Base64 formatdagi rasmni dekodlash
+              const base64Data = screenshotBase64.replace(/^data:image\/(png|jpeg|jpg);base64,/, "");
+              const imageBuffer = Buffer.from(base64Data, 'base64');
+
+              // Rasmni yuborish uchun formData yaratish
+              const formData = new FormData();
+              formData.append('chat_id', adminChatId);
+              formData.append('caption', `📸 To'lov skrinshotini yubordi: Taklifnoma ID: ${uniqueId}`);
+
+              // Rasmni formData ga qo'shish
+              const blob = new Blob([imageBuffer], { type: 'image/jpeg' });
+              formData.append('photo', blob, 'payment_screenshot.jpg');
+
+              // Rasmni yuborish
+              const photoResponse = await fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
+                method: "POST",
+                body: formData,
+              });
+
+              // Javobni tekshirish va xabar ID sini olish
+              try {
+                const photoResult = await photoResponse.json();
+                if (photoResult.ok) {
+                  photoMessageId = photoResult.result.message_id;
+                } else {
+                  console.error("Skrinshot yuborishda Telegram API xatoligi:", photoResult);
+                  if (photoResult.error_code === 400 && photoResult.description.includes("chat not found")) {
+                    console.error("Telegram chat ID noto'g'ri. Iltimos, TELEGRAM_ADMIN_CHAT_ID muhit o'zgaruvchisini tekshiring.");
+                  }
+                }
+              } catch (jsonError) {
+                console.error("Skrinshot yuborish javobini qayta ishlashda xatolik:", jsonError);
+              }
+            } catch (error) {
+              console.error("Skrinshot yuborishda xatolik:", error);
+            }
+          }
+
+          // Keyin to'lov so'rovi xabarini yuborish
           const adminMessage = `🔔 <b>Yangi to'lov so'rovi keldi!</b>\n\n` +
             `📝 <b>Taklifnoma ID:</b> ${uniqueId}\n` +
             `💰 <b>To'lov miqdori:</b> 50,000 so'm`;
@@ -87,41 +186,29 @@ export async function PUT(request: NextRequest) {
                     { text: "❌ Bekor qilish", callback_data: `reject_payment:${uniqueId}` }
                   ]
                 ]
-              })
+              }),
+              // Agar skrinshot yuborilgan bo'lsa, unga javob sifatida yuborish
+              ...(photoMessageId ? { reply_to_message_id: photoMessageId } : {})
             }),
           });
 
-          // Agar skrinshot mavjud bo'lsa, uni ham yuborish
-          if (screenshotBase64) {
-            try {
-              // Base64 formatdagi rasmni dekodlash
-              const base64Data = screenshotBase64.replace(/^data:image\/(png|jpeg|jpg);base64,/, "");
-              const imageBuffer = Buffer.from(base64Data, 'base64');
 
-              // Rasmni yuborish uchun formData yaratish
-              const formData = new FormData();
-              formData.append('chat_id', adminChatId);
-              formData.append('caption', `📸 To'lov skrinshotini yubordi: Taklifnoma ID: ${uniqueId}`);
 
-              // Rasmni formData ga qo'shish
-              const blob = new Blob([imageBuffer], { type: 'image/jpeg' });
-              formData.append('photo', blob, 'payment_screenshot.jpg');
+          try {
+            const adminResult = await adminResponse.json();
+            console.log(adminResult);
 
-              // Rasmni yuborish
-              await fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
-                method: "POST",
-                body: formData,
-              });
-            } catch (error) {
-              console.error("Skrinshot yuborishda xatolik:", error);
+            if (adminResult.ok) {
+              console.log("Admin Telegram botiga xabar yuborildi");
+            } else {
+              console.error("Admin Telegram botiga xabar yuborishda xatolik:", adminResult);
+              // Xatolik tafsilotlarini qayd qilish
+              if (adminResult.error_code === 400 && adminResult.description.includes("chat not found")) {
+                console.error("Telegram chat ID noto'g'ri. Iltimos, TELEGRAM_ADMIN_CHAT_ID muhit o'zgaruvchisini tekshiring.");
+              }
             }
-          }
-
-          const adminResult = await adminResponse.json();
-          if (adminResult.ok) {
-            console.log("Admin Telegram botiga xabar yuborildi");
-          } else {
-            console.error("Admin Telegram botiga xabar yuborishda xatolik:", adminResult);
+          } catch (jsonError) {
+            console.error("Telegram API javobini qayta ishlashda xatolik:", jsonError);
           }
 
 
@@ -140,49 +227,6 @@ export async function PUT(request: NextRequest) {
     );
   } catch (error) {
     console.error("To'lov statusini yangilashda xatolik:", error);
-    return NextResponse.json(
-      { error: "Serverda xatolik yuz berdi", success: false },
-      { status: 500, headers: corsHeaders }
-    );
-  }
-}
-
-export async function GET(request: NextRequest) {
-  try {
-    const headers = {
-      ...corsHeaders,
-      "Content-Type": "application/json",
-    };
-    const { searchParams } = new URL(request.url);
-    const uniqueId = searchParams.get("uniqueId");
-
-    if (!uniqueId) {
-      return NextResponse.json(
-        { error: "uniqueId parametri ko'rsatilmagan", success: false },
-        { status: 400, headers }
-      );
-    }
-
-    // Taklifnomani tekshirish
-    const invitationRef = doc(db, "invitations", uniqueId);
-    const invitationSnap = await getDoc(invitationRef);
-
-    if (!invitationSnap.exists()) {
-      return NextResponse.json(
-        { error: "Taklifnoma topilmadi", success: false },
-        { status: 404, headers }
-      );
-    }
-
-    const invitationData = invitationSnap.data();
-    const paymentStatus = invitationData.paymentStatus || "unpaid";
-
-    return NextResponse.json(
-      { success: true, paymentStatus },
-      { status: 200, headers }
-    );
-  } catch (error) {
-    console.error("To'lov statusini olishda xatolik:", error);
     return NextResponse.json(
       { error: "Serverda xatolik yuz berdi", success: false },
       { status: 500, headers: corsHeaders }
