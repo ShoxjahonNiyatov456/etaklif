@@ -3,16 +3,16 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { Menu, X, User, LogOut, Sparkles } from "lucide-react";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "../app/firebase";
-import { logoutUser } from "../app/services/auth";
+// import { onAuthStateChanged } from "firebase/auth";
+// import { auth } from "../app/firebase";
+// import { logoutUser } from "../app/services/auth";
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [currentUser, setCurrentUser] = useState<any>(null);
-  const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const [authChecked, setAuthChecked] = useState(false);
+  // const [currentUser, setCurrentUser] = useState<any>(null);
+  // const [userMenuOpen, setUserMenuOpen] = useState(false);
+  // const [authChecked, setAuthChecked] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -22,18 +22,18 @@ export default function Header() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setCurrentUser(user);
-      } else {
-        setCurrentUser(null);
-      }
-      setAuthChecked(true);
-    });
+  // useEffect(() => {
+  //   const unsubscribe = onAuthStateChanged(auth, (user) => {
+  //     if (user) {
+  //       setCurrentUser(user);
+  //     } else {
+  //       setCurrentUser(null);
+  //     }
+  //     setAuthChecked(true);
+  //   });
 
-    return () => unsubscribe();
-  }, []);
+  //   return () => unsubscribe();
+  // }, []);
 
   return (
     <header

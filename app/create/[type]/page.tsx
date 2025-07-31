@@ -283,13 +283,6 @@ export default function CreatePage() {
     }
   }, [searchParams, availableTemplates]);
 
-  // Agar form to'ldirilgan bo'lsa, preview qismiga o'tish
-  useEffect(() => {
-    if (formCompleted) {
-      setActiveTab("preview");
-    }
-  }, [formCompleted]);
-
   const getTomorrowDate = () => {
     const today = new Date();
     const tomorrow = new Date(today);

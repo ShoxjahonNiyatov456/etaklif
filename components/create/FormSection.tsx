@@ -95,7 +95,6 @@ export default function FormSection({
       <h3 className="text-xl font-semibold mb-4 text-white">
         Ma'lumotlarni kiriting
       </h3>
-
       {type === "wedding" && (
         <>
           <div className="space-y-2">
@@ -126,7 +125,6 @@ export default function FormSection({
           </div>
         </>
       )}
-
       {type === "birthday" && (
         <>
           <div className="space-y-2">
@@ -157,7 +155,6 @@ export default function FormSection({
           </div>
         </>
       )}
-
       {type === "funeral" && (
         <div className="space-y-2">
           <Label htmlFor="firstName" className="text-gray-300">
@@ -173,7 +170,6 @@ export default function FormSection({
           />
         </div>
       )}
-
       {type === "jubilee" && (
         <>
           <div className="space-y-2">
@@ -204,7 +200,6 @@ export default function FormSection({
           </div>
         </>
       )}
-
       {type === "engagement" && (
         <>
           <div className="space-y-2">
@@ -235,7 +230,6 @@ export default function FormSection({
           </div>
         </>
       )}
-
       <div className="space-y-2">
         <Label className="text-gray-300">
           Sana <span className="text-red-400">*</span>
@@ -318,7 +312,6 @@ export default function FormSection({
           </Select>
         </div>
       </div>
-
       <div className="space-y-2">
         <Label htmlFor="location" className="text-gray-300">
           Manzil <span className="text-red-400">*</span>
@@ -332,7 +325,6 @@ export default function FormSection({
           className="bg-gray-900/50 border-gray-700 text-white placeholder:text-gray-500 focus:border-purple-500 focus:ring-purple-500"
         />
       </div>
-
       <div className="space-y-2">
         <Label htmlFor="additionalInfo" className="text-gray-300">
           Qo'shimcha ma'lumot
