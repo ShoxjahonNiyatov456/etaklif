@@ -486,7 +486,7 @@ export default function CreatePage() {
             variants={fadeIn}
             className="space-y-6"
           >
-            <h1 className="text-3xl font-bold text-center mt-4 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
+            <h1 className="text-3xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
               {getInvitationTypeName()} taklifnomasi
             </h1>
 
@@ -564,7 +564,7 @@ export default function CreatePage() {
                     {/* Preview Container with Black Frame */}
                     <div className="bg-black rounded-lg p-4 md:p-6">
                       {/* Header with Navigation */}
-                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 text-white space-y-2 sm:space-y-0">
+                      <div className="flex items-center justify-between sm:flex-row sm:items-center sm:justify-between mb-6 text-white sm:space-y-0">
                         <h3 className="text-lg font-medium">
                           Taklifnoma ko'rinishi
                         </h3>
@@ -592,7 +592,7 @@ export default function CreatePage() {
                         </button>
 
                         {/* Preview Content - Full Width and Responsive */}
-                        <div className="rounded-lg min-h-[400px] md:min-h-[600px] mx-8 md:mx-12 overflow-hidden">
+                        <div className="rounded-lg min-h-[400px] md:min-h-[600px] md:mx-8 overflow-hidden">
                           <div className="w-full h-full">
                             <PreviewSection
                               type={type as string}
