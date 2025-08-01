@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, Fragment } from "react"
+import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { Share2, Check, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -18,7 +18,6 @@ import {
 import { generateShareableLink } from "@/app/services/share"
 import { auth } from "@/app/firebase"
 import { toast } from "../ui/use-toast"
-import { PaymentModal, type PaymentFormData } from "@/components/payment/PaymentModal"
 
 interface Template {
   id: string
@@ -298,16 +297,14 @@ interface PaymentSectionProps {
 }
 
 export default function PaymentSection({ type, selectedTemplate, formData, uploadedImage }: PaymentSectionProps) {
-  const [paymentCompleted, setPaymentCompleted] = useState(false)
+  const [shareCompleted, setShareCompleted] = useState(false)
   const [shareableLink, setShareableLink] = useState("")
   const [isShareModalOpen, setIsShareModalOpen] = useState(false)
-  const [paymentProcessing, setPaymentProcessing] = useState(false)
+  const [shareProcessing, setShareProcessing] = useState(false)
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false)
   const [isGeneratingLink, setIsGeneratingLink] = useState(false)
   const [hasMounted, setHasMounted] = useState(false)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false)
-  const [isSubmitting, setIsSubmitting] = useState(false)
   const [uniqueId, setUniqueId] = useState("")
 
   useEffect(() => {
@@ -322,25 +319,12 @@ export default function PaymentSection({ type, selectedTemplate, formData, uploa
 
   const templateRequiresImage = currentTemplateDetails?.hasImageUpload ?? false
 
-  const handleShareInvitation = async () => {
+  const handleShareProcessing = async () => {
     try {
-      setIsGeneratingLink(true)
-      const link = await generateShareableLink(type as string, selectedTemplate, formData)
-      setShareableLink(link)
-      setIsShareModalOpen(true)
-      setIsGeneratingLink(false)
-    } catch (error) {
-      console.error("Error generating link:", error)
-      setIsGeneratingLink(false)
-    }
-  }
-
-  const handlePaymentProcessing = async () => {
-    try {
-      setPaymentProcessing(true)
+      setShareProcessing(true)
       setIsGeneratingLink(true)
 
-      // Generate the shareable link first
+      // Generate the shareable link
       const link = await generateShareableLink(type as string, selectedTemplate, formData)
 
       // Extract the uniqueId from the link
@@ -351,67 +335,25 @@ export default function PaymentSection({ type, selectedTemplate, formData, uploa
         throw new Error("Could not extract uniqueId from generated link")
       }
 
-      // Save the uniqueId for later use
+      // Save the uniqueId and link
       setUniqueId(extractedUniqueId)
       setShareableLink(link)
       setIsConfirmDialogOpen(false)
 
-      // Open payment modal
-      setIsPaymentModalOpen(true)
-      setPaymentProcessing(false)
+      // Open share modal instead of payment modal
+      setIsShareModalOpen(true)
+      setShareProcessing(false)
       setIsGeneratingLink(false)
+      setShareCompleted(true)
     } catch (error) {
-      console.error("Error in payment processing:", error)
+      console.error("Error in share processing:", error)
       toast({
         variant: "destructive",
         title: "Xatolik yuz berdi",
         description: "Taklifnomani yaratishda xatolik yuz berdi. Iltimos, qayta urinib ko'ring.",
       })
-      setPaymentProcessing(false)
+      setShareProcessing(false)
       setIsGeneratingLink(false)
-    }
-  }
-
-  // Payment submission function
-  const submitPaymentRequest = async (paymentData: PaymentFormData) => {
-    try {
-      setIsSubmitting(true)
-      const response = await fetch("/api/update-payment-status", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          uniqueId: uniqueId,
-          paymentStatus: "pending",
-          screenshotBase64: paymentData.screenshotBase64,
-        }),
-      })
-
-      const result = await response.json()
-      if (result.success) {
-        setIsPaymentModalOpen(false)
-        setPaymentCompleted(true)
-        toast({
-          title: "To'lov so'rovi yuborildi",
-          description: "To'lov so'rovingiz muvaffaqiyatli yuborildi va tez orada ko'rib chiqiladi.",
-        })
-      } else {
-        toast({
-          variant: "destructive",
-          title: "Xatolik yuz berdi",
-          description: result.error || "To'lov so'rovini yuborishda xatolik yuz berdi",
-        })
-      }
-    } catch (error) {
-      console.error("Payment submission error:", error)
-      toast({
-        variant: "destructive",
-        title: "Xatolik yuz berdi",
-        description: "To'lov so'rovini yuborishda xatolik yuz berdi. Iltimos, qayta urinib ko'ring.",
-      })
-    } finally {
-      setIsSubmitting(false)
     }
   }
 
@@ -422,21 +364,8 @@ export default function PaymentSection({ type, selectedTemplate, formData, uploa
 
   return (
     <>
-      <PaymentModal
-        isOpen={isPaymentModalOpen}
-        onClose={() => setIsPaymentModalOpen(false)}
-        onSubmit={submitPaymentRequest}
-        isSubmitting={isSubmitting}
-        cardNumber="4073 4200 2379 1357"
-        cardOwner="Niyatov Shohjahon"
-        invitationLink={shareableLink}
-      />
-      <motion.div
-        initial="hidden"
-        animate={hasMounted ? "visible" : "hidden"}
-        variants={paymentSectionVariants}
-      >
-        {!paymentCompleted ? (
+      <motion.div initial="hidden" animate={hasMounted ? "visible" : "hidden"} variants={paymentSectionVariants}>
+        {!shareCompleted ? (
           <>
             {!(templateRequiresImage && !uploadedImage) && (
               <Button
@@ -451,10 +380,10 @@ export default function PaymentSection({ type, selectedTemplate, formData, uploa
                     setIsConfirmDialogOpen(true)
                   }
                 }}
-                disabled={paymentProcessing}
+                disabled={shareProcessing}
                 className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white border-0 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {paymentProcessing ? (
+                {shareProcessing ? (
                   <div className="flex items-center justify-center">
                     <Loader2 className="h-5 w-5 mr-2 animate-spin" />
                     <span>Tayyorlanmoqda...</span>
@@ -478,15 +407,15 @@ export default function PaymentSection({ type, selectedTemplate, formData, uploa
                     Bekor qilish
                   </AlertDialogCancel>
                   <AlertDialogAction
-                    onClick={handlePaymentProcessing}
-                    disabled={paymentProcessing}
-                    className={`bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white border-0 ${paymentProcessing ? "opacity-70 cursor-not-allowed" : ""
+                    onClick={handleShareProcessing}
+                    disabled={shareProcessing}
+                    className={`bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white border-0 ${shareProcessing ? "opacity-70 cursor-not-allowed" : ""
                       }`}
                   >
-                    {paymentProcessing ? (
+                    {shareProcessing ? (
                       <div className="flex items-center">
                         <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                        To'lov amalga oshirilmoqda...
+                        Havola yaratilmoqda...
                       </div>
                     ) : (
                       "Yakunlash"
@@ -497,10 +426,28 @@ export default function PaymentSection({ type, selectedTemplate, formData, uploa
             </AlertDialog>
           </>
         ) : (
-          <div></div>
+          <div className="text-center p-4">
+            <div className="flex items-center justify-center mb-4">
+              <Check className="h-8 w-8 text-green-500 mr-2" />
+              <span className="text-lg font-semibold text-green-500">Taklifnoma muvaffaqiyatli yaratildi!</span>
+            </div>
+            <Button
+              onClick={() => setIsShareModalOpen(true)}
+              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white border-0"
+            >
+              <Share2 className="h-4 w-4 mr-2" />
+              Qayta ulashish
+            </Button>
+          </div>
         )}
 
-        {/* ShareModal komponenti PaymentModal komponentiga ko'chirildi */}
+        {/* ShareModal komponenti */}
+        <ShareModal
+          isOpen={isShareModalOpen}
+          onClose={() => setIsShareModalOpen(false)}
+          url={shareableLink}
+          title="Taklifnoma"
+        />
       </motion.div>
     </>
   )

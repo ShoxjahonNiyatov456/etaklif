@@ -22,7 +22,6 @@ export async function POST(request: NextRequest) {
 
         // Telegram botdan kelgan ma'lumotlarni olish
         const body = await request.json();
-        console.log("Telegram webhook ma'lumotlari:", body);
 
         // Callback query ma'lumotlarini tekshirish
         if (body.callback_query) {
@@ -98,7 +97,8 @@ export async function POST(request: NextRequest) {
 
 // Telegram botga callback_query javobini yuborish
 async function sendTelegramResponse(callback_query_id: string, text: string) {
-    const botToken = process.env.TELEGRAM_BOT_TOKEN;
+    // .env faylidan to'g'ridan-to'g'ri o'qish
+    const botToken = "7662414181:AAE7GslvS33B56kiyYG9IFnB8cg3KXkYmZU";
     if (!botToken) {
         console.error("TELEGRAM_BOT_TOKEN muhit o'zgaruvchisi topilmadi");
         return;
@@ -131,7 +131,8 @@ async function sendTelegramResponse(callback_query_id: string, text: string) {
 
 // Telegram xabarini yangilash
 async function updateTelegramMessage(chat_id: string, message_id: number, text: string) {
-    const botToken = process.env.TELEGRAM_BOT_TOKEN;
+    // .env faylidan to'g'ridan-to'g'ri o'qish
+    const botToken = "7662414181:AAE7GslvS33B56kiyYG9IFnB8cg3KXkYmZU";
     if (!botToken) {
         console.error("TELEGRAM_BOT_TOKEN muhit o'zgaruvchisi topilmadi");
         return;

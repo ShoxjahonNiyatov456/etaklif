@@ -9,7 +9,7 @@ import JubileeTemplate from "@/components/invitation-templates/JubileeTemplate";
 import EngagementTemplate from "@/components/invitation-templates/EngagementTemplate";
 import { getCachedInvitation } from "@/app/services/cache";
 import { PaymentModal } from "@/components/payment/PaymentModal";
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, Headphones } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
@@ -483,6 +483,10 @@ export default function InvitationClientComponent({
       </Head>
       <div>{renderTemplate()}</div>
 
+      <div className="absolute flex items-center justify-center bottom-10 right-10 bg-slate-200 rounded-full w-12 h-12">
+        <Headphones />
+      </div>
+
       {/* To'lov modal oynasi */}
       {showPaymentModal && (
         <PaymentModal
@@ -522,10 +526,6 @@ export default function InvitationClientComponent({
             <p className="mb-4">
               Sizning to'lov so'rovingiz muvaffaqiyatli yuborildi va tez orada
               ko'rib chiqiladi.
-            </p>
-            <p className="mb-4 text-sm text-gray-600">
-              To'lov tasdiqlangandan so'ng taklifnomangiz to'liq
-              faollashtiriladi va elektron pochtangizga yuboriladi.
             </p>
             <button
               className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded w-full"

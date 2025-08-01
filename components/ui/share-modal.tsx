@@ -24,32 +24,30 @@ export function ShareModal({ isOpen, onClose, url, title }: ShareModalProps) {
   }, [])
 
   useEffect(() => {
-    let loadingTimerId: NodeJS.Timeout | undefined = undefined;
-    let copiedTimerId: NodeJS.Timeout | undefined = undefined;
+    let loadingTimerId: NodeJS.Timeout | undefined = undefined
+    const copiedTimerId: NodeJS.Timeout | undefined = undefined
 
     if (isBrowser && isOpen) {
       if (url && url.trim() !== "") {
-        setIsLoading(true);
+        setIsLoading(true)
         loadingTimerId = setTimeout(() => {
-          // Don't attempt automatic clipboard write on modal open
-          // Just show the URL for manual copying
-          setIsLoading(false);
-        }, 1500);
+          setIsLoading(false)
+        }, 1500)
       } else {
-        setIsLoading(false);
+        setIsLoading(false)
       }
     } else {
-      setIsLoading(false);
+      setIsLoading(false)
       if (!isOpen) {
-        setCopied(false);
+        setCopied(false)
       }
     }
 
     return () => {
-      if (loadingTimerId) clearTimeout(loadingTimerId);
-      if (copiedTimerId) clearTimeout(copiedTimerId);
-    };
-  }, [isOpen, url, isBrowser]);
+      if (loadingTimerId) clearTimeout(loadingTimerId)
+      if (copiedTimerId) clearTimeout(copiedTimerId)
+    }
+  }, [isOpen, url, isBrowser])
 
   const safeWindowOpen = (url: string) => {
     if (isBrowser) {
@@ -80,33 +78,28 @@ export function ShareModal({ isOpen, onClose, url, title }: ShareModalProps) {
   const safeCopyToClipboard = async () => {
     if (isBrowser) {
       try {
-        // Create a temporary textarea element
-        const textarea = document.createElement('textarea');
-        textarea.value = url;
-        textarea.style.position = 'fixed';
-        textarea.style.opacity = '0';
-        document.body.appendChild(textarea);
+        const textarea = document.createElement("textarea")
+        textarea.value = url
+        textarea.style.position = "fixed"
+        textarea.style.opacity = "0"
+        document.body.appendChild(textarea)
 
-        // Select and copy the text
-        textarea.select();
-        document.execCommand('copy');
+        textarea.select()
+        document.execCommand("copy")
 
-        // Clean up
-        document.body.removeChild(textarea);
+        document.body.removeChild(textarea)
 
-        // Update state
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
+        setCopied(true)
+        setTimeout(() => setCopied(false), 2000)
       } catch (error) {
-        console.error("Failed to copy: ", error);
+        console.error("Failed to copy: ", error)
 
-        // Fallback to clipboard API if available
         try {
-          await navigator.clipboard.writeText(url);
-          setCopied(true);
-          setTimeout(() => setCopied(false), 2000);
+          await navigator.clipboard.writeText(url)
+          setCopied(true)
+          setTimeout(() => setCopied(false), 2000)
         } catch (clipboardError) {
-          console.error("Clipboard fallback also failed: ", clipboardError);
+          console.error("Clipboard fallback also failed: ", clipboardError)
         }
       }
     }
@@ -123,10 +116,9 @@ export function ShareModal({ isOpen, onClose, url, title }: ShareModalProps) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/90 backdrop-blur-md" // Full screen overlay, centering, and animation container
+          className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/90 backdrop-blur-md"
         >
           <div className="bg-gray-900 rounded-lg shadow-xl w-full max-w-md flex flex-col overflow-hidden">
-            {/* Modal Content Below */}
             <div className="flex justify-between items-center p-4 border-b border-gray-800">
               <h2 className="text-xl font-semibold text-white">Ulashish</h2>
               <button onClick={onClose} className="text-gray-400 hover:text-gray-300 transition-colors">
@@ -238,8 +230,9 @@ export function ShareModal({ isOpen, onClose, url, title }: ShareModalProps) {
           </div>
         </motion.div>
       )}
-    </AnimatePresence>
-    , document.body)
+    </AnimatePresence>,
+    document.body,
+  )
 }
 
 export default ShareModal

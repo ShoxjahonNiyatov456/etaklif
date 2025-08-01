@@ -118,7 +118,7 @@ export async function generateMetadata(
 
 
 export default async function InvitationPage({ params: paramsProp }: InvitationPageProps) {
-  const { type, templateId, uniqueId } = paramsProp;
+  const { type, templateId, uniqueId } = await paramsProp;
   let paymentStatus = 'unpaid';
   let initialInvitationData = null;
   let error = null;

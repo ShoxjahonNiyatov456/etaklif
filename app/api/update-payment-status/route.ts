@@ -108,10 +108,10 @@ export async function PUT(request: NextRequest) {
     // Telegram botga xabar yuborish logikasi
     if (paymentStatus === "pending") {
       try {
-        // Admin Telegram botiga xabar yuborish
-        const botToken = process.env.TELEGRAM_BOT_TOKEN;
+        // Admin Telegram botiga xabar yuborish - to'g'ridan-to'g'ri qiymatlarni ishlatish
+        const botToken = "7662414181:AAE7GslvS33B56kiyYG9IFnB8cg3KXkYmZU";
         // Telegram chat ID ni to'g'ri olish - muhim!
-        const adminChatId = process.env.TELEGRAM_ADMIN_CHAT_ID;
+        const adminChatId = "6718221955";
 
         // Agar chat ID mavjud bo'lmasa, xatolik qaytarish
         if (!adminChatId) {
@@ -191,13 +191,8 @@ export async function PUT(request: NextRequest) {
               ...(photoMessageId ? { reply_to_message_id: photoMessageId } : {})
             }),
           });
-
-
-
           try {
             const adminResult = await adminResponse.json();
-            console.log(adminResult);
-
             if (adminResult.ok) {
               console.log("Admin Telegram botiga xabar yuborildi");
             } else {
