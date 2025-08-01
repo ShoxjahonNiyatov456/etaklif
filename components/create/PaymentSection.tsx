@@ -304,16 +304,7 @@ export default function PaymentSection({ type, selectedTemplate, formData, uploa
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false)
   const [isGeneratingLink, setIsGeneratingLink] = useState(false)
   const [hasMounted, setHasMounted] = useState(false)
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [uniqueId, setUniqueId] = useState("")
-
-  useEffect(() => {
-    setHasMounted(true)
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      setIsAuthenticated(!!user)
-    })
-    return () => unsubscribe()
-  }, [])
 
   const currentTemplateDetails = getTemplatesForType(type).find((t) => t.id === selectedTemplate)
 
@@ -370,15 +361,7 @@ export default function PaymentSection({ type, selectedTemplate, formData, uploa
             {!(templateRequiresImage && !uploadedImage) && (
               <Button
                 onClick={() => {
-                  if (!isAuthenticated) {
-                    toast({
-                      variant: "destructive",
-                      title: "Avval ro'yxatdan o'ting!!!",
-                      description: "Taklifnomani yakunlash uchun iltimos ro'yxatdan o'ting",
-                    })
-                  } else {
-                    setIsConfirmDialogOpen(true)
-                  }
+                  setIsConfirmDialogOpen(true)
                 }}
                 disabled={shareProcessing}
                 className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white border-0 disabled:opacity-50 disabled:cursor-not-allowed"

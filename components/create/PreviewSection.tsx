@@ -30,24 +30,13 @@ export default function PreviewSection({
   type,
   selectedTemplate,
   formData,
-  uploadedImage,
 }: PreviewSectionProps) {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [currentTemplate, setCurrentTemplate] = useState(selectedTemplate);
 
-  // Shablon o'zgarganda yangilash
   useEffect(() => {
-    // Shablon o'zgartirilganda, uni darhol yangilash
     setCurrentTemplate(selectedTemplate);
   }, [selectedTemplate]);
 
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      setIsAuthenticated(!!user);
-    });
-
-    return () => unsubscribe();
-  }, []);
 
   const wrappedLocationText = formData.location
     ? formData.location.substring(0, 30)
